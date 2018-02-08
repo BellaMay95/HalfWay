@@ -25,31 +25,29 @@ class Top extends Component {
         this.props.setLoginState(false, "");
     }
 
-    LoginButton(isLoggedIn) {
-        if (isLoggedIn) {
-            let title = "Welcome, User!";
-            let button = <Navbar.Collapse>
-                    <Nav pullRight>
-                        <NavItem eventKey={1} >
-                            <DropdownButton
-                bsStyle="default"
-                title={title}
-                key={2}
-                id={2}
-            >
-                <MenuItem eventKey="1" onClick={this.handleProfileClick}>View Profile</MenuItem>
-                <MenuItem eventKey="2" onClick={this.handleLogoutClick}>Log Out!</MenuItem>
-            </DropdownButton>
-                        </NavItem>
-                    </Nav>
-                </Navbar.Collapse>;
+    LoginButton(props) {
+        console.log(JSON.stringify(props));
+        if (props.isLoggedIn) {
+            let title = "Welcome, " + props.name;
+            let button = 
+                <DropdownButton
+                    bsStyle="default"
+                    bsSize="small"
+                    title={title}
+                    key={2}
+                    id={2}
+                >
+                    <MenuItem eventKey="1" onClick={this.handleProfileClick}>View Profile</MenuItem>
+                    <MenuItem eventKey="2" onClick={this.handleLogoutClick}>Log Out!</MenuItem>
+                </DropdownButton>;
             return button;
         }
+        console.log("Not logged in so hide button");
         return null;
     };
     
     render() {
-        let Button = this.LoginButton(this.props.isLoggedIn);
+        let Button = this.LoginButton(this.props);
         
         return (
             <Navbar collapseOnSelect>
@@ -59,6 +57,13 @@ class Top extends Component {
                     </Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>
+                <Navbar.Collapse>
+                    <Nav pullRight>
+                    <NavItem eventKey={1} href="#">
+                        {Button}
+                    </NavItem>
+                    </Nav>
+                </Navbar.Collapse>
             </Navbar>
         );
     }
