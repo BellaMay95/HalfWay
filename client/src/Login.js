@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormControl, FormGroup, ControlLabel, HelpBlock, Button } from 'react-bootstrap';
+import { FormControl, FormGroup, ControlLabel, HelpBlock, Button, Alert } from 'react-bootstrap';
 
 //import logo from './logo.svg';
 
@@ -21,8 +21,9 @@ class Login extends Component {
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.state = {
-            email: '',
-            password: ''
+            email: "",
+            password: "",
+            alertShow: 0,
         };
     }
 
@@ -36,17 +37,77 @@ class Login extends Component {
 
     onSubmit(event) {
         event.preventDefault();
-        if (this.state.email === "hello@google.com" && this.state.password === "password") {
-            this.props.setLoginState(true, this.state.email);
+        //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+        let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (this.state.email === "" || this.state.password === "") {
+        	this.setState({alertShow: 1});
+        	window.setTimeout(() => {
+        		this.setState({alertShow: 0});
+        	}, 5000);
+        }
+        else if (!emailRegex.test(this.state.email)) {
+        	this.setState({alertShow: 2});
+        	window.setTimeout(() => {
+        		this.setState({alertShow: 0});
+        	}, 5000);
         }
         else {
-            console.log("login failed");
-        }
+        	let obj = {
+        		"user": this.state.email,
+        		"password": this.state.password
+        	}
+        	fetch('/api/login', {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(obj)
+			})
+			.then((resp) => resp.json())
+			.then(
+				(data) => {
+					//alert(JSON.stringify(data));
+					//console.log(data);
+					if (data.result === false) {
+						this.setState({alertShow: 3});
+						window.setTimeout(() => {
+							this.setState({alertShow: 0});
+						}, 5000);
+					}
+					else {
+						this.setState({alertShow: 4});
+						window.setTimeout(() => {
+							this.setState({alertShow: 0});
+					 	}, 5000);
+						 this.props.setLoginState(true, this.state.email);
+					}
+				}
+			);
+		}
     }
 
     render() {
+    	let loginAlert = null;
+    	if (this.state.alertShow === 0) {
+    		loginAlert = null;
+    	}
+    	else if (this.state.alertShow === 1) {
+    		loginAlert = <Alert bsStyle = "warning"><strong>One or more required fields are empty</strong></Alert>
+    	}
+    	else if (this.state.alertShow === 2) {
+    		loginAlert = <Alert bsStyle = "warning"><strong>Please enter a valid email address.</strong></Alert>
+    	}
+		else if (this.state.alertShow === 3) {
+			loginAlert = <Alert bsStyle="danger"><strong>Invalid Login Credentials!</strong></Alert>;
+		}
+		else if (this.state.alertShow === 4) {
+			loginAlert = <Alert bsStyle = "success"><strong>Login Successful!</strong></Alert>
+		}
+		
         return (
             <div className="container">
+            	{loginAlert}
                 <h2>Login to HalfWay!</h2>
                 <form>
                     <FieldGroup
