@@ -28,7 +28,10 @@ class Top extends Component {
     LoginButton(isLoggedIn) {
         if (isLoggedIn) {
             let title = "Welcome, User!";
-            let button = <DropdownButton
+            let button = <Navbar.Collapse>
+                    <Nav pullRight>
+                        <NavItem eventKey={1} >
+                            <DropdownButton
                 bsStyle="default"
                 title={title}
                 key={2}
@@ -36,7 +39,10 @@ class Top extends Component {
             >
                 <MenuItem eventKey="1" onClick={this.handleProfileClick}>View Profile</MenuItem>
                 <MenuItem eventKey="2" onClick={this.handleLogoutClick}>Log Out!</MenuItem>
-            </DropdownButton>;
+            </DropdownButton>
+                        </NavItem>
+                    </Nav>
+                </Navbar.Collapse>;
             return button;
         }
         return null;
@@ -49,17 +55,10 @@ class Top extends Component {
             <Navbar collapseOnSelect>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <a href="#">HalfWay</a>
+                        <a href="/">HalfWay</a>
                     </Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>
-                <Navbar.Collapse>
-                    <Nav pullRight>
-                        <NavItem eventKey={1} href="#">
-                            {Button}
-                        </NavItem>
-                    </Nav>
-                </Navbar.Collapse>
             </Navbar>
         );
     }
