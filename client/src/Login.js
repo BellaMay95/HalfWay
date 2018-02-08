@@ -80,7 +80,7 @@ class Login extends Component {
 						window.setTimeout(() => {
 							this.setState({alertShow: 0});
 					 	}, 5000);
-						 this.props.setLoginState(true, this.state.email);
+						 this.props.setLoginState(true, data.name);
 					}
 				}
 			);

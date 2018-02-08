@@ -19,7 +19,7 @@ class App extends Component {
 		};
 	}
 
-	componentDidMount() {
+	/*componentDidMount() {
 		this.callApi()
 			.then(res => this.setState({ response: res.express }))
 			.catch(err => console.log(err));
@@ -32,12 +32,13 @@ class App extends Component {
 		if (response.status !== 200) throw Error(body.message);
 
 		return body;
-	};
+	};*/
 
 	setLoginState(loginSuccess, name) {
+		console.log(loginSuccess + name);
 		if (loginSuccess) {
-			this.setState({isLoggedIn: true});
 			this.setState({name: name});
+			this.setState({isLoggedIn: true});
 		}
 		else {
 			this.setState({isLoggedIn: false});
@@ -46,8 +47,12 @@ class App extends Component {
 
 	render() {
 		console.log(this.state.isLoggedIn);
-		let mainPage = <Login setLoginState={this.setLoginState} />;
+		let mainPage;
+		if (!this.state.isLoggedIn) {
+			mainPage = <Login setLoginState={this.setLoginState} />;
+		}
 		if (this.state.isLoggedIn) {
+			console.log(this.state.name);
 			mainPage = <Dashboard name={this.state.name} />;
 		}
 		console.log(mainPage);

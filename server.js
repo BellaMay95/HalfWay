@@ -18,7 +18,8 @@ app.post('/api/login', (req, res) => {
 	let password = req.body.password;
 	if (user === "halfway@gmail.com" && password === "password") {
 		console.log("success!");
-		res.send({ result: true });
+		let name = "Jane";
+		res.send({ result: true, name: name });
 	}
 	else {
 		console.log("fail!");
