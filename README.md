@@ -4,6 +4,8 @@
 - NodeJS
 - Code Editor
 - Terminal / Command Line
+- GCC >= 4.8
+- Global installation of the NPM package node-gyp
 
 2. Download/Clone repository
 
