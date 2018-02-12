@@ -1,20 +1,20 @@
 {
   "name": "halfway",
-  "version": "1.0.0",
-  "scripts": {
-    "client": "cd client && npm start",
-    "server": "nodemon server.js",
-    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
-  },
+  "version": "0.1.0",
+  "license": "MIT",
   "dependencies": {
-    "argon2": "^0.17.2",
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2",
-    "helmet": "^3.10.0",
-    "passport": "^0.4.0",
-    "passport-local": "^1.0.0"
+    "re-base": "^3.2.2",
+    "react": "^16.1.1",
+    "react-bootstrap": "^0.32.1",
+    "react-dom": "^16.1.1",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.17",
+    "react-spinner": "^0.2.7"
   },
-  "devDependencies": {
-    "concurrently": "^3.5.0"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
   }
 }
