@@ -20,12 +20,37 @@ class Login extends Component {
         super(props);
         this.onChange = this.onChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        //this.passwordChange = this.passwordChange.bind(this);
+        //this.passwordSubmit = this.passwordSubmit.bind(this);
         this.state = {
             email: "",
             password: "",
             alertShow: 0,
+            hashPassword: "",
         };
     }
+
+    /*passwordChange(event) {
+        const target = event.target;
+        const value = target.value;
+        console.log("hash:" + value);
+        this.setState({'hashPassword': value});
+    }*/
+
+    /*passwordSubmit(event) {
+        console.log("password: " + this.state.hashPassword);
+        let obj = {
+            "password": this.state.hashPassword
+        }
+        fetch('/api/hash', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(obj)
+        });
+    }*/
 
     onChange(event) {
         //event.preventDefault();
@@ -55,7 +80,8 @@ class Login extends Component {
         	let obj = {
         		"user": this.state.email,
         		"password": this.state.password
-        	}
+            }
+            console.log(obj);
         	fetch('/api/login', {
 				method: 'POST',
 				headers: {
@@ -67,8 +93,8 @@ class Login extends Component {
 			.then((resp) => resp.json())
 			.then(
 				(data) => {
-					//alert(JSON.stringify(data));
-					//console.log(data);
+				    //alert(JSON.stringify(data));
+					console.log(data);
 					if (data.result === false) {
 						this.setState({alertShow: 3});
 						window.setTimeout(() => {
@@ -126,6 +152,8 @@ class Login extends Component {
                     />
                     <Button type="submit" onClick={this.onSubmit}>Submit</Button>
                 </form>
+                {/*<input type="text" onChange={this.passwordChange} name="submitPassword" />
+                <Button type="submit" onClick={this.passwordSubmit}>Hash Password</Button>*/}
             </div>
         );
     }
