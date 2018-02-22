@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 //import './Dashboard.css';
+import Sidebar from './Sidebar';
 
 class Dashboard extends Component {
     constructor(props) {
@@ -12,9 +13,7 @@ class Dashboard extends Component {
 
     render() {
         return (
-            <div className="container">
-                <h1>Welcome, User!</h1>
-            </div>
+            <Sidebar />
         );
     }
 }
