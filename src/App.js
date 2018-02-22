@@ -91,7 +91,7 @@ class App extends Component {
 			<div className="App">
 				<BrowserRouter>
 					<div>
-						<Top authenticated={this.state.authenticated} name={this.state.currentUser} />
+						{/*<Top authenticated={this.state.authenticated} name={this.state.currentUser} />*/}
 						<Route exact path="/login" render={(props) => {
 							return <Login setCurrentUser={this.setCurrentUser} {...props} />
 						}} />
