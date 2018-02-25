@@ -6,10 +6,11 @@ import { Spinner } from 'react-spinner';
 
 import './App.css';
 
-import Top from './components/Top';
+//import Top from './components/Top';
 import Login from './components/Login';
 import Logout from './components/Logout';
-import Dashboard from './components/Dashboard';
+//import Dashboard from './components/Dashboard';
+import Sidebar from './components/Sidebar';
 
 function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
 	return (
@@ -74,24 +75,14 @@ class App extends Component {
 			return (
 				<div>
 					<h3>Loading</h3>
-					
+					{ Spinner }
 				</div>
 			)
 		}
-		/*let mainPage;
-		if (!this.state.isLoggedIn) {
-			console.log("we're not logged in");
-			mainPage = <Login setLoginState={this.setLoginState} />;
-		}
-		if (this.state.isLoggedIn) {
-			console.log("we are logged in");
-			mainPage = <Dashboard name={this.state.name} />;
-		}*/
 		return (
 			<div className="App">
 				<BrowserRouter>
 					<div>
-						{/*<Top authenticated={this.state.authenticated} name={this.state.currentUser} />*/}
 						<Route exact path="/login" render={(props) => {
 							return <Login setCurrentUser={this.setCurrentUser} {...props} />
 						}} />
@@ -100,7 +91,7 @@ class App extends Component {
 							exact
 							path="/"
 							authenticated={this.state.authenticated}
-							component={Dashboard}
+							component={Sidebar}
 						/>
 					</div>
 				</BrowserRouter>
