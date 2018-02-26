@@ -1,12 +1,26 @@
 import React, { Component } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
 import { app } from '../base';
+
+function FieldGroup({ id, label, help, ...props }) {
+  return (
+    <FormGroup controlId={id}>
+      <ControlLabel>{label}</ControlLabel>
+      <FormControl {...props} />
+      {help && <HelpBlock>{help}</HelpBlock>}
+    </FormGroup>
+  );
+}
 
 class CreateThread extends Component {
     constructor(props) {
         super(props);
         this.closeModal = this.closeModal.bind(this);
         this.saveNewThread = this.saveNewThread.bind(this);
+        this.state = {
+          title: "",
+          message: ""
+        }
     }
 
     closeModal() {
@@ -14,8 +28,27 @@ class CreateThread extends Component {
     }
 
     saveNewThread() {
-        alert("We'll save thread info later!")
-        this.closeModal();
+        //alert("title: " + this.state.title + " and message: " + this.state.message);
+        let title = this.state.title;
+        let message = this.state.message;
+        let username = app.auth().currentUser.displayName;
+        let userId = app.auth().currentUser.uid;
+        let timestamp = new Date().toString();
+       
+        //alert(newpostref);
+        let postInfo = {
+          "author_id": userId,
+          "author_name": username,
+          "message": message,
+          "subject": title,
+          "timestamp": timestamp
+        };
+        let newpostref = app.database().ref('forum').push(postInfo, () => {
+          alert("Thread Posted Successfully!");
+          this.closeModal();
+        });
+        //alert(JSON.stringify(postInfo));
+        //newpostref.set(postInfo);   
     }
 
     render() {
@@ -25,11 +58,25 @@ class CreateThread extends Component {
                 <Modal.Title>Create New Thread!</Modal.Title>
                 </Modal.Header>
 
-                <Modal.Body>Thread creation coming soon...</Modal.Body>
+                <Modal.Body>
+                  <form>
+                    <FieldGroup
+                      id="formControlsSubject"
+                      type="text"
+                      label="Subject"
+                      placeholder="Enter Thread Title!"
+                      onChange={(evt) => {this.setState({title: evt.target.value})}}
+                    />
+                    <FormGroup controlId="formControlsMessage">
+                      <ControlLabel>Message</ControlLabel>
+                      <FormControl componentClass="textarea" placeholder="Enter Message!" onChange={(evt) => {this.setState({message: evt.target.value})}} />
+                    </FormGroup>
+                  </form>
+                </Modal.Body>
 
                 <Modal.Footer>
                     <Button onClick={this.closeModal}>Close</Button>
-                    <Button bsStyle="primary" onClick={this.saveNewThread}>Save changes</Button>
+                    <Button bsStyle="primary" onClick={this.saveNewThread}>Create Thread!</Button>
                 </Modal.Footer>
             </Modal.Dialog>
         </div>);
