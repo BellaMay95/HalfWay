@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { app } from '../base';
 import { FormControl, FormGroup, ControlLabel, HelpBlock, Button, Alert } from 'react-bootstrap';
+import logo from '../images/HWtrial2.png';
 
 //import logo from './logo.svg';
 
-//import './Login.css';
+import '../login.css';
+
 
 function FieldGroup({ id, label, help, ...props }) {
     return (
@@ -88,7 +90,7 @@ class Login extends Component {
                 if (user && user.email) {
                     this.loginForm.reset();
                     this.props.setCurrentUser(user);
-                    this.setState({ 
+                    this.setState({
                         redirect: true,
                         email: "",
                         password: ""
@@ -126,27 +128,30 @@ class Login extends Component {
 		else if (this.state.alertShow === 4) {
 			loginAlert = <Alert bsStyle = "success"><strong>Login Successful!</strong></Alert>
 		}
-		
+
         return (
-            <div className="container">
+            <div className="container w3-animate-opacity">
                 {loginAlert}
-                <h2>Login to HalfWay!</h2>
+                <div className = "jumbotron">
+                  <img id = 'logo' src = {logo}/>
+                  <h1 id = "title" className = "w3-animate-top">Log in to HalfWay!</h1>
+                </div>
                 <form onSubmit={(event) => this.authUser(event)} ref={(form) => { this.loginForm = form }}>
                     <FieldGroup
                         name="email"
-                        label="Email address"
+                        label="Email Address"
                         type="email"
                         onChange={this.onChange}
                         placeholder="Enter email"
                     />
                     <FieldGroup
                         name="password"
-                        label="Password" 
+                        label="Password"
                         type="password"
                         onChange={this.onChange}
                         placeholder="Enter password"
                     />
-                    <Button type="submit">Log In!</Button>
+                    <Button className = "btn-primary" type="submit">Log In!</Button>
                 </form>
                 {/*<input type="text" onChange={this.passwordChange} name="submitPassword" />
                 <Button type="submit" onClick={this.passwordSubmit}>Hash Password</Button>*/}
