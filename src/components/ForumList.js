@@ -55,7 +55,7 @@ class Forum extends Component {
     }
 
     render() {
-        let forumStyle = {
+        let headerStyle = {
             fontFamily: "'Courier New', 'Courier', 'monospace'", 
             fontSize: 36, 
             fontWeight: "bold"
@@ -68,7 +68,7 @@ class Forum extends Component {
             <div className="container">
                 <Navbar collapseOnSelect style={{marginTop: '5px'}}>
                     <Navbar.Header>
-                        <Navbar.Brand style={forumStyle}>Forums</Navbar.Brand>
+                        <Navbar.Brand style={headerStyle}>Forums</Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
