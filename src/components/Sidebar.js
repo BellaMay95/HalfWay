@@ -32,7 +32,7 @@ export default class Sidebar extends Component {
 			if (snapshot.val().admin) {
 				return (
 					<TabList>
-					<img id = 'logo' height = '80' width = '80' src = {logo} alt = "site logo" />
+					<img id = 'logo' style={{height: '80px', width: '80px', "padding-left": '20px'}} src = {logo} alt = "site logo" />
 					<Tab tabFor="vertical-tab-one"><img height = '50' width = '50' src = {forum} alt = "forum"/></Tab>
 					<Tab tabFor="vertical-tab-two"><img height = '50' width = '50' src = {directmessage} alt = "messages" /></Tab>
 					<Tab tabFor="vertical-tab-three"><img height = '50' width = '50' src = {help} alt = "help" /></Tab>
@@ -44,7 +44,7 @@ export default class Sidebar extends Component {
 			}
 			else {
 				return ( <TabList>
-					<img id = 'logo' height = '80' width = '80' src = {logo} alt = "site logo" />
+					<img id = 'logo' height = '50' width = '50' style={{height: 50, width: 50}} src = {logo} alt = "site logo" />
 					<Tab tabFor="vertical-tab-one"><img height = '50' width = '50' src = {forum} alt = "forum" /></Tab>
 					<Tab tabFor="vertical-tab-two"><img height = '50' width = '50' src = {directmessage} alt = "messages" /></Tab>
 					<Tab tabFor="vertical-tab-three"><img height = '50' width = '50' src = {help} alt = "help" /></Tab>
@@ -55,7 +55,7 @@ export default class Sidebar extends Component {
 			}
 		});
   	}
-  
+
 	render() {
 		if (!this.state.tabList) {
 			this.checkAdmin().then((result) => {
@@ -66,7 +66,7 @@ export default class Sidebar extends Component {
 		return (
 
 		<div>
-		
+
 		<Tabs
 			defaultTab="vertical-tab-one"
 			vertical
