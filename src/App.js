@@ -11,6 +11,7 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 //import Dashboard from './components/Dashboard';
 import Sidebar from './components/Sidebar';
+import Navbar from './components/Navbar';
 
 function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
 	return (
@@ -93,6 +94,13 @@ class App extends Component {
 							authenticated={this.state.authenticated}
 							component={Sidebar}
 						/>
+						<AuthenticatedRoute
+							exact
+							path="/navbar"
+							authenticated={this.state.authenticated}
+							component={Navbar}
+						/>
+
 					</div>
 				</BrowserRouter>
 			</div>
