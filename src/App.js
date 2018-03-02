@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Redirect, BrowserRouter, Route } from 'react-router-dom';
 import { app } from './base';
 import { Spinner } from 'react-spinner';
-//import logo from './logo.svg';
 
 import './App.css';
 
@@ -14,6 +13,7 @@ import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 
 function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
+	/*if authenticated, load requested component/route, otherwise redirect to login route*/
 	return (
 	  <Route
 		{...rest}
@@ -82,12 +82,16 @@ class App extends Component {
 		}
 		return (
 			<div className="App">
+				{/* BrowserRouter tag allows routes*/}
 				<BrowserRouter>
 					<div>
+						{/* '/login' path returns login component */}
 						<Route exact path="/login" render={(props) => {
 							return <Login setCurrentUser={this.setCurrentUser} {...props} />
 						}} />
+						{/* 'logout' path returns logout component */}
 						<Route exact path="/logout" component={Logout} />
+						{/*the rest of the routes are protected. If the user is not logged in, it redirects to the login page */}
 						<AuthenticatedRoute
 							exact
 							path="/"

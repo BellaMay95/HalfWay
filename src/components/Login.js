@@ -8,7 +8,7 @@ import logo from '../images/HWtrial2.png';
 
 import '../login.css';
 
-
+/*part of the react-bootstrap form component*/
 function FieldGroup({ id, label, help, ...props }) {
     return (
       <FormGroup controlId={id}>
@@ -32,6 +32,7 @@ class Login extends Component {
         }
     }
 
+    //updates state variables when form fields change
     onChange(event) {
         //event.preventDefault();
         const target = event.target;
@@ -44,49 +45,55 @@ class Login extends Component {
         event.preventDefault();
         //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        //checks for empty fields
         if (this.state.email === "" || this.state.password === "") {
         	this.setState({alertShow: 1});
-        	window.setTimeout(() => {
+            //shows alert for 5 seconds
+            window.setTimeout(() => {
         		this.setState({alertShow: 0});
             }, 5000);
             console.log("You have one or more empty fields!");
         }
+        //checks for valid email format
         else if (!emailRegex.test(this.state.email)) {
             this.setState({alertShow: 2});
-        	window.setTimeout(() => {
+            //show alert for 5 seconds
+            window.setTimeout(() => {
         		this.setState({alertShow: 0});
             }, 5000);
             console.log("You must enter a valid email address!");
         }
         else {
-            //console.log("We'll authenticate later!");
             const email = this.state.email;
             const password = this.state.password;
 
             app.auth().fetchProvidersForEmail(email)
             .then((providers) => {
+                //tests whether account exists
                 if (providers.length === 0) {
                     this.setState({alertShow: 3});
+                    //show alert for 5 seconds
                     window.setTimeout(() => {
                         this.setState({alertShow: 0});
                     }, 5000);
                     console.log("This account does not exist!");
-                } else if (providers.indexOf("password") === -1) {
+                } 
+                //checks for valid password
+                else if (providers.indexOf("password") === -1) {
                     this.setState({alertShow: 3});
+                    //showing alert for 5 seconds
                     window.setTimeout(() => {
                         this.setState({alertShow: 0});
                     }, 5000);
                     console.log("invalid login credentials!");
                 } else {
+                    //good credentials, now sign in
                     return app.auth().signInWithEmailAndPassword(email, password);
                 }
             })
             .then((user) => {
-                /*this.setState({alertShow: 4});
-                window.setTimeout(() => {
-                    this.setState({alertShow: 0});
-                }, 5000);*/
                 console.log("success!");
+                //resets form, sets user, clears component state
                 if (user && user.email) {
                     this.loginForm.reset();
                     this.props.setCurrentUser(user);
@@ -106,6 +113,7 @@ class Login extends Component {
     }
 
     render() {
+        /*redirects user to requested page if not the home page*/
         const { from } = this.props.location.state || { from: { pathname: '/' } }
 
         if (this.state.redirect === true) {
@@ -120,14 +128,14 @@ class Login extends Component {
     		loginAlert = <Alert bsStyle = "warning"><strong>One or more required fields are empty</strong></Alert>
     	}
     	else if (this.state.alertShow === 2) {
-    		loginAlert = <Alert bsStyle = "warning"><strong>Please enter a valid email address.</strong></Alert>
+    		loginAlert = <Alert bsStyle = "warning"><strong>Please enter a valid email address</strong></Alert>
     	}
 		else if (this.state.alertShow === 3) {
 			loginAlert = <Alert bsStyle="danger"><strong>Invalid Login Credentials!</strong></Alert>;
 		}
-		else if (this.state.alertShow === 4) {
+		/*else if (this.state.alertShow === 4) {
 			loginAlert = <Alert bsStyle = "success"><strong>Login Successful!</strong></Alert>
-		}
+		}*/
 
         return (
             <div className="container w3-animate-opacity">
@@ -136,6 +144,7 @@ class Login extends Component {
                   <img id = 'logo' src = {logo}/>
                   <h1 id = "title" className = "w3-animate-top">Log in to HalfWay!</h1>
                 </div>
+                {/*check out ref property*/}
                 <form onSubmit={(event) => this.authUser(event)} ref={(form) => { this.loginForm = form }}>
                     <FieldGroup
                         name="email"
