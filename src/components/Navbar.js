@@ -34,7 +34,7 @@ export default class Navbar extends Component {
 		let uid = app.auth().currentUser.uid;
 		return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
 			//if the user has admin privileges, return this set of tabs
-			if (snapshot.val().admin) {
+			if (snapshot.val().type === "admin") {
 				return (
           <ul class="nav navbar-nav">
             <li><a data-toggle="tab"  href="#forum" ><img height = '55' width = '55' src = {forum}/>     Forum</a></li>

@@ -33,7 +33,7 @@ export default class Sidebar extends Component {
 		let uid = app.auth().currentUser.uid;
 		return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
 			//if the user has admin privileges, return this set of tabs
-			if (snapshot.val().admin) {
+			if (snapshot.val().type === "admin") {
 				return (
 					<TabList>
 					<a href="#"><img id = 'logo' style={{height: '80px', width: '80px', "paddingLeft": '5px'}} src = {logo} alt = "site logo" /></a>

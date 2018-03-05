@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { Nav, Navbar, NavDropdown, MenuItem } from 'react-bootstrap';
 
 import ViewFlags from './ViewFlags';
-import CreateAccount from './CreateAccount';
+import { CreateAccount, ChangeAccount } from './ManageAccount';
 import ProfileChanges from './ProfileChanges';
 
 export default class AdminPanel extends Component {
@@ -18,7 +18,7 @@ export default class AdminPanel extends Component {
     chooseTool(option) {
         console.log(option);
         if (option === 1) {
-            this.setState({panelContent: <CreateAccount />});
+            this.setState({panelContent: <div><CreateAccount /><ChangeAccount /></div>});
         } else if (option === 2) {
             this.setState({panelContent: <ViewFlags />});
         } else if (option === 3) {
@@ -45,7 +45,7 @@ export default class AdminPanel extends Component {
                 <Navbar.Collapse>
                     <Nav pullRight style={{marginRight: "10px"}}>
                         <NavDropdown eventKey={1} title="Select Tool" id="select-func">
-                            <MenuItem eventKey={1.1} onSelect={() => this.chooseTool(1)}>Create Account</MenuItem>
+                            <MenuItem eventKey={1.1} onSelect={() => this.chooseTool(1)}>Manage Accounts</MenuItem>
                             <MenuItem eventKey={1.2} onSelect={() => this.chooseTool(2)}>View Flagged Posts</MenuItem>
                             <MenuItem eventKey={1.3} onSelect={() => this.chooseTool(3)}>View Pending Profile Changes</MenuItem>
                         </NavDropdown>
