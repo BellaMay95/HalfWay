@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavItem, Glyphicon, Panel, PanelGroup } from 'react-bootstrap';
-import { app } from '../base';
+//import { app } from '../base';
 
 import CreateThread from './CreateThread';
 
@@ -19,7 +19,7 @@ class Forum extends Component {
     }
 
     getThreads() {
-        var threads = app.database().ref('forum');
+        //var threads = app.database().ref('forum');
         let childData = {
             author_name: "Jane",
             timestamp: "2018-02-24",

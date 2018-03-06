@@ -38,13 +38,14 @@ class Login extends Component {
         const target = event.target;
         const value = target.value;
         const name = target.name;
-        console.log(name + ": " + value);
+        //console.log(name + ": " + value);
         this.setState({[name]: value});
     }
 
     authUser(event) {
         event.preventDefault();
         //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+        // eslint-disable-next-line
         let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         //checks for empty fields
         if (this.state.email === "" || this.state.password === "") {
@@ -93,7 +94,7 @@ class Login extends Component {
                 }
             })
             .then((user) => {
-                console.log("success!");
+                //console.log("success!");
                 //resets form, sets user, clears component state
                 if (user && user.email) {
                     this.loginForm.reset();
@@ -142,7 +143,7 @@ class Login extends Component {
             <div className="container w3-animate-opacity">
                 {loginAlert}
                 <div className = "jumbotron">
-                  <img id = 'logo' src = {logo}/>
+                  <img id = 'logo' src = {logo} alt = "HalfWay Logo" />
                   <h1 id = "title" className = "w3-animate-top">Log in to HalfWay!</h1>
                 </div>
                 {/*check out ref property*/}

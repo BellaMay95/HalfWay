@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { render } from 'react-dom';
-import { Nav, Navbar, NavDropdown, MenuItem } from 'react-bootstrap';
+//import { render } from 'react-dom';
+import { Nav, Navbar, NavDropdown, MenuItem, Tabs, Tab } from 'react-bootstrap';
 
 import ViewFlags from './ViewFlags';
 import { CreateAccount, ChangeAccount } from './ManageAccount';
@@ -11,14 +11,23 @@ export default class AdminPanel extends Component {
         super(props);
         this.chooseTool = this.chooseTool.bind(this);
         this.state = {
-            panelContent: <p>Welcome! Please select something!</p>
+            panelContent: <ViewFlags />
         }
     }
 
     chooseTool(option) {
-        console.log(option);
+        //console.log(option);
         if (option === 1) {
-            this.setState({panelContent: <div><CreateAccount /><ChangeAccount /></div>});
+            this.setState({
+                panelContent: <Tabs defaultActiveKey={2} id="manage-account-tabs">
+                    <Tab eventKey={1} title="Create New Account">
+                        <CreateAccount />
+                    </Tab>
+                    <Tab eventKey={2} title="Change Account Type">
+                        <ChangeAccount />
+                    </Tab>
+                </Tabs>
+            });
         } else if (option === 2) {
             this.setState({panelContent: <ViewFlags />});
         } else if (option === 3) {
@@ -52,7 +61,7 @@ export default class AdminPanel extends Component {
                     </Nav>
                 </Navbar.Collapse>
             </Navbar>
-            <p>Admin Panel under construction! Please check back later!</p>
+            {/*<p>Admin Panel under construction! Please check back later!</p>*/}
             {this.state.panelContent}
         </div>)
         );
