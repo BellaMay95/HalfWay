@@ -1,15 +1,13 @@
-
 import React, { Component } from 'react';
-import { render } from 'react-dom';
+//import { render } from 'react-dom';
 import forum from '../images/forum.png';
 import directmessage from '../images/directmessage.png';
 import help from '../images/help.png';
 import settings from '../images/settings.png';
-import logout from '../images/logout.png';
+//import logout from '../images/logout.png';
 import logo from '../images/HWtrial2.png';
 import admin from '../images/usersecret.png';
 
-import './navbar.css';
 import { app } from '../base';
 
 import ForumList from './ForumList';
@@ -37,11 +35,11 @@ export default class Navbar extends Component {
 			if (snapshot.val().type === "admin") {
 				return (
           <ul class="nav navbar-nav">
-            <li><a data-toggle="tab"  href="#forum" ><img height = '55' width = '55' src = {forum}/>     Forum</a></li>
-            <li><a data-toggle="tab"  href="#directmessage"><img height = '55' width = '55' src = {directmessage}/>     Direct Message</a></li>
-            <li><a data-toggle="tab"  href="#help" data-toggle="tab" ><img height = '55' width = '55' src = {help}/>     Help</a></li>
-            <li><a data-toggle="tab"  href="#settings" data-toggle="tab" ><img height = '55' width = '55' src = {settings}/>     Settings</a></li>
-            <li><a data-toggle="tab"  href="#admin" data-toggle="tab" ><img height = '55' width = '55' src = {admin}/> Admin Panel</a></li>
+            <li><a data-toggle="tab"  href="#forum" ><img height = '55' width = '55' src = {forum} alt = "Forum" />     Forum</a></li>
+            <li><a data-toggle="tab"  href="#directmessage"><img height = '55' width = '55' src = {directmessage} alt = "Direct message" />     Direct Message</a></li>
+            <li><a data-toggle="tab"  href="#help" ><img height = '55' width = '55' src = {help} alt = "Resources page" />     Help</a></li>
+            <li><a data-toggle="tab"  href="#settings" ><img height = '55' width = '55' src = {settings} alt = "User settings" />     Settings</a></li>
+            <li><a data-toggle="tab"  href="#admin"  ><img height = '55' width = '55' src = {admin} alt = "Admin panel" /> Admin Panel</a></li>
           </ul>
 				);
 			}
@@ -49,10 +47,10 @@ export default class Navbar extends Component {
 			else {
 				return (
           <ul class="nav navbar-nav">
-            <li><a data-toggle="tab"  href="#forum" ><img height = '55' width = '55' src = {forum}/>     Forum</a></li>
-            <li><a data-toggle="tab"  href="#directmessage"><img height = '55' width = '55' src = {directmessage}/>     Direct Message</a></li>
-            <li><a data-toggle="tab"  href="#help" data-toggle="tab" ><img height = '55' width = '55' src = {help}/>     Help</a></li>
-            <li><a data-toggle="tab"  href="#settings" data-toggle="tab" ><img height = '55' width = '55' src = {settings}/>     Settings</a></li>
+            <li><a data-toggle="tab"  href="#forum" ><img height = '55' width = '55' src = {forum} alt = "Forum" />     Forum</a></li>
+            <li><a data-toggle="tab"  href="#directmessage"><img height = '55' width = '55' src = {directmessage} alt = "Direct message" />     Direct Message</a></li>
+            <li><a data-toggle="tab"  href="#help" ><img height = '55' width = '55' src = {help} alt = "Resources page" />     Help</a></li>
+            <li><a data-toggle="tab"  href="#settings" ><img height = '55' width = '55' src = {settings} alt = "User settings" />     Settings</a></li>
           </ul>
         )  ;
 			}
@@ -81,7 +79,7 @@ export default class Navbar extends Component {
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>*/}
-            <a class="navbar-brand" href="#"> < img height = '75px' width = '75px' src = {logo} /> </a>
+            <a class="navbar-brand" href="/"> < img height = '75px' width = '75px' src = {logo} alt = "HalfWay logo" /> </a>
           </div>
           <div class="collapse navbar-collapse" id="myNavbar">
           {this.state.tabList}

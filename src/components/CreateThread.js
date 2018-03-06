@@ -43,9 +43,14 @@ class CreateThread extends Component {
           "subject": title,
           "timestamp": timestamp
         };
-        let newpostref = app.database().ref('forum').push(postInfo, () => {
-          alert("Thread Posted Successfully!");
-          this.closeModal();
+        app.database().ref('forum').push(postInfo, (err) => {
+          if (!err) {
+            alert("Thread Posted Successfully!");
+            this.closeModal();
+          } else {
+            alert("Error posting thread!");
+            this.closeModal();
+          }
         });
         //alert(JSON.stringify(postInfo));
         //newpostref.set(postInfo);   
