@@ -13,6 +13,7 @@ import admin from '../images/usersecret.png';
 import { app } from '../base';
 import Forums from './ForumList';
 import AdminPanel from './AdminPanel';
+import Resources from './Resources';
 
 
 export default class Sidebar extends Component {
@@ -73,7 +74,7 @@ export default class Sidebar extends Component {
 				//console.log(this.state.tabList);
 				this.setState({
 					tabList: <div>
-			
+
 					{/*sets what is shown when each tab is selected*/}
 					<Tabs
 						defaultTab="vertical-tab-one"
@@ -87,7 +88,7 @@ export default class Sidebar extends Component {
 							<p>Messages</p>
 						</TabPanel>
 						<TabPanel tabId="vertical-tab-three">
-							<p>Help</p>
+							<Resources />
 						</TabPanel>
 						<TabPanel tabId="vertical-tab-four">
 							<p>Settings</p>
@@ -97,14 +98,14 @@ export default class Sidebar extends Component {
 						</TabPanel>
 					</Tabs>
 					</div>
-				
+
 				});
 				//console.log(this.state.tabList);
-			})	
+			})
 		}
 
 		return this.state.tabList;
 
-		
+
 	}
 }
