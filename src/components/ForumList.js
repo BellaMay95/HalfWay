@@ -1,68 +1,59 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavItem, Glyphicon, Panel, PanelGroup } from 'react-bootstrap';
-//import { app } from '../base';
+import { app } from '../base';
 
 import CreateThread from './CreateThread';
 
 class Forum extends Component {
     constructor(props) {
         super(props);
-        this.getThreads = this.getThreads.bind(this);
         this.toggleThreadModal = this.toggleThreadModal.bind(this);
+
+    // Make a referance to a database on firebase //list of notes stored on db property
+    // app refers to our application
+    // database refers to get us reference to the location we will be writing queries
+    // notes child will be used to store instances of our notes child
+      this.database = app.database().ref().child('forum');
+
+    // We are going to set up the react state of our components
         this.state = {
-            createThread: false
+            createThread: false,
+            forumList: [],
         }
+    }
+
+    // Will mount happens after initialization but before the render (for more information look up the lifecycles of react components)
+    componentWillMount(){
+      const prevForum = this.state.forumList;  // Set previousForum to current state
+
+      // Get DataSnapshot every time a child is added to the array
+      this.database.on('child_added', snap => {
+        prevForum.push({
+          id: snap.key,
+          author_id: snap.val().author_id,
+          author_name: snap.val().author_name,
+          message: snap.val().message,
+          subject: snap.val().subject,
+          timestamp: snap.val().timestamp,
+        })
+
+        // Push the array that we have just updated (previousForum) to the state
+        this.setState({
+          forumList: prevForum
+        })
+      })
     }
 
     toggleThreadModal() {
         this.setState({createThread: !this.state.createThread});
     }
 
-    getThreads() {
-        //var threads = app.database().ref('forum');
-        let childData = {
-            author_name: "Jane",
-            timestamp: "2018-02-24",
-            message: "Hey! Just wanted to say I'm glad to be here and I hope this turns out to be a good message board!",
-            subject: "Hello Everyone!"
-        }
-
-        //let stuff = 
-        // threads.on('value', function(snapshot) {
-            //snapshot.forEach((childSnapshot) => {
-                //var childKey = childSnapshot.key;
-                //var childData = childSnapshot.val();
-
-                //stuff += (<Panel>
-                  //  <Panel.Heading>
-                    //    <Panel.Title componentClass='h3'>{childData.author_name} : {childData.subject} : {childData.timestamp} </Panel.Title>
-                  //  </Panel.Heading>
-                //    <Panel.Body>{childData.message}</Panel.Body>
-              //  </Panel>);
-            //});
-            //stuff += "</PanelGroup>";
-          //  return stuff;
-        //});
-        let stuff = (<PanelGroup id="forumThreads"><Panel>
-            <Panel.Heading>
-                <Panel.Title componentClass='h3'>{childData.author_name} : {childData.subject} : {childData.timestamp} </Panel.Title>
-            </Panel.Heading>
-            <Panel.Body>{childData.message}</Panel.Body>
-        </Panel></PanelGroup>);
-
-        //stuff += "</PanelGroup>;
-        return stuff;
-    }
-
     render() {
         let headerStyle = {
-            fontFamily: "'Courier New', 'Courier', 'monospace'", 
-            fontSize: 36, 
+            fontFamily: "'Courier New', 'Courier', 'monospace'",
+            fontSize: 36,
             fontWeight: "bold"
         }
-
-        let threadList = this.getThreads();
-        //console.log(threadList);
 
         return (
             <div className="container">
@@ -74,7 +65,7 @@ class Forum extends Component {
                     <Navbar.Collapse>
                         <Nav pullRight>
                             <NavItem eventKey={1} onClick={this.toggleThreadModal}>
-                                Create New Thread 
+                                Create New Thread
                                 <Glyphicon glyph="plus-sign" style={{padding: '5px'}}/>
                             </NavItem>
                         </Nav>
@@ -82,7 +73,24 @@ class Forum extends Component {
                 </Navbar>
                 {this.state.createThread && <CreateThread closeThreadModal={this.toggleThreadModal}/>}
 
-                {threadList}
+                <div className='forumBody'>
+                  {
+                    /* Going through the array and displaying all of the forums in a panel view*/
+                    this.state.forumList.map((forum) => {
+                      console.log("forum.author_name :: " + forum.author_name);
+                      return(
+                        <PanelGroup id="forumThreads"><Panel>
+                          <Panel.Heading>
+                            <Panel.Title componentClass='h3'>{forum.author_name} : {forum.subject} : {forum.timestamp} </Panel.Title>
+                          </Panel.Heading>
+                          <Panel.Body>{forum.message}</Panel.Body>
+                          </Panel></PanelGroup>
+                      )
+                    })
+
+                    }
+               </div>
+
             </div>
         )
     }
