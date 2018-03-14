@@ -1,73 +1,81 @@
 import React, { Component } from 'react';
+import { Navbar, Panel, PanelGroup } from 'react-bootstrap';
 
 
 export default class Resources extends Component{
+  constructor() {
+    super();
+    this.handleSelect = this.handleSelect.bind(this);
+
+    this.state = {
+      activeKey: '1'
+    }
+  }
+
+  handleSelect(activeKey) {
+    this.setState({ activeKey });
+  }
   render(){
+    let headerStyle = {
+      fontFamily: "'Courier New', 'Courier', 'monospace'",
+      fontSize: 36,
+      fontWeight: "bold"
+    }
+
     return(
       <div className="container">
-        <div className="panel-group" id="accordion">
-          <div className="panel panel-default">
-            <div className="panel-heading">
-              <h3 className="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                Job Opportunities</a>
-              </h3>
-            </div>
-            <div id="collapse1" className="panel-collapse collapse in">
-              <div className="panel-body">Add info here for job ops</div>
-            </div>
-          </div>
-          <div className="panel panel-default">
-            <div className="panel-heading">
-              <h3 className="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                Affordable Housing</a>
-              </h3>
-            </div>
-            <div id="collapse2" className="panel-collapse collapse">
-              <div className="panel-body">add affordable housing info</div>
-            </div>
-          </div>
-          <div className="panel panel-default">
-            <div className="panel-heading">
-              <h3 className="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
-                Short Term Housing</a>
-              </h3>
-            </div>
-            <div id="collapse3" className="panel-collapse collapse">
-              <div className="panel-body">add short term housing info</div>
-            </div>
-          </div>
+        <Navbar collapseOnSelect style={{marginTop: '5px'}}>
+            <Navbar.Header>
+                <Navbar.Brand style={headerStyle}>Resources</Navbar.Brand>
+                <Navbar.Toggle />
+            </Navbar.Header>
+        </Navbar>
 
-          <div className="panel panel-default">
-            <div className="panel-heading">
-              <h3 className="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
-                Food</a>
-              </h3>
-            </div>
-            <div id="collapse4" className="panel-collapse collapse">
-              <div className="panel-body">add food info</div>
-            </div>
-          </div>
-
-          <div className="panel panel-default">
-            <div className="panel-heading">
-              <h3 className="panel-title">
-                <a data-toggle="collapse" data-parent="#accordion" href="#collapse5">
-                Education</a>
-              </h3>
-            </div>
-            <div id="collapse5" className="panel-collapse collapse">
-              <div className="panel-body">education</div>
-            </div>
-          </div>
-
-
-
-
-        </div>
+        <PanelGroup
+          accordion
+          id="resources-list"
+          activeKey={this.state.activeKey}
+          onSelect={this.handleSelect}
+        >
+        <Panel eventKey="1">
+          <Panel.Heading>
+            <Panel.Title toggle>Job Opportunities</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible>Add info here for job ops</Panel.Body>
+        </Panel>
+        <Panel eventKey="2">
+          <Panel.Heading>
+            <Panel.Title toggle>Affordable Housing</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible>add affordable housing info</Panel.Body>
+        </Panel>
+        <Panel eventKey="3">
+          <Panel.Heading>
+            <Panel.Title toggle>Short Term Housing</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible>add short term housing info</Panel.Body>
+          {/*<Panel.Body collapsible>
+            <Panel eventKey="3.1">
+              <Panel.Heading>
+                <Panel.Title toggle>Food</Panel.Title>
+              </Panel.Heading>
+              <Panel.Body collapsible>add food info</Panel.Body>
+            </Panel>
+          </Panel.Body>*/}
+        </Panel>
+        <Panel eventKey="4">
+          <Panel.Heading>
+            <Panel.Title toggle>Food</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible>add food info</Panel.Body>
+        </Panel>
+        <Panel eventKey="5">
+          <Panel.Heading>
+            <Panel.Title toggle>Education</Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible>education</Panel.Body>
+        </Panel>
+      </PanelGroup>
       </div>
 
 

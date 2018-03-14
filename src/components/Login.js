@@ -109,7 +109,7 @@ class Login extends Component {
             .catch((error) => {
                 //console.log("Error!");
                 console.log(error);
-                this.setState({alertShow: 4});
+                this.setState({alertShow: 3});
                 //showing alert for 5 seconds
                 window.setTimeout(() => {
                     this.setState({alertShow: 0});
