@@ -90,8 +90,8 @@ export default class TopNavbar extends Component {
 							}
 						</Nav>
 						<Nav pullRight>
-							<NavItem eventKey={1} href="#">
-								<a href="/logout"><img height = '30' width = '30' src = { logout } alt = "logout" /> Logout</a>
+							<NavItem eventKey={1} href="/logout">
+								<img height = '30' width = '30' src = { logout } alt = "logout" /> Logout
 							</NavItem>
 						</Nav>
 					</Navbar.Collapse>
