@@ -26,7 +26,7 @@ class Login extends Component {
         this.onChange = this.onChange.bind(this);
         this.state = {
             redirect: false,
-			email: "",
+			username: "",
             password: "",
             alertShow: 0
         }
@@ -46,9 +46,9 @@ class Login extends Component {
         event.preventDefault();
         //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         // eslint-disable-next-line
-        let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        //let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         //checks for empty fields
-        if (this.state.email === "" || this.state.password === "") {
+        if (this.state.username === "" || this.state.password === "") {
         	this.setState({alertShow: 1});
             //shows alert for 5 seconds
             window.setTimeout(() => {
@@ -57,23 +57,23 @@ class Login extends Component {
             console.log("You have one or more empty fields!");
         }
         //checks for valid email format
-        else if (!emailRegex.test(this.state.email)) {
+        /*else if (!emailRegex.test(this.state.email)) {
             this.setState({alertShow: 2});
             //show alert for 5 seconds
             window.setTimeout(() => {
         		this.setState({alertShow: 0});
             }, 5000);
             console.log("You must enter a valid email address!");
-        }
+        }*/
         else {
-            const email = this.state.email;
+            const email = this.state.username + "@halfway.com";
             const password = this.state.password;
 
             app.auth().fetchProvidersForEmail(email)
             .then((providers) => {
                 //tests whether account exists
                 if (providers.length === 0) {
-                    this.setState({alertShow: 3});
+                    this.setState({alertShow: 2});
                     //show alert for 5 seconds
                     window.setTimeout(() => {
                         this.setState({alertShow: 0});
@@ -82,7 +82,7 @@ class Login extends Component {
                 } 
                 //checks for valid password
                 else if (providers.indexOf("password") === -1) {
-                    this.setState({alertShow: 3});
+                    this.setState({alertShow: 2});
                     //showing alert for 5 seconds
                     window.setTimeout(() => {
                         this.setState({alertShow: 0});
@@ -94,23 +94,27 @@ class Login extends Component {
                 }
             })
             .then((user) => {
-                //console.log("success!");
+                console.log("success!");
                 //resets form, sets user, clears component state
                 if (user && user.email) {
                     this.loginForm.reset();
                     this.props.setCurrentUser(user);
                     this.setState({
                         redirect: true,
-                        email: "",
+                        username: "",
                         password: ""
                     });
                 }
-                //return user.updateProfile({'displayName': "Jane Doe"});
             })
             .catch((error) => {
-                console.log("Error!");
+                //console.log("Error!");
                 console.log(error);
-            })
+                this.setState({alertShow: 4});
+                //showing alert for 5 seconds
+                window.setTimeout(() => {
+                    this.setState({alertShow: 0});
+                }, 5000);
+            });
 		}
     }
 
@@ -129,15 +133,12 @@ class Login extends Component {
     	else if (this.state.alertShow === 1) {
     		loginAlert = <Alert bsStyle = "warning"><strong>One or more required fields are empty</strong></Alert>
     	}
-    	else if (this.state.alertShow === 2) {
-    		loginAlert = <Alert bsStyle = "warning"><strong>Please enter a valid email address</strong></Alert>
-    	}
-		else if (this.state.alertShow === 3) {
+		else if (this.state.alertShow === 2) {
 			loginAlert = <Alert bsStyle="danger"><strong>Invalid Login Credentials!</strong></Alert>;
 		}
-		/*else if (this.state.alertShow === 4) {
-			loginAlert = <Alert bsStyle = "success"><strong>Login Successful!</strong></Alert>
-		}*/
+		else if (this.state.alertShow === 3) {
+			loginAlert = <Alert bsStyle = "danger"><strong>Server Error! Please try again later</strong></Alert>
+		}
 
         return (
             <div className="container w3-animate-opacity">
@@ -149,11 +150,11 @@ class Login extends Component {
                 {/*check out ref property*/}
                 <form onSubmit={(event) => this.authUser(event)} ref={(form) => { this.loginForm = form }}>
                     <FieldGroup
-                        name="email"
-                        label="Email Address"
-                        type="email"
+                        name="username"
+                        label="Username"
+                        type="text"
                         onChange={this.onChange}
-                        placeholder="Enter email"
+                        placeholder="Enter username"
                     />
                     <FieldGroup
                         name="password"
@@ -162,10 +163,8 @@ class Login extends Component {
                         onChange={this.onChange}
                         placeholder="Enter password"
                     />
-                    <Button className = "btn-primary" type="submit">Log In!</Button>
+                    <Button className = "btn-primary" type="submit" id="loginButton">Log In!</Button>
                 </form>
-                {/*<input type="text" onChange={this.passwordChange} name="submitPassword" />
-                <Button type="submit" onClick={this.passwordSubmit}>Hash Password</Button>*/}
             </div>
         );
     }

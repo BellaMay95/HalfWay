@@ -5,15 +5,14 @@ import { Spinner } from 'react-spinner';
 
 import './App.css';
 
-//import Top from './components/Top';
 import Login from './components/Login';
 import Logout from './components/Logout';
-//import Dashboard from './components/Dashboard';
 import Sidebar from './components/Sidebar';
 import Navbar from './components/Navbar';
 
 function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
 	/*if authenticated, load requested component/route, otherwise redirect to login route*/
+
 	return (
 	  <Route
 		{...rest}
@@ -25,8 +24,15 @@ function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
 
 class App extends Component {
 	constructor(props) {
-		super();
+		super(props);
 		this.setCurrentUser = this.setCurrentUser.bind(this);
+		//get state from props if they exist (for testing) otherwise set default starting values
+		/*this.state = {
+			authenticated: (this.props.authenticated ? this.props.authenticated : false),
+			currentUser: (this.props.currentUser ? this.props.currentUser : null),
+			name: (this.props.name ? this.props.name : ''),
+			loading: (this.props.loading ? this.props.loading : true)
+		};*/
 		this.state = {
 			authenticated: false,
 			currentUser: null,
@@ -50,7 +56,7 @@ class App extends Component {
 					loading: false
 				})
 			}
-		})
+		});
 	}
 
 	componentWillUnmount() {
