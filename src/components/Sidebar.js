@@ -21,91 +21,73 @@ export default class Sidebar extends Component {
 		super(props);
 		this.checkAdmin = this.checkAdmin.bind(this);
 		this.state = {
-			tabList: "Loading!"
-		}
+			admin: false
+		};
+	}
+
+	componentWillMount() {
+		//checks for admin privileges before rendering component
+		this.checkAdmin()
+		.then((result) => {
+			//set admin state based on result of check
+			this.setState({ admin: result });
+		})
+		.catch((err) => {
+			//if there was an error checking privileges, set to false
+			this.setState({ admin: false });
+		})
 	}
 
 	checkAdmin() {
-		//if user isn't logged in, just return nothing
-		/*if (!app.auth().currentUser) {
-			return "not logged in!";
-		}*/
 		//get user ID for lookup in database table
+		let user = app.auth().currentUser;
+		if (!user) {
+			return false;
+		}
 		let uid = app.auth().currentUser.uid;
 		return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-			//if the user has admin privileges, return this set of tabs
+			//if the user has admin privileges, set state
 			if (snapshot.val().type === "admin") {
-				return (
-					<TabList>
-					<a href="/"><img id = 'logo' style={{height: '80px', width: '80px', "paddingLeft": '5px'}} src = {logo} alt = "site logo" /></a>
-					<Tab tabFor="vertical-tab-one"><img height = '50' width = '50' src = {forum} alt = "forum"/></Tab>
-					<Tab tabFor="vertical-tab-two"><img height = '50' width = '50' src = {directmessage} alt = "messages" /></Tab>
-					<Tab tabFor="vertical-tab-three"><img height = '50' width = '50' src = {help} alt = "help" /></Tab>
-					<Tab tabFor="vertical-tab-four"><img  height = '50' width = '50' src = {settings} alt = "settings" /></Tab>
-					<Tab tabFor="vertical-tab-six"><img height = '50' width = '50' src = {admin} alt = "admin panel" /></Tab>
-					{/*Need to reset this.state.tabList back to "null" before changing the route!*/}
-					<Tab tabFor="vertical-tab-five"><a href="/logout"><img height = '50' width = '50' src = {logout} alt = "logout" /></a></Tab>
-					</TabList>
-				);
+				return true;
 			}
-			//otherwise return this set of tabs
+			//otherwise make sure admin state is false
 			else {
-				return ( <TabList>
-					<img id = 'logo' height = '50' width = '50' style={{height: 50, width: 50}} src = {logo} alt = "site logo" />
-					<Tab tabFor="vertical-tab-one"><img height = '50' width = '50' src = {forum} alt = "forum" /></Tab>
-					<Tab tabFor="vertical-tab-two"><img height = '50' width = '50' src = {directmessage} alt = "messages" /></Tab>
-					<Tab tabFor="vertical-tab-three"><img height = '50' width = '50' src = {help} alt = "help" /></Tab>
-					<Tab tabFor="vertical-tab-four"><img  height = '50' width = '50' src = {settings} alt = "settings" /></Tab>
-					{/*Need to reset this.state.tabList back to "null" before changing the route!*/}
-					<Tab tabFor="vertical-tab-five"><a href="/logout"><img height = '50' width = '50' src = {logout} alt = "logout" /></a></Tab>
-					</TabList>
-				);
+				return false;
 			}
 		});
   	}
 
 	render() {
-		//first check to see user is logged in
-		//if the state of tablist is empty, check for admin privileges then load
-		//console.log(this.state.tabList);
-		if (app.auth().currentUser && this.state.tabList === "Loading!") {
-			this.checkAdmin().then((tabList) => {
-				//set the state of the tablist based on what function returned so React can reload
-				//console.log(this.state.tabList);
-				this.setState({
-					tabList: <div>
+		return (
+			<Tabs
+				defaultTab="vertical-tab-one"
+				vertical
+			>
+				<TabList>
+					<a href="/"><img id = 'logo' style={{height: '80px', width: '80px', "paddingLeft": '5px'}} src = {logo} alt = "site logo" /></a>
+					<Tab tabFor="vertical-tab-one"><img height = '50' width = '50' src = {forum} alt = "forum"/></Tab>
+					<Tab tabFor="vertical-tab-two"><img height = '50' width = '50' src = {directmessage} alt = "messages" /></Tab>
+					<Tab tabFor="vertical-tab-three"><img height = '50' width = '50' src = {help} alt = "help" /></Tab>
+					<Tab tabFor="vertical-tab-four"><img  height = '50' width = '50' src = {settings} alt = "settings" /></Tab>
+					{ this.state.admin ? <Tab tabFor="vertical-tab-six"><img height = '50' width = '50' src = {admin} alt = "admin panel" /></Tab> : null }
+					<Tab tabFor="vertical-tab-five"><a href="/logout"><img height = '50' width = '50' src = {logout} alt = "logout" /></a></Tab>
+				</TabList>
 
-					{/*sets what is shown when each tab is selected*/}
-					<Tabs
-						defaultTab="vertical-tab-one"
-						vertical
-					>
-						{tabList}
-						<TabPanel tabId="vertical-tab-one">
-							<Forums />
-						</TabPanel>
-						<TabPanel tabId="vertical-tab-two">
-							<p>Messages</p>
-						</TabPanel>
-						<TabPanel tabId="vertical-tab-three">
-							<Resources />
-						</TabPanel>
-						<TabPanel tabId="vertical-tab-four">
-							<p>Settings</p>
-						</TabPanel>
-						<TabPanel tabId="vertical-tab-six">
-							<AdminPanel />
-						</TabPanel>
-					</Tabs>
-					</div>
-
-				});
-				//console.log(this.state.tabList);
-			})
-		}
-
-		return this.state.tabList;
-
-
+				{/*sets what is shown when each tab is selected*/}
+				<TabPanel tabId="vertical-tab-one">
+					<Forums />
+				</TabPanel>
+				<TabPanel tabId="vertical-tab-two">
+					<p>Messages</p>
+				</TabPanel>
+				<TabPanel tabId="vertical-tab-three">
+					<Resources />
+				</TabPanel>
+				<TabPanel tabId="vertical-tab-four">
+					<p>Settings</p>
+				</TabPanel>
+				{ this.state.admin ? <TabPanel tabId="vertical-tab-six"><AdminPanel /></TabPanel> : null }
+			</Tabs>
+		);
 	}
 }

@@ -11,16 +11,22 @@ class Logout extends Component {
     }
 
     componentWillMount() {
-        app.auth().signOut().then((user, error) => {
+        app.auth().signOut()
+        .then((user, error) => {
+            //console.log("logged out!");
             this.setState({
                 redirect: true
             })
+        })
+        .catch((err) => {
+            console.log("error logging out...");
+            console.error(err);
         })
     }
 
     render() {
         if (this.state.redirect === true) {
-            return <Redirect to="/" />
+            return <Redirect to="/login" />
         }
 
         return (
