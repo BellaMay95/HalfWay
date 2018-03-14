@@ -8,7 +8,7 @@ import './App.css';
 import Login from './components/Login';
 import Logout from './components/Logout';
 import Sidebar from './components/Sidebar';
-import Navbar from './components/Navbar';
+import TopNavbar from './components/Navbar';
 
 function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
 	/*if authenticated, load requested component/route, otherwise redirect to login route*/
@@ -102,13 +102,13 @@ class App extends Component {
 							exact
 							path="/"
 							authenticated={this.state.authenticated}
-							component={Sidebar}
+							component={TopNavbar}
 						/>
 						<AuthenticatedRoute
 							exact
-							path="/navbar"
+							path="/sidebar"
 							authenticated={this.state.authenticated}
-							component={Navbar}
+							component={Sidebar}
 						/>
 
 					</div>

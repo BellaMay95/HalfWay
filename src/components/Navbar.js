@@ -4,116 +4,101 @@ import forum from '../images/forum.png';
 import directmessage from '../images/directmessage.png';
 import help from '../images/help.png';
 import settings from '../images/settings.png';
-//import logout from '../images/logout.png';
+import logout from '../images/logout.png';
 import logo from '../images/HWtrial2.png';
 import admin from '../images/usersecret.png';
+
+import { Navbar, Nav, NavItem } from 'react-bootstrap';
+//import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 
 import { app } from '../base';
 
 import ForumList from './ForumList';
 import AdminPanel from './AdminPanel';
+import Resources from './Resources';
 
 
-export default class Navbar extends Component {
+export default class TopNavbar extends Component {
   constructor() {
-    super();
-    this.checkAdmin = this.checkAdmin.bind(this);
-    this.state = {
-      tabList: null
-    }
+	super();
+	this.checkAdmin = this.checkAdmin.bind(this);
+	this.state = {
+	  tabContent: <ForumList />,
+	  admin: false
+	}
+  }
+
+  componentWillMount() {
+	//checks for admin privileges before rendering component
+		this.checkAdmin()
+		.then((result) => {
+			//set admin state based on result of check
+			console.log("I'm an admin!")
+			this.setState({ admin: result });
+		})
+		.catch((err) => {
+			//if there was an error checking privileges, set to false
+			console.log("I'm not an admin!");
+			this.setState({ admin: false });
+		})
   }
 
   checkAdmin() {
-		//if user isn't logged in, just return nothing
-		/*if (app.auth().currentUser && !app.auth().currentUser) {
-			return "not logged in!";
-    }*/
 		//get user ID for lookup in database table
 		let uid = app.auth().currentUser.uid;
 		return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-			//if the user has admin privileges, return this set of tabs
+			//return whether the user has admin privileges
 			if (snapshot.val().type === "admin") {
-				return (
-          <ul class="nav navbar-nav">
-            <li><a data-toggle="tab"  href="#forum" ><img height = '55' width = '55' src = {forum} alt = "Forum" />     Forum</a></li>
-            <li><a data-toggle="tab"  href="#directmessage"><img height = '55' width = '55' src = {directmessage} alt = "Direct message" />     Direct Message</a></li>
-            <li><a data-toggle="tab"  href="#help" ><img height = '55' width = '55' src = {help} alt = "Resources page" />     Help</a></li>
-            <li><a data-toggle="tab"  href="#settings" ><img height = '55' width = '55' src = {settings} alt = "User settings" />     Settings</a></li>
-            <li><a data-toggle="tab"  href="#admin"  ><img height = '55' width = '55' src = {admin} alt = "Admin panel" /> Admin Panel</a></li>
-          </ul>
-				);
+				return true;
 			}
-			//otherwise return this set of tabs
 			else {
-				return (
-          <ul class="nav navbar-nav">
-            <li><a data-toggle="tab"  href="#forum" ><img height = '55' width = '55' src = {forum} alt = "Forum" />     Forum</a></li>
-            <li><a data-toggle="tab"  href="#directmessage"><img height = '55' width = '55' src = {directmessage} alt = "Direct message" />     Direct Message</a></li>
-            <li><a data-toggle="tab"  href="#help" ><img height = '55' width = '55' src = {help} alt = "Resources page" />     Help</a></li>
-            <li><a data-toggle="tab"  href="#settings" ><img height = '55' width = '55' src = {settings} alt = "User settings" />     Settings</a></li>
-          </ul>
-        )  ;
+				return false;
 			}
 		});
   	}
 
-  render() {
-    //first check to see user is logged in
-    //if the state of tablist is empty, check for admin privileges then load
-    if (!this.state.tabList) {
-			this.checkAdmin().then((result) => {
-				//set the state of the tablist based on what function returned so React can reload
-				this.setState({tabList: result});
-			});
-		}
+	render() {
+		console.log("Admin: " + this.state.admin);
+		return (
+			<div>
+				<Navbar collapseOnSelect>
+					<Navbar.Header>
+						<Navbar.Brand>
+							<a href="/" style={{padding: 3}}>< img height = '55px' width = '55px' src = {logo} alt = "HalfWay logo" /></a>
+						</Navbar.Brand>
+						<Navbar.Toggle />
+					</Navbar.Header>
+					<Navbar.Collapse>
+						<Nav>
+							<NavItem eventKey={1} onSelect={() => {this.setState({tabContent: <ForumList />})}}>
+								<img height = '30' width = '30' src = {forum} alt = "Forum" />     Forum
+							</NavItem>
+							<NavItem eventKey={2} onSelect={() => {this.setState({tabContent: "direct message component here"})}}>
+								<img height = '30' width = '30' src = {directmessage} alt = "Direct message" />     Message
+							</NavItem>
+							<NavItem eventKey={3} onSelect={() => {this.setState({tabContent: "settings component here"})}}>
+								<img height = '30' width = '30' src = {settings} alt = "User settings" />     Settings
+							</NavItem>
+							<NavItem eventKey={4} onSelect={() => {this.setState({tabContent: <Resources />})}}>
+								<img height = '30' width = '30' src = {help} alt = "Resources page" />     Help
+							</NavItem>
+							{ this.state.admin ?
+								<NavItem eventKey={5} onSelect={() => {this.setState({tabContent: <AdminPanel />})}}>
+									<img height = '30' width = '30' src = {admin} alt = "Admin panel" />     Admin
+								</NavItem>
+								: null
+							}
+						</Nav>
+						<Nav pullRight>
+							<NavItem eventKey={1} href="#">
+								<a href="/logout"><img height = '30' width = '30' src = { logout } alt = "logout" /> Logout</a>
+							</NavItem>
+						</Nav>
+					</Navbar.Collapse>
+				</Navbar>
 
-    return (
-
-      <div>
-
-      <nav class="navbar">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            {/*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>*/}
-            <a class="navbar-brand" href="/"> < img height = '75px' width = '75px' src = {logo} alt = "HalfWay logo" /> </a>
-          </div>
-          <div class="collapse navbar-collapse" id="myNavbar">
-          {this.state.tabList}
-          <ul class="nav navbar-nav navbar-right">
-            {/*Need to reset this.state.tabList back to "null" before changing the route!*/}
-            <li><a href="/logout"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <div class="tab-content" >
-      <div id="forum" class="tab-pane fade in active">
-        <ForumList />
-      </div>
-
-      <div id="directmessage" class="tab-pane fade">
-        <p>These are the contents of Services </p>
-      </div>
-
-      <div id="help" class="tab-pane fade">
-        <p>These are the contents of About us </p>
-      </div>
-
-      <div id="settings" class="tab-pane fade">
-        <p>These are the contents of Contact us </p>
-      </div>
-
-      <div id="admin" class="tab-pane fade">
-        <AdminPanel />
-      </div>
-    </div>
-
-    </div> // closing wrapper div
-    );
-  }
+				{this.state.tabContent}
+			</div> // closing wrapper div
+		);
+	}
 }
