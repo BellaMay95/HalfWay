@@ -33,12 +33,12 @@ export default class TopNavbar extends Component {
 		this.checkAdmin()
 		.then((result) => {
 			//set admin state based on result of check
-			console.log("I'm an admin!")
+			//console.log("I'm an admin!")
 			this.setState({ admin: result });
 		})
 		.catch((err) => {
 			//if there was an error checking privileges, set to false
-			console.log("I'm not an admin!");
+			//console.log("I'm not an admin!");
 			this.setState({ admin: false });
 		})
   }
@@ -58,7 +58,7 @@ export default class TopNavbar extends Component {
   	}
 
 	render() {
-		console.log("Admin: " + this.state.admin);
+		//console.log("Admin: " + this.state.admin);
 		return (
 			<div>
 				<Navbar collapseOnSelect>
@@ -70,20 +70,20 @@ export default class TopNavbar extends Component {
 					</Navbar.Header>
 					<Navbar.Collapse>
 						<Nav>
-							<NavItem eventKey={1} onSelect={() => {this.setState({tabContent: <ForumList />})}}>
+							<NavItem id="forum" eventKey={1} onSelect={() => {this.setState({tabContent: <ForumList />})}}>
 								<img height = '30' width = '30' src = {forum} alt = "Forum" />     Forum
 							</NavItem>
-							<NavItem eventKey={2} onSelect={() => {this.setState({tabContent: "direct message component here"})}}>
+							<NavItem id="message" eventKey={2} onSelect={() => {this.setState({tabContent: "direct message component here"})}}>
 								<img height = '30' width = '30' src = {directmessage} alt = "Direct message" />     Message
 							</NavItem>
-							<NavItem eventKey={3} onSelect={() => {this.setState({tabContent: "settings component here"})}}>
+							<NavItem id="settings" eventKey={3} onSelect={() => {this.setState({tabContent: "settings component here"})}}>
 								<img height = '30' width = '30' src = {settings} alt = "User settings" />     Settings
 							</NavItem>
-							<NavItem eventKey={4} onSelect={() => {this.setState({tabContent: <Resources />})}}>
+							<NavItem id="resources" eventKey={4} onSelect={() => {this.setState({tabContent: <Resources />})}}>
 								<img height = '30' width = '30' src = {help} alt = "Resources page" />     Help
 							</NavItem>
 							{ this.state.admin ?
-								<NavItem eventKey={5} onSelect={() => {this.setState({tabContent: <AdminPanel />})}}>
+								<NavItem id="admin" eventKey={5} onSelect={() => {this.setState({tabContent: <AdminPanel />})}}>
 									<img height = '30' width = '30' src = {admin} alt = "Admin panel" />     Admin
 								</NavItem>
 								: null
