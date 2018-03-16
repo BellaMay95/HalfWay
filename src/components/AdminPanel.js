@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Nav, Navbar, NavDropdown, MenuItem, Tabs, Tab } from 'react-bootstrap';
 
 import ViewFlags from './ViewFlags';
-import { CreateAccount, ChangeAccount } from './ManageAccount';
+import { CreateAccount, ChangeAccount, DeleteAccount } from './ManageAccount';
 import ProfileChanges from './ProfileChanges';
 
 export default class AdminPanel extends Component {
@@ -19,11 +19,14 @@ export default class AdminPanel extends Component {
         //console.log(option);
         if (option === 1) {
             this.setState({
-                panelContent: <Tabs defaultActiveKey={2} id="manage-account-tabs">
+                panelContent: <Tabs defaultActiveKey={3} id="manage-account-tabs">
                     <Tab eventKey={1} title="Create New Account">
                         <CreateAccount />
                     </Tab>
-                    <Tab eventKey={2} title="Change Account Type">
+                    <Tab eventKey={2} title="Delete Account">
+                        <DeleteAccount />
+                    </Tab>
+                    <Tab eventKey={3} title="Change Account Type">
                         <ChangeAccount />
                     </Tab>
                 </Tabs>
@@ -48,15 +51,15 @@ export default class AdminPanel extends Component {
         return ((<div className="container">
             <Navbar collapseOnSelect style={{marginTop: '5px'}}>
                 <Navbar.Header>
-                    <Navbar.Brand style={headerStyle}>Admin Panel</Navbar.Brand>
+                    <Navbar.Brand id="adminHeader" style={headerStyle}>Admin Panel</Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav pullRight style={{marginRight: "10px"}}>
                         <NavDropdown eventKey={1} title="Select Tool" id="select-func">
-                            <MenuItem eventKey={1.1} onSelect={() => this.chooseTool(1)}>Manage Accounts</MenuItem>
-                            <MenuItem eventKey={1.2} onSelect={() => this.chooseTool(2)}>View Flagged Posts</MenuItem>
-                            <MenuItem eventKey={1.3} onSelect={() => this.chooseTool(3)}>View Pending Profile Changes</MenuItem>
+                            <MenuItem id="accounts" eventKey={1.1} onSelect={() => this.chooseTool(1)}>Manage Accounts</MenuItem>
+                            <MenuItem id="flags" eventKey={1.2} onSelect={() => this.chooseTool(2)}>View Flagged Posts</MenuItem>
+                            <MenuItem id="profile" eventKey={1.3} onSelect={() => this.chooseTool(3)}>View Pending Profile Changes</MenuItem>
                         </NavDropdown>
                     </Nav>
                 </Navbar.Collapse>

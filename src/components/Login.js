@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { app } from '../base';
-import { FormControl, FormGroup, ControlLabel, HelpBlock, Button, Alert } from 'react-bootstrap';
+import { FormControl, FormGroup, ControlLabel, HelpBlock, Button, Alert, Jumbotron } from 'react-bootstrap';
 import logo from '../images/HWtrial2.png';
 
 //import logo from './logo.svg';
@@ -28,7 +28,8 @@ class Login extends Component {
             redirect: false,
 			username: "",
             password: "",
-            alertShow: 0
+            alertShow: 0,
+            isLoading: false
         }
     }
 
@@ -44,17 +45,23 @@ class Login extends Component {
 
     authUser(event) {
         event.preventDefault();
+        this.setState({isLoading: true});
         //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         // eslint-disable-next-line
         //let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        
+        //console.log("username: '" + this.state.username + "'");
+        //console.log("password: '" + this.state.password + "'");
+
         //checks for empty fields
         if (this.state.username === "" || this.state.password === "") {
-        	this.setState({alertShow: 1});
+        	this.setState({alertShow: 1, isLoading: false });
             //shows alert for 5 seconds
             window.setTimeout(() => {
         		this.setState({alertShow: 0});
             }, 5000);
             console.log("You have one or more empty fields!");
+            return;
         }
         //checks for valid email format
         /*else if (!emailRegex.test(this.state.email)) {
@@ -73,16 +80,16 @@ class Login extends Component {
             .then((providers) => {
                 //tests whether account exists
                 if (providers.length === 0) {
-                    this.setState({alertShow: 2});
+                    this.setState({alertShow: 2, isLoading: false});
                     //show alert for 5 seconds
                     window.setTimeout(() => {
                         this.setState({alertShow: 0});
                     }, 5000);
                     console.log("This account does not exist!");
                 } 
-                //checks for valid password
+                //checks for valid password?
                 else if (providers.indexOf("password") === -1) {
-                    this.setState({alertShow: 2});
+                    this.setState({alertShow: 2, isLoading: false});
                     //showing alert for 5 seconds
                     window.setTimeout(() => {
                         this.setState({alertShow: 0});
@@ -94,7 +101,6 @@ class Login extends Component {
                 }
             })
             .then((user) => {
-                console.log("success!");
                 //resets form, sets user, clears component state
                 if (user && user.email) {
                     this.loginForm.reset();
@@ -102,18 +108,28 @@ class Login extends Component {
                     this.setState({
                         redirect: true,
                         username: "",
-                        password: ""
+                        password: "",
+                        isLoading: false
                     });
                 }
             })
             .catch((error) => {
                 //console.log("Error!");
                 console.log(error);
-                this.setState({alertShow: 3});
-                //showing alert for 5 seconds
-                window.setTimeout(() => {
-                    this.setState({alertShow: 0});
-                }, 5000);
+                if (error.code === "auth/wrong-password") {
+                    this.setState({alertShow: 2, isLoading: false});
+                    //showing alert for 5 seconds
+                    window.setTimeout(() => {
+                        this.setState({alertShow: 0});
+                    }, 5000);
+                }
+                else {
+                    this.setState({alertShow: 3, isLoading: false});
+                    //showing alert for 5 seconds
+                    window.setTimeout(() => {
+                        this.setState({alertShow: 0});
+                    }, 5000);
+                }
             });
 		}
     }
@@ -143,10 +159,10 @@ class Login extends Component {
         return (
             <div className="container w3-animate-opacity">
                 {loginAlert}
-                <div className = "jumbotron">
+                <Jumbotron>
                   <img id = 'logo' src = {logo} alt = "HalfWay Logo" />
-                  <h1 id = "title" className = "w3-animate-top">Log in to HalfWay!</h1>
-                </div>
+                  <h1 id = "loginTitle" className = "w3-animate-top">Log in to HalfWay!</h1>
+                </Jumbotron>
                 {/*check out ref property*/}
                 <form onSubmit={(event) => this.authUser(event)} ref={(form) => { this.loginForm = form }}>
                     <FieldGroup
@@ -163,7 +179,7 @@ class Login extends Component {
                         onChange={this.onChange}
                         placeholder="Enter password"
                     />
-                    <Button className = "btn-primary" type="submit" id="loginButton">Log In!</Button>
+                    <Button className = "btn-primary" type="submit" id="loginButton" disabled = {this.state.isLoading} >Log In!</Button>
                 </form>
             </div>
         );

@@ -23,12 +23,16 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "e2e": "nightwatch",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "firebase-server": "^0.12.0",
+    "mockfirebase": "^0.12.0",
     "react-test-renderer": "^16.2.0",
+    "selenium-webdriver": "^4.0.0-alpha.1",
     "sinon": "^4.4.2"
   }
 }
