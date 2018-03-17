@@ -26,8 +26,8 @@ export default class Resources extends Component{
       <div className="container">
         <Navbar collapseOnSelect style={{marginTop: '5px'}}>
             <Navbar.Header>
-                <Navbar.Brand style={headerStyle}>Resources</Navbar.Brand>
-                <Navbar.Toggle />
+                <Navbar.Brand id="resourcesHeader" style={headerStyle}>Resources</Navbar.Brand>
+                {/*<Navbar.Toggle />*/}
             </Navbar.Header>
         </Navbar>
 
@@ -54,14 +54,6 @@ export default class Resources extends Component{
             <Panel.Title toggle>Short Term Housing</Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>add short term housing info</Panel.Body>
-          {/*<Panel.Body collapsible>
-            <Panel eventKey="3.1">
-              <Panel.Heading>
-                <Panel.Title toggle>Food</Panel.Title>
-              </Panel.Heading>
-              <Panel.Body collapsible>add food info</Panel.Body>
-            </Panel>
-          </Panel.Body>*/}
         </Panel>
         <Panel eventKey="4">
           <Panel.Heading>

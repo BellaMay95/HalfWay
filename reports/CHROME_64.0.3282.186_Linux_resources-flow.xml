@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="4">
+
+  <testsuite name="resources-flow"
+    errors="0" failures="0" hostname="" id="" package="resources-flow" skipped="0"
+    tests="4" time="18.12" timestamp="Sat, 17 Mar 2018 00:36:58 GMT">
+  
+    <testcase name="log on to site" classname="resources-flow" time="9.544" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="navigate to resources page" classname="resources-flow" time="0.3340" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="navigate panels" classname="resources-flow" time="6.696" assertions="7">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="edit resources page" classname="resources-flow" time="1.547" assertions="0">
+    </testcase>
+  
+
+  
+
+  
+  </testsuite>
+</testsuites>
