@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock, Alert } from 'react-bootstrap';
 import { app } from '../base';
 
 function FieldGroup({ id, label, help, ...props }) {
@@ -19,7 +19,8 @@ class CreateThread extends Component {
         this.saveNewThread = this.saveNewThread.bind(this);
         this.state = {
           title: "",
-          message: ""
+          message: "",
+          alertState: null,
         }
     }
 
@@ -29,11 +30,20 @@ class CreateThread extends Component {
 
     saveNewThread() {
         //alert("title: " + this.state.title + " and message: " + this.state.message);
+        if(this.state.title === "" || this.state.message === "") {
+          this.setState({ alertState: <Alert bsStyle="warning">One or more required fields are empty.</Alert>});
+
+            window.setTimeout(() => {
+                this.setState({ alertState: null });
+            }, 5000);
+            return;
+        }
+
         let title = this.state.title;
         let message = this.state.message;
         let username = app.auth().currentUser.displayName;
         let userId = app.auth().currentUser.uid;
-        let timestamp = new Date().toString();
+        let timestamp = new Date().getTime();
        
         //alert(newpostref);
         let postInfo = {
@@ -45,11 +55,17 @@ class CreateThread extends Component {
         };
         app.database().ref('forum').push(postInfo, (err) => {
           if (!err) {
-            alert("Thread Posted Successfully!");
+            //alert("Thread Posted Successfully!");
+            this.props.showAlert();
             this.closeModal();
           } else {
-            alert("Error posting thread!");
-            this.closeModal();
+            //alert("Error posting thread!");
+            //this.closeModal();
+            this.setState({ alertState: <Alert bsStyle="danger">Error Creating Thread! Try again later.</Alert>});
+
+            window.setTimeout(() => {
+                this.setState({ alertState: null });
+            }, 5000);
           }
         });
         //alert(JSON.stringify(postInfo));
@@ -59,6 +75,7 @@ class CreateThread extends Component {
     render() {
         return (<div className="static-modal">
             <Modal.Dialog>
+                {this.state.alertState}
                 <Modal.Header>
                 <Modal.Title>Create New Thread!</Modal.Title>
                 </Modal.Header>

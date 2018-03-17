@@ -5,42 +5,59 @@
 
   <testsuite name="auth-flow"
     errors="0" failures="0" hostname="" id="" package="auth-flow" skipped="0"
-    tests="5" time="18.25" timestamp="Fri, 16 Mar 2018 07:26:39 GMT">
+    tests="5" time="18.79" timestamp="Fri, 16 Mar 2018 18:29:23 GMT">
   
-    <testcase name="get to login page" classname="auth-flow" time="4.459" assertions="1">
+    <testcase name="get to login page" classname="auth-flow" time="4.592" assertions="1">
 
     
     </testcase>
   
-    <testcase name="logging in with empty username" classname="auth-flow" time="6.589" assertions="3">
+    <testcase name="logging in with empty username" classname="auth-flow" time="6.507" assertions="3">
 
     
-
-    
-
-    
-    </testcase>
-  
-    <testcase name="logging in with invalid username and invalid password" classname="auth-flow" time="1.384" assertions="2">
 
     
 
     
     </testcase>
   
-    <testcase name="logging in with valid credentials" classname="auth-flow" time="3.693" assertions="1">
-
-    
-    </testcase>
-  
-    <testcase name="logging out" classname="auth-flow" time="2.127" assertions="2">
+    <testcase name="logging in with invalid username and invalid password" classname="auth-flow" time="2.004" assertions="2">
 
     
 
     
     </testcase>
   
+    <testcase name="logging in with valid credentials" classname="auth-flow" time="3.623" assertions="1">
 
+    
+    </testcase>
+  
+    <testcase name="logging out" classname="auth-flow" time="2.060" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+
+  
+    <system-err>
+        Error while running [Forum Flow / log on to site and view forum threads]:
+
+  TypeError: browser.expect.element(...).to.be.present is not a function
+    at Object.log on to site and view forum threads (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/forum-flow.js:10:54)
+    at Module.call (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/module.js:62:34)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testcase.js:70:29
+    at _fulfilled (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:834:54)
+    at self.promiseDispatch.done (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:863:30)
+    at Promise.promise.promiseDispatch (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:796:13)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:556:49
+    at runSingle (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:137:13)
+    at flush (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:125:13)
+    at _combinedTickCallback (internal/process/next_tick.js:73:7)
+    at process._tickCallback (internal/process/next_tick.js:104:9)
+    </system-err>
   
 
   
