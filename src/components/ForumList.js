@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Navbar, Nav, NavItem, Glyphicon, Panel, PanelGroup, Well, Alert } from 'react-bootstrap';
 import { app } from '../base';
+import ForumComponent from './ForumComponent';
 
 import CreateThread from './CreateThread';
 
@@ -92,28 +93,20 @@ class Forum extends Component {
                 {this.state.createThread && <CreateThread showAlert={this.createThreadAlert} closeThreadModal={this.toggleThreadModal}/>}
                 {this.state.createAlert}
 
-                <div className='forumBody'>                   
+                <div className='forumBody'>
                     {   //displays message if there aren't any forum threads to display
-                        this.state.forumList.length === 0 ? 
-                            <Well id="emptyMessage">No threads yet! Be the first to start the conversation!</Well> 
-                        : null 
+                        this.state.forumList.length === 0 ?
+                            <Well id="emptyMessage">No threads yet! Be the first to start the conversation!</Well>
+                        : null
                     }
-                    
+
                     {
 
                     /* Going through the array and displaying all of the forums in a panel view*/
                     this.state.forumList.map((forum, index) => {
-                        //console.log("forum.author_name :: " + forum.author_name);
                         let thread_id = "thread_" + index;
                         return(
-                            <PanelGroup key={thread_id} id={thread_id}>
-                                <Panel>
-                                    <Panel.Heading>
-                                        <Panel.Title componentClass='h3'>{forum.author_name} : {forum.subject} : {forum.timestamp} </Panel.Title>
-                                    </Panel.Heading>
-                                    <Panel.Body>{forum.message}</Panel.Body>
-                                </Panel>
-                            </PanelGroup>
+                          <ForumComponent thread_id={thread_id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} />
                         )
                     })
                     }
