@@ -5,9 +5,9 @@
 
   <testsuite name="forum-flow"
     errors="0" failures="0" hostname="" id="" package="forum-flow" skipped="0"
-    tests="10" time="16.88" timestamp="Fri, 16 Mar 2018 19:43:35 GMT">
+    tests="10" time="16.66" timestamp="Sat, 17 Mar 2018 00:46:10 GMT">
   
-    <testcase name="log on to site and view forum threads" classname="forum-flow" time="9.585" assertions="3">
+    <testcase name="log on to site and view forum threads" classname="forum-flow" time="9.252" assertions="3">
 
     
 
@@ -16,20 +16,9 @@
     
     </testcase>
   
-    <testcase name="create new forum thread with empty title" classname="forum-flow" time="2.836" assertions="5">
+    <testcase name="create new forum thread with empty title" classname="forum-flow" time="2.697" assertions="5">
 
     
-
-    
-
-    
-
-    
-
-    
-    </testcase>
-  
-    <testcase name="create new forum thread success" classname="forum-flow" time="2.688" assertions="4">
 
     
 
@@ -40,7 +29,9 @@
     
     </testcase>
   
-    <testcase name="verify created thread is shown" classname="forum-flow" time="0.3190" assertions="3">
+    <testcase name="create new forum thread success" classname="forum-flow" time="2.651" assertions="4">
+
+    
 
     
 
@@ -49,19 +40,28 @@
     
     </testcase>
   
-    <testcase name="view forum thread (no comments present)" classname="forum-flow" time="1.443" assertions="0">
+    <testcase name="verify created thread is shown at top of list" classname="forum-flow" time="0.2330" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="view forum thread (no comments present)" classname="forum-flow" time="1.827" assertions="0">
     </testcase>
   
     <testcase name="add comment on forum thread" classname="forum-flow" time="0.001000" assertions="0">
     </testcase>
   
-    <testcase name="edit your own thread post" classname="forum-flow" time="0.002000" assertions="0">
+    <testcase name="edit your own thread post" classname="forum-flow" time="0.001000" assertions="0">
     </testcase>
   
     <testcase name="edit your comment on thread post" classname="forum-flow" time="0.001000" assertions="0">
     </testcase>
   
-    <testcase name="delete your comment on thread post" classname="forum-flow" time="0.000" assertions="0">
+    <testcase name="delete your comment on thread post" classname="forum-flow" time="0.001000" assertions="0">
     </testcase>
   
     <testcase name="delete your own thread" classname="forum-flow" time="0.001000" assertions="0">

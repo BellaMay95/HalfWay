@@ -8,7 +8,7 @@ import logout from '../images/logout.png';
 import logo from '../images/HWtrial2.png';
 import admin from '../images/usersecret.png';
 
-import { Navbar, Nav, NavItem } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 //import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 
 import { app } from '../base';
@@ -16,6 +16,7 @@ import { app } from '../base';
 import ForumList from './ForumList';
 import AdminPanel from './AdminPanel';
 import Resources from './Resources';
+import ViewProfile from './ViewProfile';
 
 
 export default class TopNavbar extends Component {
@@ -24,7 +25,10 @@ export default class TopNavbar extends Component {
 	this.checkAdmin = this.checkAdmin.bind(this);
 	this.state = {
 	  tabContent: <ForumList />,
-	  admin: false
+	  admin: false,
+	  displayName: null,
+	  userName: null,
+	  avatarUrl: null
 	}
   }
 
@@ -40,7 +44,18 @@ export default class TopNavbar extends Component {
 			//if there was an error checking privileges, set to false
 			//console.log("I'm not an admin!");
 			this.setState({ admin: false });
-		})
+		});
+
+		/*let user = app.auth().currentUser;
+		if (user) {
+			let username = user.email.substr(0, user.email.indexOf('@'));
+			console.log(user.displayName);
+			this.setState({
+				displayName: user.displayName,
+				userName: username,
+				avatarUrl: user.photoURL
+			});
+		}*/
   }
 
   checkAdmin() {
@@ -59,6 +74,26 @@ export default class TopNavbar extends Component {
 
 	render() {
 		//console.log("Admin: " + this.state.admin);
+		const forumTooltip = (
+			<Tooltip id="tooltip">Forums</Tooltip>
+		);
+
+		const messageTooltip = (
+			<Tooltip id="tooltip">Messages</Tooltip>
+		);
+
+		const settingTooltip = (
+			<Tooltip id="tooltip">Settings</Tooltip>
+		);
+
+		const resourceTooltip = (
+			<Tooltip id="tooltip">Resources</Tooltip>
+		);
+
+		const adminTooltip = (
+			<Tooltip id="tooltip">Admin Panel</Tooltip>
+		);
+
 		return (
 			<div>
 				<Navbar collapseOnSelect>
@@ -71,20 +106,20 @@ export default class TopNavbar extends Component {
 					<Navbar.Collapse>
 						<Nav>
 							<NavItem id="forum" eventKey={1} onSelect={() => {this.setState({tabContent: <ForumList />})}}>
-								<img height = '30' width = '30' src = {forum} alt = "Forum" />     Forum
+								<OverlayTrigger placement="bottom" overlay={forumTooltip}><img height = '30' width = '30' src = {forum} alt = "Forum" /></OverlayTrigger>
 							</NavItem>
 							<NavItem id="message" eventKey={2} onSelect={() => {this.setState({tabContent: "direct message component here"})}}>
-								<img height = '30' width = '30' src = {directmessage} alt = "Direct message" />     Message
+								<OverlayTrigger placement="bottom" overlay={messageTooltip}><img height = '30' width = '30' src = {directmessage} alt = "Direct message" /></OverlayTrigger>
 							</NavItem>
-							<NavItem id="settings" eventKey={3} onSelect={() => {this.setState({tabContent: "settings component here"})}}>
-								<img height = '30' width = '30' src = {settings} alt = "User settings" />     Settings
+							<NavItem id="settings" eventKey={3} onSelect={() => {this.setState({tabContent: <ViewProfile />})}}>
+								<OverlayTrigger placement="bottom" overlay={settingTooltip}><img height = '30' width = '30' src = {settings} alt = "User settings" /></OverlayTrigger>
 							</NavItem>
 							<NavItem id="resources" eventKey={4} onSelect={() => {this.setState({tabContent: <Resources />})}}>
-								<img height = '30' width = '30' src = {help} alt = "Resources page" />     Help
+							<OverlayTrigger placement="bottom" overlay={resourceTooltip}><img height = '30' width = '30' src = {help} alt = "Resources page" /></OverlayTrigger>
 							</NavItem>
 							{ this.state.admin ?
 								<NavItem id="admin" eventKey={5} onSelect={() => {this.setState({tabContent: <AdminPanel />})}}>
-									<img height = '30' width = '30' src = {admin} alt = "Admin panel" />     Admin
+									<OverlayTrigger placement="bottom" overlay={adminTooltip}><img height = '30' width = '30' src = {admin} alt = "Admin panel" /></OverlayTrigger>
 								</NavItem>
 								: null
 							}
