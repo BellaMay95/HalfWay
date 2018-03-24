@@ -5,6 +5,7 @@ import { shallow, mount } from 'enzyme';
 import App from './App';
 import Sidebar from './components/Sidebar';
 import Login from './components/Login';
+import Navbar from './components/Navbar';
 
 import { app } from './base';
 
@@ -32,7 +33,7 @@ describe('App', () => {
 			if (providers.length === 0) {
 				console.log("This account does not exist!");
 				return Promise.reject("Account doesn't exist");
-			} 
+			}
 			//checks for valid password
 			else if (providers.indexOf("password") === -1) {
 				console.log("invalid login credentials!");
