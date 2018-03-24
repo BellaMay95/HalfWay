@@ -56,6 +56,8 @@ module.exports = {
         browser.expect.element('#thread_0').text.to.contain("Nightwatch: New Thread!");
         browser.expect.element('#thread_0').text.to.contain("Hey there this is Selenium creating a thread. Say 'hi' to the latest robot in town!");
     
+        //browser.url("http://localhost/logout");
+        //browser.pause(1000);
         browser.end();
     },
 
