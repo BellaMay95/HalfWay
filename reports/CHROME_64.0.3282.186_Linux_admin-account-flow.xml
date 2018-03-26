@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="12">
+
+  <testsuite name="admin-account-flow"
+    errors="0" failures="0" hostname="" id="" package="admin-account-flow" skipped="0"
+    tests="12" time="82.57" timestamp="Sat, 17 Mar 2018 00:44:28 GMT">
+  
+    <testcase name="log on to site" classname="admin-account-flow" time="10.31" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="navigate to admin panel / manage accounts" classname="admin-account-flow" time="0.8800" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="create new account with empty fields" classname="admin-account-flow" time="7.106" assertions="4">
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="create new account with invalid email" classname="admin-account-flow" time="7.151" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="create new account success" classname="admin-account-flow" time="7.760" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="change account type with empty username" classname="admin-account-flow" time="6.315" assertions="4">
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="change account type success" classname="admin-account-flow" time="9.246" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="delete account with empty field" classname="admin-account-flow" time="6.357" assertions="4">
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="delete account with invalid email format" classname="admin-account-flow" time="6.170" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="delete account with invalid username" classname="admin-account-flow" time="6.185" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="delete account with invalid email" classname="admin-account-flow" time="8.319" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="delete account success" classname="admin-account-flow" time="6.770" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+
+  
+
+  
+  </testsuite>
+</testsuites>

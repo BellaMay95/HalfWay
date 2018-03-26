@@ -1,16 +1,39 @@
 {
   "name": "halfway",
-  "version": "1.0.0",
-  "scripts": {
-    "client": "cd client && npm start",
-    "server": "nodemon server.js",
-    "dev": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\""
-  },
+  "version": "0.1.0",
+  "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2"
+    "@google-cloud/common-grpc": "^0.5.5",
+    "@google-cloud/firestore": "^0.12.0",
+    "firebase-admin": "^5.9.1",
+    "firebase-functions": "^0.8.1",
+    "npm": "^5.7.1",
+    "re-base": "^3.2.2",
+    "react": "^16.1.1",
+    "react-bootstrap": "^0.32.1",
+    "react-collapsible": "^2.0.4",
+    "react-dom": "^16.1.1",
+    "react-responsive-accordion": "^1.0.0",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "1.0.17",
+    "react-search-input": "^0.11.3",
+    "react-spinner": "^0.2.7",
+    "react-web-tabs": "^0.4.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "e2e": "nightwatch",
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "concurrently": "^3.5.0"
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "firebase-server": "^0.12.0",
+    "mockfirebase": "^0.12.0",
+    "react-test-renderer": "^16.2.0",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "sinon": "^4.4.2"
   }
 }
