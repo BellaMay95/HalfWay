@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
 import { app } from '../base';
 
+// FieldGroup set-up pull directly from react boostrap
 function FieldGroup({ id, label, help, ...props }) {
   return (
     <FormGroup controlId={id}>
@@ -23,10 +24,12 @@ class CreateThread extends Component {
         }
     }
 
+    // Changes state of the createThread in ForumList thus closing the modal
     closeModal() {
         this.props.closeThreadModal();
     }
 
+    // Pushing the new thread to the data
     saveNewThread() {
         //alert("title: " + this.state.title + " and message: " + this.state.message);
         let title = this.state.title;
@@ -34,7 +37,7 @@ class CreateThread extends Component {
         let username = app.auth().currentUser.displayName;
         let userId = app.auth().currentUser.uid;
         let timestamp = new Date().toString();
-       
+
         //alert(newpostref);
         let postInfo = {
           "author_id": userId,
@@ -53,7 +56,7 @@ class CreateThread extends Component {
           }
         });
         //alert(JSON.stringify(postInfo));
-        //newpostref.set(postInfo);   
+        //newpostref.set(postInfo);
     }
 
     render() {
