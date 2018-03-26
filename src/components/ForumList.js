@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem, Glyphicon, Well} from 'react-bootstrap';
+import { Navbar, Nav, NavItem, Glyphicon, Panel, PanelGroup, Well, Alert } from 'react-bootstrap';
 import { app } from '../base';
 import ForumComponent from './ForumComponent';
 import CreateThread from './CreateThread';
@@ -9,9 +9,10 @@ class Forum extends Component {
     constructor(props) {
         super(props);
         this.toggleThreadModal = this.toggleThreadModal.bind(this);
+        this.createThreadAlert = this.createThreadAlert.bind(this);
         this.toggleCreateCommentModal = this.toggleCreateCommentModal.bind(this);
 
-    // Make a referance to a database on firebase //list of notes stored on db property
+    // Make a reference to a database on firebase //list of notes stored on db property
     // app refers to our application
     // database refers to get us reference to the location we will be writing queries
     // notes child will be used to store instances of our notes child
@@ -21,6 +22,7 @@ class Forum extends Component {
         this.state = {
             // Used to see and togle the thread or comment modal is up
             createThread: false,
+            createAlert: null,
             createComment: false,
             viewComment: false,
             // Array that holds all of the Forums pulled from the database
@@ -32,7 +34,7 @@ class Forum extends Component {
     // Will mount happens after initialization but before the render (for more information look up the lifecycles of react components)
     // This will be where the forumList array is filled in by pulling from the database
     componentWillMount(){
-      const prevForum = this.state.forumList;  // Set previousForum to current state
+      var prevForum = this.state.forumList;  // Set previousForum to current state
 
       // Get DataSnapshot every time a child is added to the array
       // Push this new forum data onto the prevForum array
@@ -43,10 +45,13 @@ class Forum extends Component {
           author_name: snap.val().author_name,
           message: snap.val().message,
           subject: snap.val().subject,
-          timestamp: snap.val().timestamp,
           key: snap.key,
+          timestamp: this.getDateTime(snap.val().timestamp),
         })
 
+        //reverse the array to show newest posts first
+        prevForum = prevForum.reverse();
+        // Push the array that we have just updated (previousForum) to the state
         //  Set forumList to the prevForum
         this.setState({
           forumList: prevForum
@@ -54,11 +59,25 @@ class Forum extends Component {
       })
     }
 
+    getDateTime(timestamp) {
+        let DateObj = new Date(timestamp);
+        let formattedDate = DateObj.toLocaleString();
+        return formattedDate;
+    }
+
     // Changes the state of the createThread to the opposite of what it is
     toggleThreadModal() {
         this.setState({
           createThread: !this.state.createThread
         });
+    }
+
+    createThreadAlert() {
+        this.setState({ createAlert: <Alert bsStyle="success">Created Thread Successfully!</Alert>});
+
+        window.setTimeout(() => {
+            this.setState({ createAlert: null });
+        }, 5000);
     }
 
     // Changes the state of the createComment to the opposite of what it is
@@ -87,19 +106,20 @@ class Forum extends Component {
             <div className="container">
                 <Navbar collapseOnSelect style={{marginTop: '5px'}}>
                     <Navbar.Header>
-                        <Navbar.Brand style={headerStyle}>Forums</Navbar.Brand>
+                        <Navbar.Brand id="forumHeader" style={headerStyle}>Forums</Navbar.Brand>
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
                         <Nav pullRight>
-                            <NavItem eventKey={1} onClick={this.toggleThreadModal}>
+                            <NavItem id="createThread" eventKey={1} onClick={this.toggleThreadModal}>
                                 Create New Thread
                                 <Glyphicon glyph="plus-sign" style={{padding: '5px'}}/>
                             </NavItem>
                         </Nav>
                     </Navbar.Collapse>
                 </Navbar>
-                {this.state.createThread && <CreateThread closeThreadModal={this.toggleThreadModal}/>}
+                {this.state.createThread && <CreateThread showAlert={this.createThreadAlert} closeThreadModal={this.toggleThreadModal}/>}
+                {this.state.createAlert}
 
                 <div className='forumBody'>
                     {   //displays message if there aren't any forum threads to display

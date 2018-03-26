@@ -5,35 +5,35 @@
 
   <testsuite name="auth-flow"
     errors="0" failures="0" hostname="" id="" package="auth-flow" skipped="0"
-    tests="5" time="18.25" timestamp="Fri, 16 Mar 2018 07:26:39 GMT">
+    tests="5" time="18.48" timestamp="Sat, 17 Mar 2018 00:45:51 GMT">
   
-    <testcase name="get to login page" classname="auth-flow" time="4.459" assertions="1">
+    <testcase name="get to login page" classname="auth-flow" time="4.614" assertions="1">
 
     
     </testcase>
   
-    <testcase name="logging in with empty username" classname="auth-flow" time="6.589" assertions="3">
+    <testcase name="logging in with empty username" classname="auth-flow" time="6.638" assertions="3">
 
     
-
-    
-
-    
-    </testcase>
-  
-    <testcase name="logging in with invalid username and invalid password" classname="auth-flow" time="1.384" assertions="2">
 
     
 
     
     </testcase>
   
-    <testcase name="logging in with valid credentials" classname="auth-flow" time="3.693" assertions="1">
+    <testcase name="logging in with invalid username and invalid password" classname="auth-flow" time="1.523" assertions="2">
+
+    
 
     
     </testcase>
   
-    <testcase name="logging out" classname="auth-flow" time="2.127" assertions="2">
+    <testcase name="logging in with valid credentials" classname="auth-flow" time="3.671" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="logging out" classname="auth-flow" time="2.039" assertions="2">
 
     
 
