@@ -144,6 +144,8 @@ module.exports = {
         browser.expect.element('.alert').text.to.equal("Deleted Account Successfully!");
         browser.waitForElementNotPresent('.alert', 5000);
 
+       // browser.url("http://localhost/logout");
+       // browser.pause(1000);
         browser.end();
     }
 }
