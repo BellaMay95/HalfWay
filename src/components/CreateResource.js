@@ -49,10 +49,10 @@ class CreateResource extends Component {
         };
         app.database().ref('resources/' + this.props.myProp).push(postInfo, (err) => {
           if (!err) {
-            alert("Thread Posted Successfully!");
+            alert("Resource Posted Successfully!");
             this.closeModal();
           } else {
-            alert("Error posting thread!");
+            alert("Error posting Resource!");
             this.closeModal();
           }
         });

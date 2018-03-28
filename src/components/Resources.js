@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Navbar, Panel, PanelGroup } from 'react-bootstrap';
 import { app } from '../base';
 import CreateResource from './CreateResource';
+import ResourceComponent from './ResourceComponent';
 
 
 export default class Resources extends Component{
@@ -13,10 +14,21 @@ export default class Resources extends Component{
     this.handleSelect = this.handleSelect.bind(this);
     this.checkAdmin = this.checkAdmin.bind(this);
     this.toggleResourceModal = this.toggleResourceModal.bind(this);
+    this.databaseJ = app.database().ref().child('resources').child('job');
+    this.databaseA = app.database().ref().child('resources').child('affordablehousing');
+    this.databaseS = app.database().ref().child('resources/shorttermhousing');
+    this.databaseF = app.database().ref().child('resources/food');
+    this.databaseE = app.database().ref().child('resources/education');
+
     this.state = {
       activeKey: 'null',
       createResource: false,
-      resType: ''
+      resType: '',
+      jobArr: [],
+      affHouseArr: [],
+      stHouseArr: [],
+      foodArr: [],
+      eductionArr: [],
     }
   }
 
@@ -26,14 +38,22 @@ export default class Resources extends Component{
     if (activeKey == 1)
     {
       this.setState({ resType: 'job' });
-      resType = 'job';
-      //console.log(resType);
     }
     if (activeKey == 2)
     {
       this.setState({ resType: 'affordablehousing' });
-      resType = 'affordablehousing';
-      console.log(resType);
+    }
+    if (activeKey == 3)
+    {
+      this.setState({ resType: 'shorttermhousing' });
+    }
+    if (activeKey == 4)
+    {
+      this.setState({ resType: 'food' });
+    }
+    if (activeKey == 5)
+    {
+      this.setState({ resType: 'education' });
     }
     this.setState({ activeKey: activeKey });
 
@@ -41,11 +61,56 @@ export default class Resources extends Component{
 
   toggleResourceModal(activeKey) {
       this.setState({createResource: !this.state.createResource});
-      //console.log(activeKey);
-
   }
 
   componentWillMount() {
+
+/* this section outlines the set up for the job section to pull from database*/
+          var prevJob = this.state.jobArr;
+            // Set previousForum to current state
+
+          // Get DataSnapshot every time a child is added to the array
+          this.databaseJ.on('child_added', snap => {
+            prevJob.push({
+              id: snap.key,
+              author_id: snap.val().author_id,
+              //author_name: snap.val().author_name,
+              message: snap.val().message,
+              subject: snap.val().subject,
+              timestamp: this.getDateTime(snap.val().timestamp),
+            })
+
+            //reverse the array to show newest posts first
+            prevJob = prevJob.reverse();
+            // Push the array that we have just updated (previousForum) to the state
+            this.setState({
+              jobArr: prevJob
+            })
+          })
+
+/* this section outlines the set up for the job section to pull from database*/
+  var prevAffH = this.state.affHouseArr;
+  // Set previousForum to current state
+
+  // Get DataSnapshot every time a child is added to the array
+  this.databaseA.on('child_added', snap => {
+    prevAffH.push({
+      id: snap.key,
+      author_id: snap.val().author_id,
+      //author_name: snap.val().author_name,
+      message: snap.val().message,
+      subject: snap.val().subject,
+      timestamp: this.getDateTime(snap.val().timestamp),
+      })
+
+      //reverse the array to show newest posts first
+      prevAffH = prevAffH.reverse();
+      // Push the array that we have just updated (previousForum) to the state
+      this.setState({
+        affHouseArr: prevAffH
+        })
+      })
+
 	//checks for admin privileges before rendering component
 		this.checkAdmin()
 		.then((result) => {
@@ -58,6 +123,14 @@ export default class Resources extends Component{
 			//console.log("I'm not an admin!");
 			this.setState({ admin: false });
 		})
+
+
+  }
+
+  getDateTime(timestamp) {
+      let DateObj = new Date(timestamp);
+      let formattedDate = DateObj.toLocaleString();
+      return formattedDate;
   }
 
   checkAdmin() {
@@ -103,14 +176,37 @@ export default class Resources extends Component{
           <Panel.Heading>
             <Panel.Title toggle>Job Opportunities</Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal }>add info</button> : null} </Panel.Body>
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal }>add info</button> : null}
+          {
+            /*Going through the array and displaying all of the forums in a panel view*/
+           this.state.jobArr.map((job , index) => {
+               let thread_id = "thread_" + index;
+               return(
+                 <ResourceComponent author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp}/>
+               )
+           })
+          }
+
+
+          </Panel.Body>
         </Panel>
 
         <Panel eventKey="2">
           <Panel.Heading>
             <Panel.Title toggle>Affordable Housing</Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}</Panel.Body>
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
+          {
+            /*Going through the array and displaying all of the forums in a panel view*/
+           this.state.affHouseArr.map((aff , index) => {
+               let thread_id = "thread_" + index;
+               return(
+                 <ResourceComponent author_name={aff.author_name} message={aff.message} subject={aff.subject} timestamp = {aff.timestamp}/>
+               )
+           })
+          }
+
+          </Panel.Body>
         </Panel>
         <Panel eventKey="3">
           <Panel.Heading>
