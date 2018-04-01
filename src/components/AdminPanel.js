@@ -4,7 +4,7 @@ import { Nav, Navbar, NavDropdown, MenuItem, Tabs, Tab } from 'react-bootstrap';
 
 import ViewFlags from './ViewFlags';
 import { CreateAccount, ChangeAccount, DeleteAccount } from './ManageAccount';
-import ProfileChanges from './ProfileChanges';
+import ProfileChanges from './AdminProfileChanges';
 
 export default class AdminPanel extends Component {
     constructor(props) {

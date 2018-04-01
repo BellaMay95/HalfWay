@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 //import { render } from 'react-dom';
-import { FormGroup, ControlLabel, FormControl, HelpBlock, Jumbotron, Button, Alert } from 'react-bootstrap';
+import { FormGroup, ControlLabel, FormControl, HelpBlock, Jumbotron, Button, Alert, Modal } from 'react-bootstrap';
 import { app } from '../base';
 import firebase from 'firebase';
 
@@ -339,6 +339,7 @@ export class DeleteAccount extends Component {
     constructor(props) {
         super(props);
         this.onChange = this.onChange.bind(this);
+        this.validateDelete = this.validateDelete.bind(this);
         this.deleteAccount = this.deleteAccount.bind(this);
 
         this.state = {
@@ -346,7 +347,8 @@ export class DeleteAccount extends Component {
             email: "",
             adminPassword: "",
             formStatus: null,
-            isLoading: false
+            isLoading: false,
+            confirmModal: null
         }
     }
 
@@ -358,7 +360,7 @@ export class DeleteAccount extends Component {
         this.setState({[name]: value});
     }
 
-    deleteAccount(event) {
+    validateDelete(event) {
         //alert("An account cannot be recovered once deleted. Deleting an account does not remove posts or comments by that user; it simply revokes their access to the site permanently. Are you sure you wish to proceed?");
         this.setState({isLoading: true});
 
@@ -369,7 +371,7 @@ export class DeleteAccount extends Component {
         let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         
 
-        if (this.state.email === "" || this.state.userName === "") {
+        if (this.state.email === "" || this.state.userName === "" || this.state.adminPassword === "") {
             this.setState({
                 formStatus: <Alert bsStyle = "warning"><strong>One or more fields are empty. Please try again.</strong></Alert>, 
                 isLoading: false 
@@ -392,70 +394,78 @@ export class DeleteAccount extends Component {
             console.log("You must enter a valid email address!");
             return;
         } else {
-            firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.adminPassword))
-            .then(() => {
-                let info = {
-                    "email": this.state.email,
-                    "username": this.state.userName
-                }
-                let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/deleteAccount";
-                //let url = "http://localhost:5000/halfway-a067e/us-central1/app/deleteAccount";
-                let fetchData = {
-                    'method': 'POST',
-                    'Content-Type': 'application/json',
-                    'body': JSON.stringify(info),
-                    'headers': new Headers()
-                }
-
-                fetch(url, fetchData)
-                .then((resp) => resp.json())
-                .then((data) => {
-                    console.log(data);
-                    if (data.success) {
-                        this.setState({
-                            formStatus: <Alert bsStyle = "success"><strong>{data.message}</strong></Alert>,
-                            isLoading: false
-                        })
-                        this.deleteAccountForm.reset();
-                    } else {
-                        this.setState({
-                            formStatus: <Alert bsStyle = "danger"><strong>{data.message}</strong></Alert>,
-                            isLoading: false
-                        })
-                    }
-                    
-                            
-                    window.setTimeout(() => {
-                        this.setState({formStatus: null});
-                    }, 5000);
-                })
-                .catch((err) => {
-                    console.log(err);
-                    this.setState({
-                        formStatus: <Alert bsStyle = "danger"><strong>{err.message}</strong></Alert>,
-                        isLoading: false
-                    })
-                    window.setTimeout(() => {
-                        this.setState({formStatus: null});
-                    }, 5000);
-                });
-            })
-            .catch((err) => {
-                console.log("Invalid authentication!");
-                console.log(err);
-                this.setState({
-                    formStatus: <Alert bsStyle="danger"><strong>Invalid Administrator Password.</strong></Alert>,
-                    isLoading: false
-                })
+            this.setState({
+                confirmModal: true
             });
         }
+    }
+
+    deleteAccount(event) {
+        this.setState({ confirmModal: false });
+
+        firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.adminPassword))
+        .then(() => {
+            let info = {
+                "email": this.state.email,
+                "username": this.state.userName
+            }
+            let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/deleteAccount";
+            //let url = "http://localhost:5000/halfway-a067e/us-central1/app/deleteAccount";
+            let fetchData = {
+                'method': 'POST',
+                'Content-Type': 'application/json',
+                'body': JSON.stringify(info),
+                'headers': new Headers()
+            }
+
+            fetch(url, fetchData)
+            .then((resp) => resp.json())
+            .then((data) => {
+                console.log(data);
+                if (data.success) {
+                    this.setState({
+                        formStatus: <Alert bsStyle = "success"><strong>{data.message}</strong></Alert>,
+                        isLoading: false
+                    })
+                    this.deleteAccountForm.reset();
+                } else {
+                    this.setState({
+                        formStatus: <Alert bsStyle = "danger"><strong>{data.message}</strong></Alert>,
+                        isLoading: false
+                    })
+                }
+                
+                        
+                window.setTimeout(() => {
+                    this.setState({formStatus: null});
+                }, 5000);
+            })
+            .catch((err) => {
+                console.log(err);
+                this.setState({
+                    formStatus: <Alert bsStyle = "danger"><strong>{err.message}</strong></Alert>,
+                    isLoading: false
+                })
+                window.setTimeout(() => {
+                    this.setState({formStatus: null});
+                }, 5000);
+            });
+        })
+        .catch((err) => {
+            console.log("Invalid authentication!");
+            console.log(err);
+            this.setState({
+                formStatus: <Alert bsStyle="danger"><strong>Invalid Administrator Password.</strong></Alert>,
+                isLoading: false
+            })
+        });
     }
 
     render() {
         return (<Jumbotron style={{backgroundColor: "white"}}>
         {this.state.formStatus}
         <h2>Delete Account</h2>
-        <form onSubmit={this.deleteAccount} ref={(form) => { this.deleteAccountForm = form }}>
+        <form onSubmit={this.validateDelete} ref={(form) => { this.deleteAccountForm = form }}>
             <FieldGroup
                 id="deleteAccountUserName"
                 type="text"
@@ -482,6 +492,20 @@ export class DeleteAccount extends Component {
             />
             <Button className = "btn-primary" type="submit" disabled={this.state.isLoading} id="delAccSubmit">Delete Account!</Button>
         </form>
+
+        {this.state.confirmModal ? <div className="static-modal">
+                    <Modal.Dialog>
+                        <Modal.Body>Are you sure you wish to delete this account?
+                                    An account cannot be recovered once deleted.
+                                    Deleting an account does not remove posts or comments associated with the account.
+                        </Modal.Body>
+    
+                        <Modal.Footer>
+                            <Button id="confirmClose" onClick={() => {this.setState({confirmModal: false, isLoading: false})}}>Close</Button>
+                            <Button bsStyle="danger" onClick={this.deleteAccount}>Delete Account</Button>
+                        </Modal.Footer>
+                    </Modal.Dialog>
+                </div> : null }
     </Jumbotron>   
     
         );
