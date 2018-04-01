@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 //import { render } from 'react-dom';
 import { FormGroup, ControlLabel, FormControl, HelpBlock, Jumbotron, Button, Alert } from 'react-bootstrap';
 import { app } from '../base';
+import firebase from 'firebase';
 
 function FieldGroup({ id, label, help, ...props }) {
     return (
@@ -24,6 +25,7 @@ export class CreateAccount extends Component {
             userName: "",
             email: "",
             type: "Youth",
+            adminPassword: "",
             formStatus: null,
             isLoading: false
         }
@@ -46,7 +48,7 @@ export class CreateAccount extends Component {
         let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         
 
-        if (this.state.email === "" || this.state.userName === "" || this.state.displayName === "" || this.state.type === "") {
+        if (this.state.email === "" || this.state.userName === "" || this.state.displayName === "" || this.state.adminPassword === "" || this.state.type === "") {
             this.setState({
                 formStatus: <Alert bsStyle = "warning"><strong>One or more fields are empty. Please try again.</strong></Alert>, 
                 isLoading: false 
@@ -70,54 +72,62 @@ export class CreateAccount extends Component {
             console.log("You must enter a valid email address!");
             return;
         } else {
-        
-            let info = {
-                "email": this.state.email,
-                "username": this.state.userName,
-                "display": this.state.displayName,
-                "type": this.state.type
-            }
-            let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/createAccount";
-            //let url = "http://localhost:5000/halfway-a067e/us-central1/app/createAccount";
-            let fetchData = {
-                'method': 'POST',
-                'Content-Type': 'application/json',
-                'body': JSON.stringify(info),
-                'headers': new Headers()
-            }
-
-            //console.log(fetchData);
-
-            fetch(url, fetchData)
-            .then((resp) => resp.json())
-            .then((data) => {
-                console.log(data);
-                if (data.success) {
-                    this.setState({
-                        formStatus: <Alert bsStyle = "success"><strong>Created Account!</strong></Alert>,
-                        isLoading: false
-                    })
-                    this.createAccountForm.reset();
-                } else {
-                    this.setState({
-                        formStatus: <Alert bsStyle = "danger"><strong>Failed to Create Account! Check log for details!</strong></Alert>,
-                        isLoading: false
-                    })
+            firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.adminPassword))
+            .then(() => {
+                let info = {
+                    "email": this.state.email,
+                    "username": this.state.userName,
+                    "display": this.state.displayName,
+                    "type": this.state.type
                 }
-                        
-                window.setTimeout(() => {
-                    this.setState({formStatus: null});
-                }, 5000);
+                let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/createAccount";
+                //let url = "http://localhost:5000/halfway-a067e/us-central1/app/createAccount";
+                let fetchData = {
+                    'method': 'POST',
+                    'Content-Type': 'application/json',
+                    'body': JSON.stringify(info),
+                    'headers': new Headers()
+                }
+    
+                fetch(url, fetchData)
+                .then((resp) => resp.json())
+                .then((data) => {
+                    console.log(data);
+                    if (data.success) {
+                        this.setState({
+                            formStatus: <Alert bsStyle = "success"><strong>{data.message}</strong></Alert>,
+                            isLoading: false
+                        })
+                        this.createAccountForm.reset();
+                    } else {
+                        this.setState({
+                            formStatus: <Alert bsStyle = "danger"><strong>{data.message}</strong></Alert>,
+                            isLoading: false
+                        })
+                    }
+                            
+                    window.setTimeout(() => {
+                        this.setState({formStatus: null});
+                    }, 5000);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    this.setState({
+                        formStatus: <Alert bsStyle = "danger"><strong>{err.message}</strong></Alert>,
+                        isLoading: false
+                    })
+                    window.setTimeout(() => {
+                        this.setState({formStatus: null});
+                    }, 5000);
+                });
             })
             .catch((err) => {
+                console.log("Invalid authentication!");
                 console.log(err);
                 this.setState({
-                    formStatus: <Alert bsStyle = "danger"><strong>Failed to Create Account! Check log for details!</strong></Alert>,
+                    formStatus: <Alert bsStyle="danger"><strong>Invalid Administrator Password.</strong></Alert>,
                     isLoading: false
                 })
-                window.setTimeout(() => {
-                    this.setState({formStatus: null});
-                }, 5000);
             });
         }
     }
@@ -159,6 +169,14 @@ export class CreateAccount extends Component {
                             <option value="youth">Youth</option>
                         </FormControl>
                     </FormGroup>
+                    <FieldGroup
+                    id="createAccountPassword"
+                    type="password"
+                    label="Admin Password"
+                    placeholder="Enter password"
+                    name="adminPassword"
+                    onChange={this.onChange}
+                    />
                     <Button className = "btn-primary" type="submit" disabled={this.state.isLoading} id="crAccSubmit">Create Account!</Button>
                 </form>
             </Jumbotron>    
@@ -175,6 +193,7 @@ export class ChangeAccount extends Component {
         this.state = {
             userName: "",
             accType: "mentor",
+            adminPassword: "",
             isLoading: false,
             formStatus: null
         }
@@ -190,8 +209,8 @@ export class ChangeAccount extends Component {
 
     submitChange(event) {
         event.preventDefault();
-
-        if (this.state.userName === "" || this.state.accType === "") {
+        this.setState({ isLoading: true });
+        if (this.state.userName === "" || this.state.adminPassword === "" || this.state.accType === "") {
             this.setState({
                 formStatus: <Alert bsStyle = "warning"><strong>One or more fields are empty. Please try again.</strong></Alert>, 
                 isLoading: false 
@@ -225,46 +244,58 @@ export class ChangeAccount extends Component {
             return;
         }
 
-        let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/changeAccount";
-        //let url = "http://localhost:5000/halfway-a067e/us-central1/app/changeAccount";
-        let fetchData = {
-            'method': 'POST',
-            'Content-Type': 'application/json',
-            'body': JSON.stringify(data),
-            'headers': new Headers()
-        }
+        firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.adminPassword))
+        .then(() => {
 
-        fetch(url, fetchData)
-        .then((resp) => resp.json())
-        .then((data) => {
-            console.log(data);
-            if (data.success) {
-                this.setState({
-                    formStatus: <Alert bsStyle = "success"><strong>Changed Account Type!</strong></Alert>,
-                    isLoading: false
-                });
-                this.changeAccountForm.reset();
+            let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/changeAccount";
+            //let url = "http://localhost:5000/halfway-a067e/us-central1/app/changeAccount";
+            let fetchData = {
+                'method': 'POST',
+                'Content-Type': 'application/json',
+                'body': JSON.stringify(data),
+                'headers': new Headers()
             }
-            else {
+
+            fetch(url, fetchData)
+            .then((resp) => resp.json())
+            .then((data) => {
+                console.log(data);
+                if (data.success) {
+                    this.setState({
+                        formStatus: <Alert bsStyle = "success"><strong>{data.message}</strong></Alert>,
+                        isLoading: false
+                    });
+                    this.changeAccountForm.reset();
+                }
+                else {
+                    this.setState({
+                        formStatus: <Alert bsStyle = "danger"><strong>{data.message}</strong></Alert>,
+                        isLoading: false
+                    });
+                }          
+                window.setTimeout(() => {
+                    this.setState({formStatus: null});
+                }, 5000);
+            })
+            .catch((err) => {
+                console.log(err);
                 this.setState({
-                    formStatus: <Alert bsStyle = "danger"><strong>Failed to Change Account Type! Check log for details!</strong></Alert>,
+                    formStatus: <Alert bsStyle = "danger"><strong>{err.message}</strong></Alert>,
                     isLoading: false
-                });
-            }          
-            window.setTimeout(() => {
-        		this.setState({formStatus: null});
-            }, 5000);
+                })
+                window.setTimeout(() => {
+                    this.setState({formStatus: null});
+                }, 5000);
+            });
         })
         .catch((err) => {
+            console.log("Invalid authentication!");
             console.log(err);
             this.setState({
-                formStatus: <Alert bsStyle = "danger"><strong>Failed to Change Account Type! Check log for details!</strong></Alert>,
+                formStatus: <Alert bsStyle="danger"><strong>Invalid Administrator Password.</strong></Alert>,
                 isLoading: false
             })
-            window.setTimeout(() => {
-        		this.setState({formStatus: null});
-            }, 5000);
-        })
+        });
     }
 
     render() {
@@ -288,6 +319,14 @@ export class ChangeAccount extends Component {
                     <option value="youth">Youth</option>
                 </FormControl>
             </FormGroup>
+            <FieldGroup
+                id="changeAccountPassword"
+                type="password"
+                label="Admin Password"
+                placeholder="Enter password"
+                name="adminPassword"
+                onChange={this.onChange}
+            />
             <Button className = "btn-primary" type="submit" disabled={this.state.isLoading} id="chAccSubmit">Change Account Type!</Button>
         </form>
     </Jumbotron>   
@@ -305,6 +344,7 @@ export class DeleteAccount extends Component {
         this.state = {
             userName: "",
             email: "",
+            adminPassword: "",
             formStatus: null,
             isLoading: false
         }
@@ -352,65 +392,62 @@ export class DeleteAccount extends Component {
             console.log("You must enter a valid email address!");
             return;
         } else {
-
-            let info = {
-                "email": this.state.email,
-                "username": this.state.userName
-            }
-            let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/deleteAccount";
-            //let url = "http://localhost:5000/halfway-a067e/us-central1/app/deleteAccount";
-            let fetchData = {
-                'method': 'POST',
-                'Content-Type': 'application/json',
-                'body': JSON.stringify(info),
-                'headers': new Headers()
-            }
-
-            //console.log(fetchData);
-
-            fetch(url, fetchData)
-            .then((resp) => resp.json())
-            .then((data) => {
-                console.log(data);
-                if (data.success) {
-                    this.setState({
-                        formStatus: <Alert bsStyle = "success"><strong>Deleted Account Successfully!</strong></Alert>,
-                        isLoading: false
-                    })
-                    this.deleteAccountForm.reset();
-                } else {
-                    let message = "Failed to Delete Account! Check log for details!";
-                    if (data.message === "Error retrieving user by email!")
-                        message = "Could not find an account with that username. Please try again.";
-                    else if (data.message === "Emails don't match!")
-                        message = "Could not find an account linked to that email. Please try again.";
-
-                    this.setState({
-                        formStatus: <Alert bsStyle = "danger"><strong>{message}</strong></Alert>,
-                        isLoading: false
-                    })
+            firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.adminPassword))
+            .then(() => {
+                let info = {
+                    "email": this.state.email,
+                    "username": this.state.userName
                 }
-                
-                        
-                window.setTimeout(() => {
-                    this.setState({formStatus: null});
-                }, 5000);
+                let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/deleteAccount";
+                //let url = "http://localhost:5000/halfway-a067e/us-central1/app/deleteAccount";
+                let fetchData = {
+                    'method': 'POST',
+                    'Content-Type': 'application/json',
+                    'body': JSON.stringify(info),
+                    'headers': new Headers()
+                }
+
+                fetch(url, fetchData)
+                .then((resp) => resp.json())
+                .then((data) => {
+                    console.log(data);
+                    if (data.success) {
+                        this.setState({
+                            formStatus: <Alert bsStyle = "success"><strong>{data.message}</strong></Alert>,
+                            isLoading: false
+                        })
+                        this.deleteAccountForm.reset();
+                    } else {
+                        this.setState({
+                            formStatus: <Alert bsStyle = "danger"><strong>{data.message}</strong></Alert>,
+                            isLoading: false
+                        })
+                    }
+                    
+                            
+                    window.setTimeout(() => {
+                        this.setState({formStatus: null});
+                    }, 5000);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    this.setState({
+                        formStatus: <Alert bsStyle = "danger"><strong>{err.message}</strong></Alert>,
+                        isLoading: false
+                    })
+                    window.setTimeout(() => {
+                        this.setState({formStatus: null});
+                    }, 5000);
+                });
             })
             .catch((err) => {
+                console.log("Invalid authentication!");
                 console.log(err);
-                let message = "Failed to Delete Account! Check log for details!";
-                if (err.message === "Error retrieving user by email!")
-                    message = "Invalid username!";
-                
-                
                 this.setState({
-                    formStatus: <Alert bsStyle = "danger"><strong>{message}</strong></Alert>,
+                    formStatus: <Alert bsStyle="danger"><strong>Invalid Administrator Password.</strong></Alert>,
                     isLoading: false
                 })
-                window.setTimeout(() => {
-                    this.setState({formStatus: null});
-                }, 5000);
-            })
+            });
         }
     }
 
@@ -433,6 +470,14 @@ export class DeleteAccount extends Component {
                 label="Email"
                 placeholder="Enter Email"
                 name="email"
+                onChange={this.onChange}
+            />
+            <FieldGroup
+                id="deleteAccountPassword"
+                type="password"
+                label="Admin Password"
+                placeholder="Enter password"
+                name="adminPassword"
                 onChange={this.onChange}
             />
             <Button className = "btn-primary" type="submit" disabled={this.state.isLoading} id="delAccSubmit">Delete Account!</Button>

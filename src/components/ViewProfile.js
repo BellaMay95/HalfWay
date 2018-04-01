@@ -3,17 +3,21 @@ import React, { Component } from 'react';
 import SearchInput, {CreateFilter} from 'react-search-input';
 import { Navbar, Nav, NavItem, Glyphicon, Image, Grid, Row, Col } from 'react-bootstrap';
 import { app } from '../base';
-import defaultProfilePic from '../images/defaultProfile.jpg'
+import defaultProfilePic from '../images/defaultProfile.jpg';
+
+import EditProfile from './EditProfile';
 
 export default class ViewProfile extends Component {
     constructor() {
         super();
         this.getEmail = this.getEmail.bind(this);
+        this.toggleEditModal = this.toggleEditModal.bind(this);
         this.state = {
             profileName: null,
             userName: null,
             avatar: defaultProfilePic,
-            email: null
+            email: null,
+            editProfile: false
         }
     }
 
@@ -21,7 +25,6 @@ export default class ViewProfile extends Component {
         let user = app.auth().currentUser;
         this.getEmail(user.uid)
         .then((email) => {
-            console.log(email);
             this.setState({
                 profileName: user.displayName,
                 userName: user.email.substr(0, user.email.indexOf('@')),
@@ -35,6 +38,12 @@ export default class ViewProfile extends Component {
         return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
             return snapshot.val().email;
 		});
+    }
+
+    toggleEditModal() {
+        this.setState({
+          editProfile: !this.state.editProfile
+        });
     }
     
     render() {
@@ -55,7 +64,7 @@ export default class ViewProfile extends Component {
                 { myProfile ? 
                     <Navbar.Collapse>
                         <Nav pullRight>
-                            <NavItem id="editProfile" eventKey={1}>
+                            <NavItem id="editProfile" eventKey={1} onClick={this.toggleEditModal}>
                                 Edit Profile
                                 <Glyphicon glyph="edit" style={{padding: '5px'}}/>
                             </NavItem>
@@ -85,11 +94,13 @@ export default class ViewProfile extends Component {
                             { this.state.email ? <p>Email: {this.state.email}</p> : null}
                         </Col>
                     </Row>
-                    <hr />
+                    {/*<hr />
                     <Row>
-                        <h1>Recent Forum Posts...coming soon!</h1>
-                    </Row>
+                        <h1>Recent Forum Posts</h1>
+                    </Row>*/}
                 </Grid>
+
+                {this.state.editProfile && <EditProfile email={this.state.email} closeModal={this.toggleEditModal} />}
 
             </div>
         );
