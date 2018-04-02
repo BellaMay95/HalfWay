@@ -22,6 +22,7 @@ class CreateThread extends Component {
           title: "",
           message: "",
           alertState: null,
+          isLoading: false
         }
     }
 
@@ -32,9 +33,13 @@ class CreateThread extends Component {
 
     // Pushing the new thread to the data
     saveNewThread() {
+        this.setState({ isLoading: true });
         //alert("title: " + this.state.title + " and message: " + this.state.message);
         if(this.state.title === "" || this.state.message === "") {
-          this.setState({ alertState: <Alert bsStyle="warning">One or more required fields are empty.</Alert>});
+          this.setState({ 
+            alertState: <Alert bsStyle="warning">One or more required fields are empty.</Alert>,
+            isLoading: false
+          });
 
             window.setTimeout(() => {
                 this.setState({ alertState: null });
@@ -59,12 +64,16 @@ class CreateThread extends Component {
         app.database().ref('forum').push(postInfo, (err) => {
           if (!err) {
             //alert("Thread Posted Successfully!");
+            this.setState({ isLoading: false });
             this.props.showAlert();
             this.closeModal();
           } else {
             //alert("Error posting thread!");
             //this.closeModal();
-            this.setState({ alertState: <Alert bsStyle="danger">Error Creating Thread! Try again later.</Alert>});
+            this.setState({ 
+              alertState: <Alert bsStyle="danger">Error Creating Thread! Try again later.</Alert>,
+              isLoading: false
+            });
 
             window.setTimeout(() => {
                 this.setState({ alertState: null });
@@ -101,7 +110,7 @@ class CreateThread extends Component {
 
                 <Modal.Footer>
                     <Button onClick={this.closeModal}>Close</Button>
-                    <Button bsStyle="primary" onClick={this.saveNewThread}>Create Thread!</Button>
+                    <Button bsStyle="primary" onClick={this.saveNewThread} disabled={this.state.isLoading}>Create Thread!</Button>
                 </Modal.Footer>
             </Modal.Dialog>
         </div>);
