@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //import { render } from 'react-dom';
 import SearchInput /*, {CreateFilter}*/ from 'react-search-input';
-import { Navbar, Nav, NavItem, Glyphicon, Image, Grid, Row, Col, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Navbar, Image, Grid, Row, Col, DropdownButton, MenuItem, Alert } from 'react-bootstrap';
 import { app } from '../base';
 import defaultProfilePic from '../images/defaultProfile.jpg';
 
@@ -15,7 +15,8 @@ export default class ViewProfile extends Component {
         this.getEmail = this.getEmail.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.togglePendingChangesModal = this.togglePendingChangesModal.bind(this);
-        this.changePasswordModal = this.changePasswordModal.bind(this);
+        this.togglePasswordModal = this.togglePasswordModal.bind(this);
+        this.saveChangesAlert = this.saveChangesAlert.bind(this);
         this.state = {
             profileName: null,
             userName: null,
@@ -25,7 +26,8 @@ export default class ViewProfile extends Component {
             pendingChanges: false,
             showChanges: false,
             changePassword: false,
-            accType: ""
+            accType: "",
+            alertState: null
         }
     }
 
@@ -52,6 +54,10 @@ export default class ViewProfile extends Component {
             }
         });
         
+        app.database().ref('/users/' + user.uid).once('value')
+        .then((snapshot) => {
+            this.setState({ accType: snapshot.val().type });
+        })
     }
 
     getEmail(uid) {
@@ -96,10 +102,18 @@ export default class ViewProfile extends Component {
         });
     }
 
-    changePasswordModal() {
+    togglePasswordModal() {
         this.setState({
             changePassword: !this.state.changePassword
         });
+    }
+
+    saveChangesAlert(message) {
+        this.setState({ alertState: <Alert bsStyle="success">{message}</Alert>});
+
+        window.setTimeout(() => {
+            this.setState({ alertState: null });
+        }, 5000);
     }
     
     render() {
@@ -117,6 +131,8 @@ export default class ViewProfile extends Component {
                         <Navbar.Brand id="profileHeader" style={headerStyle}>User Profiles</Navbar.Brand>
                     </Navbar.Header>
                 </Navbar>
+
+                {this.state.alertState}
 
                 <Grid style={{padding: '15px'}} fluid={true}>
                     <Row>
@@ -141,8 +157,8 @@ export default class ViewProfile extends Component {
                             id="editProfileDropdown"
                             >
                             <MenuItem eventKey="1" onClick={this.toggleEditModal}>Edit Profile</MenuItem>
-                            <MenuItem eventKey="2" onClick={this.togglePendingChangesModal}>Pending Changes</MenuItem>
-                            <MenuItem eventKey="3" onClick={this.changePasswordModal}>Change Password</MenuItem>
+                            <MenuItem eventKey="2" onClick={this.togglePasswordModal}>Change Password</MenuItem>
+                            { this.state.accType === "youth" ? <MenuItem eventKey="3" onClick={this.togglePendingChangesModal}>Pending Changes</MenuItem> : null }
                         </DropdownButton>
                             
                             {/*<Button bsStyle="default" onClick={this.togglePendingChangesModal}>Pending Changes <Glyphicon glyph="edit" style={{padding: '5px'}}/></Button>
@@ -168,9 +184,9 @@ export default class ViewProfile extends Component {
                     </Row>*/}
                 </Grid>
 
-                {this.state.editProfile && <EditProfile email={this.state.email} closeModal={this.toggleEditModal} />}
-                {this.state.showChanges && <PendingChanges />}
-                {this.state.changePassword && <ChangePassword />}
+                {this.state.editProfile && <EditProfile showAlert={this.saveChangesAlert} email={this.state.email} closeModal={this.toggleEditModal} />}
+                {this.state.changePassword && <ChangePassword showAlert={this.saveChangesAlert} closeModal={this.togglePasswordModal} />}
+                {this.state.accType === "youth" && this.state.showChanges && <PendingChanges email={this.state.email} closeModal={this.togglePendingChangesModal} />}
             </div>
         );
     }

@@ -36,15 +36,16 @@ export default class EditProfile extends Component {
             username: "",
             email: this.props.email ? this.props.email : "",
             avatar: "",
+            avatarRef: "",
+            newAvatarRef: "",
             profileName: "",
             confirmPassword: "",
             isLoading: false,
             isUploading: false,
             alertState: null,
             progress: 0,
-            avatarRef: null,
-            newAvatarRef: null,
-            avatarImg: null
+            type: "",
+            storageRef: app.storage().ref('userAvatars')
         }
     }
 
@@ -56,8 +57,10 @@ export default class EditProfile extends Component {
                 uid: user.uid,
                 avatar: user.photoURL ? user.photoURL : defaultProfilePic,
                 avatarRef: snapshot.val().avatarRef,
+                newAvatarRef: snapshot.val().avatarRef,
                 username: user.email.substr(0, user.email.indexOf('@')) ? user.email.substr(0, user.email.indexOf('@')) : "", 
                 profileName: user.displayName ? user.displayName : "",
+                type: snapshot.val().type
             });
         })
     }
@@ -79,15 +82,7 @@ export default class EditProfile extends Component {
         //check to see if there were any changes in the profile
         let userEmail = this.state.username + "@halfway.com";
         let user = app.auth().currentUser;
-
-        let avatarChanged = true;
-        if (this.state.avatar === user.photoURL) {
-            avatarChanged = false;
-        } else if (!user.photoURL && (this.state.avatar === defaultProfilePic)) {
-            avatarChanged = false;
-        }
-        
-        if (userEmail === user.email && this.state.email === this.props.email && !avatarChanged && this.state.profileName === user.displayName) {
+        if (userEmail === user.email && this.state.email === this.props.email && !this.avatarChanged() && this.state.profileName === user.displayName) {
             //console.log("no changes!");
             this.setState({ 
                 alertState: <Alert bsStyle="warning">No changes detected!</Alert>,
@@ -100,24 +95,36 @@ export default class EditProfile extends Component {
             return;
         }
 
-        let self = this; //keep the this binding in self
-
         firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.confirmPassword))
         .then(() => {
-            //get account type. If youth, stash in "pendingChanges"
-            let uid = app.auth().currentUser.uid;
-            app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-                if (snapshot.val().type === "youth") {
-                    self.savePendingProfile();
+            //If account type is "youth" store in pending changes
+            if (this.state.type === "youth") {
+                //if avatar changed, upload and wait for success before saving changes
+                if (this.avatarChanged() && this.state.avatar !== defaultProfilePic) {
+                    this.setState({ storageRef: app.storage().ref('tempAvatars') });
+                    this.uploader.startUpload(this.state.avatarImg);
+                } else { //otherwise go ahead and call the save function
+                    this.savePendingProfile();
                 }
-                else {
-                    self.savePermProfile();
+                return;
+            }
+            else { //otherwise go ahead and store changes in auth/database
+                //if avatar changed, upload and wait for success before saving changes
+                if (this.avatarChanged() && this.state.avatar !== defaultProfilePic) { //upload file if avatar changed
+                    //console.log(this.uploader);
+                    this.uploader.startUpload(this.state.avatarImg);
+                } else { //otherwise go ahead and save the changes
+                    this.savePermProfile();
                 }
-            });
+                return;
+            }
         })
         .catch(() => {
             console.log("Invalid current password!");
-            this.setState({ alertState: <Alert bsStyle="danger">Invalid Password!</Alert>});
+            this.setState({ 
+                alertState: <Alert bsStyle="danger">Invalid Password!</Alert>,
+                isLoading: false
+            });
 
             window.setTimeout(() => {
                 this.setState({ alertState: null });
@@ -126,93 +133,72 @@ export default class EditProfile extends Component {
         })
     }
 
+    avatarChanged() {
+        let user = app.auth().currentUser;
+        let change = true;
+        if (this.state.avatar === user.photoURL) {
+            change = false;
+        } else if (!user.photoURL && (this.state.avatar === defaultProfilePic)) {
+            change = false;
+        }
+        return change;
+    }
+
     savePermProfile() {
         let user = app.auth().currentUser;
+        let self = this;
 
-        //update profile name & avatar
+        //update profile name
         user.updateProfile({
             displayName: this.state.profileName,
         })
-        .then(() => {
-            let avatarChanged = true;
-            if (this.state.avatar === user.photoURL) {
-                avatarChanged = false;
-            } else if (!user.photoURL && (this.state.avatar === defaultProfilePic)) {
-                avatarChanged = false;
-            }
-            if (avatarChanged && this.state.avatar !== defaultProfilePic) {
-                let newUrl;
-                
-                //move image from tempAvatars to userAvatars
-                app.storage().ref('userAvatars/' + this.state.newAvatarRef).put(this.state.avatarImg)
-                .then((snapshot) => {
-                    this.state.avatar = snapshot.downloadURL;
-                    app.storage().ref('tempAvatars/' + this.state.newAvatarRef).delete()
-                    .catch((err) => {
-                        console.log("error deleting temp file! Have admin check storage!");
-                    })
-                })
-                .then(() => { //delete existing image in userAvatars
+        .then(() => { //update profile pic
+            if (this.avatarChanged()) {
+                let avatarError = false;
+                //remove photo in storage if avatar removed OR the refs changed
+                if (user.photoURL && this.state.avatarRef !== this.state.newAvatarRef) {
+                    //console.log("removing photo in storage")
                     app.storage().ref('userAvatars/' + this.state.avatarRef).delete()
                     .catch((err) => {
-                        console.log("error deleting previous image!");
+                        console.log("error deleting photo in storage!");
                         console.log(err);
+                        avatarError = true;
                     })
-                })
-                .then(() => { //update avatarRef in database
-                    app.database().ref('users/' + this.state.uid).update({ avatarRef: this.state.newAvatarRef })
-                    .catch((err) => {
-                        console.log("error updating ref in database...");
-                    })
-                })
-                .then(() => {
-                    //update avatar in auth
-                    console.log(this.state.avatar);
-                    user.updateProfile({
-                        photoURL: this.state.avatar
+                }
+                //update ref if refs aren't the same
+                if(this.state.avatarRef !== this.state.newAvatarRef) {
+                    //console.log("updating/deleting ref")
+                    app.database().ref('users/' + this.state.uid).update({ 
+                        //if link's removed, remove ref otherwise update
+                        avatarRef: (this.state.newAvatarRef !== "removed") ? this.state.newAvatarRef : null
                     })
                     .catch((err) => {
-                        console.log("error updating profile picture!");
+                        console.log("error updating refs in database!");
                         console.log(err);
+                        avatarError = true;
+                    });
+                }
 
-                        this.setState({ alertState: <Alert bsStyle="danger">Error Updating Avatar!</Alert>});
-
-                        window.setTimeout(() => {
-                            this.setState({ alertState: null });
-                        }, 5000);
-                    })
+                //in all cases update the link in auth
+                //console.log("updating photo link")
+                user.updateProfile({
+                    //if photo removed, remove link otherwise update/add link
+                    photoURL: (this.state.newAvatarRef !== "removed") ? this.state.avatar : null
                 })
                 .catch((err) => {
-                    console.log("error uploading image to permanent link");
-                })
-            } else if (avatarChanged) { //removing previous image
+                    console.log("error setting link in auth!");
+                    console.log(err);
+                    avatarError = true;
+                });
 
-                app.database().ref('users/' + this.state.uid).update({ avatarRef: this.state.newAvatarRef })
-                .then(() => {
-                    app.storage().ref('userAvatars/' + this.state.newAvatarRef).delete()
-                    .catch((err) => {
-                        console.log("error deleting previous picture!");
-                        console.log(err);
-                    })
-                })
-                .then(() => {
-                    user.updateProfile({
-                        photoURL: null
-                    })
-                    .catch((err) => {
-                        console.log("error removing profile picture from auth!");
-                        console.log(err);
+                //show alert if error
+                if (avatarError) {
+                    this.setState({ alertState: <Alert bsStyle="danger">Error Updating Avatar!</Alert>});
 
-                        this.setState({ alertState: <Alert bsStyle="danger">Error Updating Avatar!</Alert>});
-
-                        window.setTimeout(() => {
-                            this.setState({ alertState: null });
-                        }, 5000);
-                    })
-                })
-                .catch((err) => {
-                    console.log("error updating ref in database...");
-                })
+                    window.setTimeout(() => {
+                        this.setState({ alertState: null });
+                    }, 5000);
+                }
             }
         })
         .then(() => { //update username
@@ -250,6 +236,7 @@ export default class EditProfile extends Component {
         })
         .then(() => {
             this.setState({ isLoading: false });
+            self.props.showAlert("Saved Profile Changes Successfully!");
             this.closeModal();
         })
         .catch((error) => {
@@ -268,39 +255,68 @@ export default class EditProfile extends Component {
     }
 
     savePendingProfile() {
-        console.log("we're in the pending changes thing!");
-        let userdata = {};
-        let user = app.auth().currentUser;
-        if ((this.state.username + "@halfway.com") !== user.email) {
-            userdata['username'] = this.state.username;
-        } if (this.state.email !== this.props.email) {
-            userdata['email'] = this.state.email;
-        } if (this.state.profileName !== user.displayName) {
-            userdata['profileName'] = this.state.profileName;
-        } if (this.state.avatar === defaultProfilePic && user.photoURL) {
-            console.log("was a picture and now there's not")
-            userdata['avatar'] = "removed";
-        } else if (this.state.avatar !== user.photoURL && this.state.avatar !== defaultProfilePic) {
-            console.log("picture changed");
-            userdata['avatar'] = this.state.avatar;
-            userdata['avatarRef'] = this.state.newAvatarRef;
-        }
+        let self = this;
 
-        console.log(userdata);
+        app.database().ref('pendingProfiles/' + this.state.uid).once('value')
+        .then((snapshot) => {
+            let userdata = {};
+            let date = new Date().toLocaleString();
+            let newComment;
+            if (snapshot.val()) {
+                userdata = snapshot.val();
+                console.log(userdata);
+                newComment = date + ": Updated: ";
+                    //": Changes Awaiting Approval. Check back soon!");
+            }
+            else {
+                userdata.comments = [];
+                //userdata.comments.push(date + ": Changes Awaiting Approval. Check back soon!");
+                newComment = date + ": Updated: ";
+            }
+            let user = app.auth().currentUser;
+            if ((this.state.username + "@halfway.com") !== user.email) {
+                userdata['username'] = this.state.username;
+                newComment += "username : "
+            } if (this.state.email !== this.props.email) {
+                userdata['email'] = this.state.email;
+                newComment += "email : "
+            } if (this.state.profileName !== user.displayName) {
+                userdata['profileName'] = this.state.profileName;
+                newComment += "profile name : ";
+            } if (this.avatarChanged() && this.state.avatar === defaultProfilePic) {
+                userdata['avatar'] = "removed";
+                newComment += "avatar : "
+            } if (this.avatarChanged() && this.state.avatar !== defaultProfilePic) {
+                userdata['avatar'] = this.state.avatar;
+                userdata['avatarRef'] = this.state.newAvatarRef;
+                newComment += "avatar : ";
+            }
 
-        app.database().ref('pendingProfiles/' + this.state.uid).set(userdata)
-        .then(() => {
-            this.setState({ 
-                alertState: <Alert bsStyle="success">Submitted Account Changes for Approval!</Alert>,
-                isLoading: false
+            userdata.comments.push(newComment + "Changes Awaiting Approval. Check back soon!");
+    
+            console.log(userdata);
+    
+            app.database().ref('pendingProfiles/' + this.state.uid).update(userdata)
+            .then(() => {
+                this.setState({ isLoading: false });
+                self.props.showAlert("Saved Profile Changes Successfully!");
+                this.closeModal();
+            })
+            .catch((err) => {
+                this.setState({ 
+                    alertState: <Alert bsStyle="danger">Failed to submit changes!</Alert>,
+                    isLoading: false
+                });
+    
+                window.setTimeout(() => {
+                    this.setState({ alertState: null });
+                }, 5000);
             });
-
-            window.setTimeout(() => {
-                this.setState({ alertState: null });
-            }, 5000);
-            this.closeModal();
         })
         .catch((err) => {
+            console.log("error retrieving existing changes...");
+            console.log(err);
+
             this.setState({ 
                 alertState: <Alert bsStyle="danger">Failed to submit changes!</Alert>,
                 isLoading: false
@@ -315,11 +331,17 @@ export default class EditProfile extends Component {
     onChangeImage(event) {
         console.log("getting image blob!");
         const image = event.target.files[0];
-        if (image) {
-            console.log("ready to start upload...")
-            this.setState({ avatarImg: image });
-            this.uploader.startUpload(image);
+
+        let reader = new FileReader();
+
+        reader.onloadend = () => {
+            this.setState({
+                avatarImg: image,
+                avatar: reader.result
+            });
         }
+
+        reader.readAsDataURL(image);
     }
 
     handleUploadStart() {
@@ -346,61 +368,28 @@ export default class EditProfile extends Component {
         console.log(err);
     }
 
-    handleUploadSuccess(filename) {
+    handleUploadSuccess(filename, worker) {
+        console.log("successfully uploaded image!");
+        console.log(filename);
+        console.log(worker.snapshot.downloadURL);
         this.setState({
-            alertState: <Alert bsStyle="success">Image Uploaded!</Alert>
+            newAvatarRef: filename,
+            avatar: worker.snapshot.downloadURL
         });
-        window.setTimeout(() => {
-            this.setState({ alertState: null });
-        }, 5000);
-
-        let tempRef = this.state.newAvatarRef;
-
-        if (tempRef) {
-            //if a previous picture has been uploaded, delete the old temp picture in storage
-            console.log("ready to delete picture!");
-
-            app.storage().ref('tempAvatars/' + tempRef).delete()
-            .catch(() => {
-                console.log("failed to delete temp picture...");
-            })
-        }
-        //if this isn't the saved picture, update ref and link
-        if (filename !== this.state.avatarRef) {
-            console.log("updating ref & image URL...");
-            this.setState({
-                newAvatarRef: filename  
-            }); //save ref to new file
-
-            //get downloaded url for avatar
-            var storageRef = app.storage().ref();
-            storageRef.child('tempAvatars/' + filename).getDownloadURL()
-            .then((url) => {
-                this.setState({
-                    avatar: url
-                });
-                console.log(this.state.avatar);
-            })
-            .catch((err) => {
-                console.log("error fetching url");
-            });
+        //call the right save function
+        if (this.state.type === "youth") {
+            this.savePendingProfile();
+        } else {
+            this.savePermProfile();
         }
     }
 
     removeAvatar() {
         console.log("ready to remove photo...");
-        if (this.state.newAvatarRef) {
-            app.storage().ref('tempAvatars/' + this.state.newAvatarRef).delete()
-            .catch((err) => {
-                console.log("problem removing temp photo...");
-                console.log(err);
-            })         
-        }
-
-        this.setState({ 
+        this.setState({
             avatar: defaultProfilePic,
-            newAvatarRef: null
-        });
+            newAvatarRef: "removed"
+        })
     }
 
     closeModal() {
@@ -427,12 +416,13 @@ export default class EditProfile extends Component {
                                         ref={c => { this.uploader = c; }}
                                         accept="image/*"
                                         filename={this.state.username}
-                                        storageRef={app.storage().ref('tempAvatars')}
+                                        storageRef={this.state.storageRef}
                                         onChange={this.onChangeImage}
                                         onUploadStart={this.handleUploadStart}
                                         onUploadError={this.handleUploadError}
                                         onUploadSuccess={this.handleUploadSuccess}
                                         onProgress={this.handleProgress}
+                                        hidden
                                         />
                                         <Button bsStyle="danger" disabled={this.state.avatar === defaultProfilePic} onClick={this.removeAvatar}>Remove Avatar</Button>
                                     </label>
