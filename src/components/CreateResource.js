@@ -32,6 +32,12 @@ class CreateResource extends Component {
     }
 
     saveNewResource(myProp) {
+
+      if(this.state.title === "" || this.state.message === "") {
+        alert("One or more required fields are blank.")
+          return;
+      }
+
         //alert("title: " + this.state.title + " and message: " + this.state.message);
         let title = this.state.title;
         let resContent = this.state.message;
