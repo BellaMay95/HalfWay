@@ -247,7 +247,7 @@ export default class Resources extends Component{
            this.state.jobArr.map((job , index) => {
                let thread_id = "thread_" + index;
                return(
-                 <ResourceComponent author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp}/>
+                 <ResourceComponent resource_id={job.id} author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp} resIdentifier = {1}/>
                )
            })
           }
@@ -266,7 +266,7 @@ export default class Resources extends Component{
            this.state.affHouseArr.map((aff , index) => {
                let thread_id = "thread_" + index;
                return(
-                 <ResourceComponent author_name={aff.author_name} message={aff.message} subject={aff.subject} timestamp = {aff.timestamp}/>
+                 <ResourceComponent resource_id={aff.id} author_name={aff.author_name} message={aff.message} subject={aff.subject} timestamp = {aff.timestamp} resIdentifier = {2}/>
                )
            })
           }
@@ -283,7 +283,7 @@ export default class Resources extends Component{
            this.state.stHouseArr.map((sth , index) => {
                let thread_id = "thread_" + index;
                return(
-                 <ResourceComponent author_name={sth.author_name} message={sth.message} subject={sth.subject} timestamp = {sth.timestamp}/>
+                 <ResourceComponent resource_id={sth.id} author_name={sth.author_name} message={sth.message} subject={sth.subject} timestamp = {sth.timestamp} resIdentifier = {3}/>
                )
            })
           }
@@ -300,7 +300,7 @@ export default class Resources extends Component{
            this.state.foodArr.map((food , index) => {
                let thread_id = "thread_" + index;
                return(
-                 <ResourceComponent author_name={food.author_name} message={food.message} subject={food.subject} timestamp = {food.timestamp}/>
+                 <ResourceComponent resource_id={food.id} author_name={food.author_name} message={food.message} subject={food.subject} timestamp = {food.timestamp} resIdentifier = {4}/>
                )
            })
           }
@@ -317,7 +317,7 @@ export default class Resources extends Component{
            this.state.educationArr.map((edu , index) => {
                let thread_id = "thread_" + index;
                return(
-                 <ResourceComponent author_name={edu.author_name} message={edu.message} subject={edu.subject} timestamp = {edu.timestamp}/>
+                 <ResourceComponent resource_id={edu.id} author_name={edu.author_name} message={edu.message} subject={edu.subject} timestamp = {edu.timestamp} resIdentifier = {5}/>
                )
            })
           }

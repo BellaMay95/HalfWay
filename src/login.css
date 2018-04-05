@@ -17,8 +17,12 @@
   padding-bottom: 0px;
 }
 
-#title{
+#loginTitle{
 
   padding-top: 0;
+  color:#59a0e2;
+}
+
+h1{
   color:#59a0e2;
 }
