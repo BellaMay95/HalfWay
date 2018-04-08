@@ -11,6 +11,7 @@ export default class PendingChanges extends Component {
         this.state = {
             changes: null,
             user: null,
+            avatar: this.props.avatar,
             email: this.props.email
         }
     }
@@ -66,8 +67,8 @@ export default class PendingChanges extends Component {
                         { this.state.changes && this.state.changes.avatar ?
                         <tr>
                             <td>Avatar</td>
-                            <td><Image src={this.state.user.photoURL ? this.state.user.photoURL : defaultProfilePic } responsive rounded /></td>
-                        <td>{ this.state.changes.avatar === "removed" ? "Avatar Removed" : <Image src={this.state.changes.avatar} responsive rounded />}</td>
+                            <td><Image src={this.state.avatar} responsive rounded /></td>
+                            <td>{ this.state.changes.avatar === "removed" ? "Avatar Removed" : <Image src={this.state.changes.avatar} responsive rounded />}</td>
                         </tr> : null }
                         <tr>
                             <td>Comments:</td>

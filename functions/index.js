@@ -302,44 +302,15 @@ var usernameExists = (username) => {
     })
 }
 
-app.get('/getUser', (req, res) => {
-    console.log("fetching user!");
-    console.log(req.query);
-    uid = req.query.uid;
-    console.log(uid);
-    admin.auth().getUser(uid)
-    .then((user) => {
-        //console.log(user);
-        let safeUser = {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL
-        }
-        console.log(safeUser);
-        res.send(safeUser);
-    })
-    .catch((err) => {
-        console.log("couldn't fetch user!");
-        console.log(err);
-        res.send({ message: "couldn't find user!"});
-    })
-});
-
-app.post('saveProfile', (req, res) => {
-    let data = JSON.parse(req.body);
-    console.log(data);
-    res.send({ "message": "Received data!", "success": true });
-});
-
 exports.getUser = functions.https.onCall((data) => {
     let uid = data.uid;
-    let email;
+    let email, avatar;
 
     return admin.database().ref('users/' + uid).once('value')
     .then((snapshot) => {
         console.log("email:", snapshot.val().email);
         email = snapshot.val().email;
+        avatar = snapshot.val().avatar;
     })
     .then(() => {
         return admin.auth().getUser(uid)
@@ -350,7 +321,7 @@ exports.getUser = functions.https.onCall((data) => {
                 username: user.email,
                 email: email,
                 displayName: user.displayName,
-                photoURL: user.photoURL
+                photoURL: avatar
             }
             //console.log(safeUser);
             return safeUser;
@@ -420,37 +391,16 @@ exports.saveProfile = functions.https.onCall((data) => {
     })
     .then(() => {
         if (data.avatar) {
-            let bucket = admin.storage().bucket('halfway-a067e.appspot.com');
-            let image = bucket.file('tempAvatars/' + data.avatarRef);
-
-            let year = new Date().getFullYear() + 50;
-            let date = '01-01-' + year;
-
-            //move file to userAvatars
-            image.move('userAvatars/' + data.avatarRef, (err, newFile, response) => {
-                //get url to set in auth
-                newFile.getSignedUrl({
-                    action: 'read',
-                    expires: date
-                }, (err, url) => {
-                    if (err) {
-                        console.log("error getting url!");
-                        console.log(err);
-                        error = true;
-                    }
-                    //set url in auth
-                    admin.auth().updateUser(data.uid, {
-                        photoURL: url
-                    })
-                    .catch((err) => {
-                        console.log("error updating url in auth!");
-                        console.log(err);
-                        error = true;
-                    })
-                });
-            });
-
-            
+            console.log("saving avatar...");
+            //save in the database
+            admin.database().ref('users/' + data.uid).update({
+                avatar: data.avatar !== "removed" ? data.avatar : null
+            })
+            .catch((err) => {
+                console.log("Error setting/removing avatar!");
+                console.log(err);
+                error = true;
+            })       
         }
     })
     .then(() => {
@@ -485,5 +435,49 @@ exports.saveProfile = functions.https.onCall((data) => {
         throw new functions.https.HttpsError('aborted', 'failed to save')
     })
 });
+
+exports.userList = functions.https.onCall(() => {
+    return listAllUsers([])
+    .then((userList) => {
+        //console.log("ready to return:");
+        //console.log(userList);
+        return userList;
+    })
+    .catch((err) => {
+        console.log("error getting userList!");
+        console.log(err);
+        return [];
+    })
+});
+
+function listAllUsers(userList, nextPageToken) {
+    //console.log("ready to find users...");
+    // List batch of users, 1000 at a time.
+    return admin.auth().listUsers(1000, nextPageToken)
+    .then(function(listUsersResult) {
+        //console.log("finished finding users! Adding to the list...");
+        listUsersResult.users.forEach(function(userRecord) {
+            //console.log("adding record!");
+            userList.push({ 
+                uid: userRecord.uid,
+                username: userRecord.email.substr(0, userRecord.email.indexOf('@')),
+                displayName: userRecord.displayName
+            });
+        });
+        if (listUsersResult.pageToken) {
+            //console.log("we need to fetch more users!");
+            // List next batch of users.
+            return listAllUsers(userList, listUsersResult.pageToken)
+        } else {
+            //console.log("preliminary test:");
+            //console.log(userList);
+            return userList;
+        }
+    })
+    .catch(function(error) {
+        console.log("Error listing users:", error);
+        return [];
+    });
+}
 
 exports.app = functions.https.onRequest(app);

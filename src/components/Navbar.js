@@ -78,12 +78,12 @@ export default class TopNavbar extends Component {
 			<Tooltip id="tooltip">Forums</Tooltip>
 		);
 
-		const messageTooltip = (
+		/*const messageTooltip = (
 			<Tooltip id="tooltip">Messages</Tooltip>
-		);
+		);*/
 
 		const settingTooltip = (
-			<Tooltip id="tooltip">Settings</Tooltip>
+			<Tooltip id="tooltip">Profiles & Settings</Tooltip>
 		);
 
 		const resourceTooltip = (
@@ -108,9 +108,9 @@ export default class TopNavbar extends Component {
 							<NavItem id="forum" eventKey={1} onSelect={() => {this.setState({tabContent: <ForumList />})}}>
 								<OverlayTrigger placement="bottom" overlay={forumTooltip}><img height = '30' width = '30' src = {forum} alt = "Forum" /></OverlayTrigger>
 							</NavItem>
-							<NavItem id="message" eventKey={2} onSelect={() => {this.setState({tabContent: "direct message component here"})}}>
+							{/*<NavItem id="message" eventKey={2} onSelect={() => {this.setState({tabContent: "direct message component here"})}}>
 								<OverlayTrigger placement="bottom" overlay={messageTooltip}><img height = '30' width = '30' src = {directmessage} alt = "Direct message" /></OverlayTrigger>
-							</NavItem>
+							</NavItem>*/}
 							<NavItem id="settings" eventKey={3} onSelect={() => {this.setState({tabContent: <ViewProfile />})}}>
 								<OverlayTrigger placement="bottom" overlay={settingTooltip}><img height = '30' width = '30' src = {settings} alt = "User settings" /></OverlayTrigger>
 							</NavItem>
