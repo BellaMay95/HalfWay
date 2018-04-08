@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, BrowserRouter, Route } from 'react-router-dom';
 import { app } from './base';
-import { Spinner } from 'react-spinner';
+//import { Spinner } from 'react-spinner';
 
 import './App.css';
 
@@ -82,7 +82,6 @@ class App extends Component {
 			return (
 				<div>
 					<h3>Loading</h3>
-					{ Spinner }
 				</div>
 			)
 		}

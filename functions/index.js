@@ -22,10 +22,13 @@ app.use(function(req, res, next) {
 var serviceAccount = require('./key.json');
 var databaseURL = "https://halfway-a067e.firebaseio.com/";  //get URL from config file instead
 //var databaseURL = process.env.REACT_APP_FIREBASE_DATABASE;
+var bucketURL = "halfway-a067e.appspot.com"; //get URL from config file instead
+//var bucketURL = process.env.REACT_APP_FIREBASE_STORAGE_BUCKET
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: databaseURL
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: databaseURL,
+    storageBucket: bucketURL
 });
 
 //admin.initializeApp(functions.config().firebase);
@@ -298,5 +301,189 @@ var usernameExists = (username) => {
         return err;
     })
 }
+
+app.get('/getUser', (req, res) => {
+    console.log("fetching user!");
+    console.log(req.query);
+    uid = req.query.uid;
+    console.log(uid);
+    admin.auth().getUser(uid)
+    .then((user) => {
+        //console.log(user);
+        let safeUser = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL
+        }
+        console.log(safeUser);
+        res.send(safeUser);
+    })
+    .catch((err) => {
+        console.log("couldn't fetch user!");
+        console.log(err);
+        res.send({ message: "couldn't find user!"});
+    })
+});
+
+app.post('saveProfile', (req, res) => {
+    let data = JSON.parse(req.body);
+    console.log(data);
+    res.send({ "message": "Received data!", "success": true });
+});
+
+exports.getUser = functions.https.onCall((data) => {
+    let uid = data.uid;
+    let email;
+
+    return admin.database().ref('users/' + uid).once('value')
+    .then((snapshot) => {
+        console.log("email:", snapshot.val().email);
+        email = snapshot.val().email;
+    })
+    .then(() => {
+        return admin.auth().getUser(uid)
+        .then((user) => {
+            //console.log(user);
+            let safeUser = {
+                uid: user.uid,
+                username: user.email,
+                email: email,
+                displayName: user.displayName,
+                photoURL: user.photoURL
+            }
+            //console.log(safeUser);
+            return safeUser;
+            //res.send(safeUser);
+        });
+        /*.catch((err) => {
+            
+        })*/
+    })
+    .catch((err) => {
+        console.log("couldn't fetch user!");
+        console.log(err);
+        //res.send({ message: "couldn't find user!"});
+        throw new functions.https.HttpsError('not-found', "Couldn't fetch user details!");
+    })
+    
+})
+
+exports.saveProfile = functions.https.onCall((data) => {
+    //console.log(data);
+    //email, username, displayName, avatar
+
+    let error = false;
+    let username;
+
+    if (data.username) {
+        console.log("updating username");
+        username = data.username + "@halfway.com";
+        console.log(username);
+    } else {
+        console.log("don't update username");
+        username = data.currname + "@halfway.com";
+        console.log(username);
+    }
+
+    
+    return admin.auth().updateUser(data.uid, {
+        email: username
+    })
+    .then(() => {
+        if (data.profileName) {
+            console.log("updating profile name")
+            //update display name in auth
+            admin.auth().updateUser(data.uid, {
+                displayName: data.profileName
+            })
+            .catch((err) => {
+                console.log("Error saving displayName to auth!");
+                console.log(err);
+                error = true;
+            })
+        }
+    })
+    .then(() => {
+        if (data.email) {
+            console.log("updating email")
+            //call database to change email
+            admin.database().ref('users/' + data.uid).update({
+                email: data.email
+            })
+            .catch((err) => {
+                console.log("Error saving email to database!");
+                console.log(err);
+                error = true;
+            })
+        }
+    })
+    .then(() => {
+        if (data.avatar) {
+            let bucket = admin.storage().bucket('halfway-a067e.appspot.com');
+            let image = bucket.file('tempAvatars/' + data.avatarRef);
+
+            let year = new Date().getFullYear() + 50;
+            let date = '01-01-' + year;
+
+            //move file to userAvatars
+            image.move('userAvatars/' + data.avatarRef, (err, newFile, response) => {
+                //get url to set in auth
+                newFile.getSignedUrl({
+                    action: 'read',
+                    expires: date
+                }, (err, url) => {
+                    if (err) {
+                        console.log("error getting url!");
+                        console.log(err);
+                        error = true;
+                    }
+                    //set url in auth
+                    admin.auth().updateUser(data.uid, {
+                        photoURL: url
+                    })
+                    .catch((err) => {
+                        console.log("error updating url in auth!");
+                        console.log(err);
+                        error = true;
+                    })
+                });
+            });
+
+            
+        }
+    })
+    .then(() => {
+        //if no errors, delete the entry in pendingProfiles
+        console.log("finished! checking error...")
+        if (error) {
+            console.log("Didn't save correctly...");
+            throw new functions.https.HttpsError('aborted', 'failed to save')
+        }
+        else {
+            console.log("successfully updated profile!");
+            //delete profile changes entry
+            return admin.database().ref('pendingProfiles/' + data.uid).set({})
+            .then(() => {
+                let result = {
+                    success: true,
+                    message: "Successfully Updated User Profile!"
+                }
+                return result;
+            })
+            .catch((err) => {
+                console.log("error deleting pending entry!");
+                console.log(err);
+                throw new functions.https.HttpsError('aborted', 'failed to delete pending entry');
+            })
+        }
+    })
+    .catch((err) => {
+        console.log("Error saving username in auth!");
+        console.log(err);
+        error = true;
+        throw new functions.https.HttpsError('aborted', 'failed to save')
+    })
+});
 
 exports.app = functions.https.onRequest(app);

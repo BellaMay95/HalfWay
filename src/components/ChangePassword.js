@@ -66,6 +66,7 @@ export default class ChangePassword extends Component {
         //verify that new passwords match rules:
         // *7+ characters, *at least one capital letter *at least one number *at least one symbol
         // regex taken/modified from: https://dzone.com/articles/use-regex-test-password
+        // eslint-disable-next-line
         var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
         if(!strongRegex.test(this.state.newPassword)) {
             this.setState({ 
@@ -130,7 +131,7 @@ export default class ChangePassword extends Component {
 
     render() {
         return (
-            <Modal.Dialog>
+            <Modal.Dialog style={{ overflow: 'auto' }}>
                 
                 <Modal.Header>
                 <Modal.Title>Change Password!</Modal.Title>

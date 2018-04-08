@@ -33,6 +33,7 @@ export default class ViewProfile extends Component {
 
     componentWillMount() {
         let user = app.auth().currentUser;
+        console.log(user);
         this.getEmail(user.uid)
         .then((email) => {
             this.setState({
@@ -44,8 +45,7 @@ export default class ViewProfile extends Component {
         });
 
         //check to see if pending changes
-        app.database().ref('/pendingProfiles/' + user.uid).once('value')
-        .then((snapshot) => {
+        app.database().ref('/pendingProfiles/' + user.uid).on('value', (snapshot) => {
             if (snapshot.val()) {
                 this.setState({pendingChanges: true});
                 console.log("pending changes!");
@@ -60,18 +60,7 @@ export default class ViewProfile extends Component {
         })
     }
 
-    getEmail(uid) {
-        return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-            return snapshot.val().email;
-		});
-    }
-
-    toggleEditModal() {
-        this.setState({
-          editProfile: !this.state.editProfile
-        });
-
-        //re-check on modal close
+    /*componentWillUpdate() {
         let user = app.auth().currentUser;
         this.getEmail(user.uid)
         .then((email) => {
@@ -82,18 +71,18 @@ export default class ViewProfile extends Component {
                 email: email
             });
         });
+    }*/
 
-        //check to see if pending changes
-        app.database().ref('/pendingProfiles/' + user.uid).once('value')
-        .then((snapshot) => {
-            if (snapshot.val()) {
-                this.setState({pendingChanges: true});
-                console.log("pending changes!");
-            } else {
-                console.log("no pending changes!");
-            }
+    getEmail(uid) {
+        return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
+            return snapshot.val().email;
+		});
+    }
+
+    toggleEditModal() {
+        this.setState({
+          editProfile: !this.state.editProfile
         });
-       
     }
 
     togglePendingChangesModal() {

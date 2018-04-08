@@ -5,6 +5,7 @@
   "dependencies": {
     "@google-cloud/common-grpc": "^0.5.5",
     "@google-cloud/firestore": "^0.12.0",
+    "firebase": "4.12.0",
     "firebase-admin": "^5.9.1",
     "firebase-functions": "^0.8.1",
     "npm": "^5.7.1",
@@ -18,7 +19,6 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
     "react-search-input": "^0.11.3",
-    "react-spinner": "^0.2.7",
     "react-web-tabs": "^0.4.3"
   },
   "scripts": {
@@ -34,7 +34,7 @@
     "firebase-server": "^0.12.0",
     "mockfirebase": "^0.12.0",
     "react-test-renderer": "^16.2.0",
-    "selenium-webdriver": "^4.0.0-alpha.1",
+    "selenium-webdriver": "^3.6.0",
     "sinon": "^4.4.2"
   }
 }
