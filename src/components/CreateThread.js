@@ -86,7 +86,7 @@ class CreateThread extends Component {
 
     render() {
         return (<div className="static-modal">
-            <Modal.Dialog>
+            <Modal.Dialog style={{ overflow: 'auto' }}>
                 {this.state.alertState}
                 <Modal.Header>
                 <Modal.Title>Create New Thread!</Modal.Title>

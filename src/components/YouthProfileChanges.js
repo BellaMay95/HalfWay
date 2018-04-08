@@ -28,10 +28,10 @@ export default class PendingChanges extends Component {
 
     render() {
         return (
-            <Modal.Dialog>
+            <Modal.Dialog style={{ overflow: 'auto' }}>
                 
                 <Modal.Header>
-                <Modal.Title>Change Password!</Modal.Title>
+                <Modal.Title>View Pending Changes</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>

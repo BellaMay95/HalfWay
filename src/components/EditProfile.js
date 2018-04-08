@@ -34,6 +34,7 @@ export default class EditProfile extends Component {
         this.state = {
             uid: "",
             username: "",
+            oldname: "",
             email: this.props.email ? this.props.email : "",
             avatar: "",
             avatarRef: "",
@@ -59,9 +60,16 @@ export default class EditProfile extends Component {
                 avatarRef: snapshot.val().avatarRef,
                 newAvatarRef: snapshot.val().avatarRef,
                 username: user.email.substr(0, user.email.indexOf('@')) ? user.email.substr(0, user.email.indexOf('@')) : "", 
+                oldname: user.email.substr(0, user.email.indexOf('@')) ? user.email.substr(0, user.email.indexOf('@')) : "",
                 profileName: user.displayName ? user.displayName : "",
                 type: snapshot.val().type
             });
+
+            console.log(this.state);
+        })
+        .catch((err) => {
+            console.log("failed to set initial data!");
+            console.log(err);
         })
     }
 
@@ -261,18 +269,18 @@ export default class EditProfile extends Component {
         .then((snapshot) => {
             let userdata = {};
             let date = new Date().toLocaleString();
-            let newComment;
+            let newComment = date + ": Updated: "
             if (snapshot.val()) {
                 userdata = snapshot.val();
                 console.log(userdata);
-                newComment = date + ": Updated: ";
-                    //": Changes Awaiting Approval. Check back soon!");
+                
             }
             else {
                 userdata.comments = [];
                 //userdata.comments.push(date + ": Changes Awaiting Approval. Check back soon!");
-                newComment = date + ": Updated: ";
             }
+            userdata.status = "pending";
+            userdata.currname = this.state.oldname;
             let user = app.auth().currentUser;
             if ((this.state.username + "@halfway.com") !== user.email) {
                 userdata['username'] = this.state.username;
@@ -399,7 +407,7 @@ export default class EditProfile extends Component {
     render() {
         return (
             <div className="static-modal">
-                <Modal.Dialog>
+                <Modal.Dialog style={{ overflow: 'auto' }}g>
                     <Modal.Header>
                         <Modal.Title>Edit Profile Details</Modal.Title>
                     </Modal.Header>
@@ -415,7 +423,7 @@ export default class EditProfile extends Component {
                                         <FileUploader
                                         ref={c => { this.uploader = c; }}
                                         accept="image/*"
-                                        filename={this.state.username}
+                                        filename={this.state.oldname}
                                         storageRef={this.state.storageRef}
                                         onChange={this.onChangeImage}
                                         onUploadStart={this.handleUploadStart}

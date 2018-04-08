@@ -494,7 +494,7 @@ export class DeleteAccount extends Component {
         </form>
 
         {this.state.confirmModal ? <div className="static-modal">
-                    <Modal.Dialog>
+                    <Modal.Dialog style={{ overflow: 'auto' }}>
                         <Modal.Body>Are you sure you wish to delete this account?
                                     An account cannot be recovered once deleted.
                                     Deleting an account does not remove posts or comments associated with the account.
