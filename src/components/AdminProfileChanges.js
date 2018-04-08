@@ -80,6 +80,7 @@ export default class ProfileChanges extends Component {
 
     showAlerts(message, style) {
         console.log("showing alert!");
+        console.log("message:", message);
         this.setState({
             alertShow: <Alert bsStyle={style}>{message}</Alert>
         });
@@ -308,7 +309,7 @@ export class ViewProfileChanges extends Component {
                         <tr>
                             <td>Avatar</td>
                             <td><Image src={this.state.user && this.state.user.photoURL ? this.state.user.photoURL : defaultProfilePic } responsive rounded /></td>
-                        <td>{ this.state.changes.avatar === "removed" ? "Avatar Removed" : <Image src={this.state.changes.avatar} responsive rounded />}</td>
+                            <td>{ this.state.changes.avatar === "removed" ? "Avatar Removed" : <Image src={this.state.changes.avatar} responsive rounded />}</td>
                         </tr> : null }
                         <tr>
                             <td>Comments:</td>
@@ -319,7 +320,7 @@ export class ViewProfileChanges extends Component {
                 <FieldGroup
                     id="formControlsComments"
                     type="text"
-                    label="Comments"
+                    label="Comments -- Required for Rejection"
                     onChange={(evt) => {this.setState({ reason: evt.target.value})}}
                 />
                 <FieldGroup
