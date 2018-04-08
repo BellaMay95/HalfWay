@@ -16,8 +16,15 @@ class ForumComponent extends Component{
       }
   }
 
+  // Calls the toggleCreateCommentModal function in ForumList.js
   handleOpenCreateCommentModal(){
     this.props.toggleCreateCommentModal(this.state.thread_id);
+  }
+
+  // Calls the toggleViewCommentModal function in ForumList.js
+  handleOpenViewCommentModal(){
+    console.log("ForumComponent:: Inside toggleViewCommentModal");
+    this.props.toggleViewCommentModal(this.state.thread_id);
   }
 
   render(){
@@ -36,7 +43,7 @@ class ForumComponent extends Component{
                   <Glyphicon glyph="plus-sign" style={{padding: '5px'}}/>
                   Create Comment
                 </Button>
-                <Button className="viewComments">
+                <Button className="viewComments" onClick={() => this.handleOpenViewCommentModal()}>
                   View Comments
                 </Button>
                 </div>

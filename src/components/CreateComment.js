@@ -37,15 +37,14 @@ class CreateComment extends Component{
     let message = this.state.comment;
     let username = app.auth().currentUser.displayName;
     let userId = app.auth().currentUser.uid
+    let timestamp = new Date().getTime();
 
     let postInfo = {
       "message": message,
       "username": username,
       "userId": userId,
+      "timestamp": timestamp,
     }
-
-    console.log(postInfo);
-    console.log(this.state.thread_id);
 
     // Pushing to the database
     app.database().ref('forum/' + this.state.thread_id + '/comments').push(postInfo, (err) => {
@@ -59,12 +58,13 @@ class CreateComment extends Component{
     });
 
     // After saving call closeModal to toggle the Modal
-    this.closeModal();
+    this.closeModal;
   }
 
   render(){
     return (
         <div className="static-modal">
+          {console.log("CreateComment:: Inside return")};
           <Modal.Dialog>
               <Modal.Header>
                 <Modal.Title>Create Comment</Modal.Title>

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem, Glyphicon, Panel, PanelGroup, Well, Alert } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, Glyphicon, Well, Alert } from 'react-bootstrap';
 import { app } from '../base';
 import ForumComponent from './ForumComponent';
 import CreateThread from './CreateThread';
 import CreateComment from './CreateComment';
+import ViewComment from './ViewComment';
 
 class Forum extends Component {
     constructor(props) {
@@ -11,6 +12,7 @@ class Forum extends Component {
         this.toggleThreadModal = this.toggleThreadModal.bind(this);
         this.createThreadAlert = this.createThreadAlert.bind(this);
         this.toggleCreateCommentModal = this.toggleCreateCommentModal.bind(this);
+        this.toggleViewCommentModal = this.toggleViewCommentModal.bind(this);
 
     // Make a reference to a database on firebase //list of notes stored on db property
     // app refers to our application
@@ -45,7 +47,6 @@ class Forum extends Component {
           author_name: snap.val().author_name,
           message: snap.val().message,
           subject: snap.val().subject,
-          key: snap.key,
           timestamp: this.getDateTime(snap.val().timestamp),
         })
 
@@ -89,10 +90,12 @@ class Forum extends Component {
     }
 
     // Changes the state of the viewComment to trigger whether the modal should be displayed
-    toggleViewCommentModal(){
+    toggleViewCommentModal(threadID){
+      console.log("ForumList:: Inside toggleViewCommentModal");
       this.setState({
         viewComment: !this.state.viewComment,
-      })
+        thread_id: threadID,
+      });
     }
 
     render() {
@@ -131,13 +134,16 @@ class Forum extends Component {
                       /* Going through the array and displaying all of the forums in a panel view*/
                       this.state.forumList.map((forum, index) => {
                           return(
-                            <ForumComponent key={index} thread_id={forum.key} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal}/>
+                            <ForumComponent key={index} thread_id={forum.id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal}/>
                           )
                         })
                     }
                </div>
                { /*This will check if the state of the Create comment is true. If it is, it will call the CreateComment file which displays the Modal*/}
                {this.state.createComment && <CreateComment closeCreateCommentModal={this.toggleCreateCommentModal} thread_id={this.state.thread_id}/>}
+
+               { /*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
+               {this.state.viewComment && <ViewComment closeViewCommentModal={this.toggleViewCommentModal} thread_id={this.state.thread_id}/>}
             </div>
         )
     }
