@@ -64,7 +64,6 @@ class CreateComment extends Component{
   render(){
     return (
         <div className="static-modal">
-          {console.log("CreateComment:: Inside return")};
           <Modal.Dialog>
               <Modal.Header>
                 <Modal.Title>Create Comment</Modal.Title>
@@ -93,8 +92,6 @@ class CreateComment extends Component{
                   <Button bsStyle="primary" onClick={this.saveComment}>Create Comment!</Button>
               </Modal.Footer>
           </Modal.Dialog>
-
-          {console.log("CreateComment:: " + this.state.thread_id)}
       </div>
     );
   }

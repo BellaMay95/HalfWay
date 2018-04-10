@@ -36,7 +36,7 @@ class CreateThread extends Component {
         this.setState({ isLoading: true });
         //alert("title: " + this.state.title + " and message: " + this.state.message);
         if(this.state.title === "" || this.state.message === "") {
-          this.setState({ 
+          this.setState({
             alertState: <Alert bsStyle="warning">One or more required fields are empty.</Alert>,
             isLoading: false
           });
@@ -52,7 +52,7 @@ class CreateThread extends Component {
         let username = app.auth().currentUser.displayName;
         let userId = app.auth().currentUser.uid;
         let timestamp = new Date().getTime();
-       
+
         //alert(newpostref);
         let postInfo = {
           "author_id": userId,
@@ -70,7 +70,7 @@ class CreateThread extends Component {
           } else {
             //alert("Error posting thread!");
             //this.closeModal();
-            this.setState({ 
+            this.setState({
               alertState: <Alert bsStyle="danger">Error Creating Thread! Try again later.</Alert>,
               isLoading: false
             });

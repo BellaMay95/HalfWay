@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { app } from '../base';
 import { Modal, Button, ListGroup, ListGroupItem, Well } from 'react-bootstrap';
+import './ViewComment.css';
 
 // create class
 class ViewComment extends Component{
@@ -235,7 +236,7 @@ componentWillMount(){
                     this.state.commentToDisplay.map((comment, index) => {
                       return(
                         <div>
-                          <ListGroupItem key={index}>
+                          <ListGroupItem className="commentItem" key={index}>
                             <div>
                               <h3>{ comment.author_name + ":"}</h3>
                               <p>{comment.message}</p>
