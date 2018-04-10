@@ -5,6 +5,7 @@ import ForumComponent from './ForumComponent';
 import CreateThread from './CreateThread';
 import CreateComment from './CreateComment';
 import ViewComment from './ViewComment';
+import FlagForum from './FlagForum';
 
 class Forum extends Component {
     constructor(props) {
@@ -13,6 +14,7 @@ class Forum extends Component {
         this.createThreadAlert = this.createThreadAlert.bind(this);
         this.toggleCreateCommentModal = this.toggleCreateCommentModal.bind(this);
         this.toggleViewCommentModal = this.toggleViewCommentModal.bind(this);
+        this.toggleFlagForumPost = this.toggleFlagForumPost.bind(this);
 
     // Make a reference to a database on firebase //list of notes stored on db property
     // app refers to our application
@@ -27,9 +29,12 @@ class Forum extends Component {
             createAlert: null,
             createComment: false,
             viewComment: false,
+            viewFlagForum: false,
             // Array that holds all of the Forums pulled from the database
             forumList: [],
             thread_id: null,
+            thread_message: null,
+            thread_UserName: null,
         }
     }
 
@@ -48,6 +53,8 @@ class Forum extends Component {
           message: snap.val().message,
           subject: snap.val().subject,
           timestamp: this.getDateTime(snap.val().timestamp),
+          alertState: null,
+          isLoading: false,
         })
 
         //reverse the array to show newest posts first
@@ -91,11 +98,19 @@ class Forum extends Component {
 
     // Changes the state of the viewComment to trigger whether the modal should be displayed
     toggleViewCommentModal(threadID){
-      console.log("ForumList:: Inside toggleViewCommentModal");
       this.setState({
         viewComment: !this.state.viewComment,
         thread_id: threadID,
       });
+    }
+
+    toggleFlagForumPost(threadId, threadMessage, threadUserName){
+      this.setState({
+        viewFlagForum: !this.state.viewFlagForum,
+        thread_id: threadId,
+        thread_message: threadMessage,
+        thread_UserName: threadUserName,
+      })
     }
 
     render() {
@@ -134,7 +149,7 @@ class Forum extends Component {
                       /* Going through the array and displaying all of the forums in a panel view*/
                       this.state.forumList.map((forum, index) => {
                           return(
-                            <ForumComponent key={index} thread_id={forum.id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal}/>
+                            <ForumComponent key={index} thread_id={forum.id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost}/>
                           )
                         })
                     }
@@ -144,6 +159,10 @@ class Forum extends Component {
 
                { /*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
                {this.state.viewComment && <ViewComment closeViewCommentModal={this.toggleViewCommentModal} thread_id={this.state.thread_id}/>}
+
+               {/*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
+               {this.state.viewFlagForum && <FlagForum closeViewFlagForum={this.toggleFlagForumPost} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName}/>}
+
             </div>
         )
     }
