@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock, Alert } from 'react-bootstrap';
 import { app } from '../base';
 
+// FieldGroup set-up pull directly from react boostrap
 function FieldGroup({ id, label, help, ...props }) {
   return (
     <FormGroup controlId={id}>
@@ -21,17 +22,24 @@ class CreateThread extends Component {
           title: "",
           message: "",
           alertState: null,
+          isLoading: false
         }
     }
 
+    // Changes state of the createThread in ForumList thus closing the modal
     closeModal() {
         this.props.closeThreadModal();
     }
 
+    // Pushing the new thread to the data
     saveNewThread() {
+        this.setState({ isLoading: true });
         //alert("title: " + this.state.title + " and message: " + this.state.message);
         if(this.state.title === "" || this.state.message === "") {
-          this.setState({ alertState: <Alert bsStyle="warning">One or more required fields are empty.</Alert>});
+          this.setState({ 
+            alertState: <Alert bsStyle="warning">One or more required fields are empty.</Alert>,
+            isLoading: false
+          });
 
             window.setTimeout(() => {
                 this.setState({ alertState: null });
@@ -56,12 +64,16 @@ class CreateThread extends Component {
         app.database().ref('forum').push(postInfo, (err) => {
           if (!err) {
             //alert("Thread Posted Successfully!");
+            this.setState({ isLoading: false });
             this.props.showAlert();
             this.closeModal();
           } else {
             //alert("Error posting thread!");
             //this.closeModal();
-            this.setState({ alertState: <Alert bsStyle="danger">Error Creating Thread! Try again later.</Alert>});
+            this.setState({ 
+              alertState: <Alert bsStyle="danger">Error Creating Thread! Try again later.</Alert>,
+              isLoading: false
+            });
 
             window.setTimeout(() => {
                 this.setState({ alertState: null });
@@ -69,12 +81,12 @@ class CreateThread extends Component {
           }
         });
         //alert(JSON.stringify(postInfo));
-        //newpostref.set(postInfo);   
+        //newpostref.set(postInfo);
     }
 
     render() {
         return (<div className="static-modal">
-            <Modal.Dialog>
+            <Modal.Dialog style={{ overflow: 'auto' }}>
                 {this.state.alertState}
                 <Modal.Header>
                 <Modal.Title>Create New Thread!</Modal.Title>
@@ -98,7 +110,7 @@ class CreateThread extends Component {
 
                 <Modal.Footer>
                     <Button onClick={this.closeModal}>Close</Button>
-                    <Button bsStyle="primary" onClick={this.saveNewThread}>Create Thread!</Button>
+                    <Button bsStyle="primary" onClick={this.saveNewThread} disabled={this.state.isLoading}>Create Thread!</Button>
                 </Modal.Footer>
             </Modal.Dialog>
         </div>);

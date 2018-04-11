@@ -32,6 +32,12 @@ class CreateResource extends Component {
     }
 
     saveNewResource(myProp) {
+
+      if(this.state.title === "" || this.state.message === "") {
+        alert("One or more required fields are blank.")
+          return;
+      }
+
         //alert("title: " + this.state.title + " and message: " + this.state.message);
         let title = this.state.title;
         let resContent = this.state.message;
@@ -49,10 +55,10 @@ class CreateResource extends Component {
         };
         app.database().ref('resources/' + this.props.myProp).push(postInfo, (err) => {
           if (!err) {
-            alert("Thread Posted Successfully!");
+            alert("Resource Posted Successfully!");
             this.closeModal();
           } else {
-            alert("Error posting thread!");
+            alert("Error posting Resource!");
             this.closeModal();
           }
         });
