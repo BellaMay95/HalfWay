@@ -6,6 +6,7 @@ import CreateThread from './CreateThread';
 import CreateComment from './CreateComment';
 import ViewComment from './ViewComment';
 import FlagForum from './FlagForum';
+import FlagComment from './FlagComment';
 
 class Forum extends Component {
     constructor(props) {
@@ -15,6 +16,7 @@ class Forum extends Component {
         this.toggleCreateCommentModal = this.toggleCreateCommentModal.bind(this);
         this.toggleViewCommentModal = this.toggleViewCommentModal.bind(this);
         this.toggleFlagForumPost = this.toggleFlagForumPost.bind(this);
+        this.toggleFlagCommentPost = this.toggleFlagCommentPost.bind(this);
 
     // Make a reference to a database on firebase //list of notes stored on db property
     // app refers to our application
@@ -30,18 +32,22 @@ class Forum extends Component {
             createComment: false,
             viewComment: false,
             viewFlagForum: false,
+            viewFlagComment: false,
             // Array that holds all of the Forums pulled from the database
             forumList: [],
             thread_id: null,
             thread_message: null,
             thread_UserName: null,
+            comment_id: null,
+            comment_message: null,
+            comment_UserName: null,
         }
     }
 
     // Will mount happens after initialization but before the render (for more information look up the lifecycles of react components)
     // This will be where the forumList array is filled in by pulling from the database
     componentWillMount(){
-      var prevForum = this.state.forumList;  // Set previousForum to current state
+      let prevForum = this.state.forumList;  // Set previousForum to current state
 
       // Get DataSnapshot every time a child is added to the array
       // Push this new forum data onto the prevForum array
@@ -56,13 +62,44 @@ class Forum extends Component {
           alertState: null,
           isLoading: false,
         })
+//prevForum = prevForum.reverse();
+        //console.log("Key:: " + snap.key);
 
         //reverse the array to show newest posts first
-        prevForum = prevForum.reverse();
+
+
+/*
+        let revArray = [];
+
+        for(let i = (prevForum.length-1); i>(-1); i--){
+          revArray.push({
+            id: prevForum[i].key,
+            author_id: prevForum[i].author_id,
+            author_name: prevForum[i].author_name,
+            message: prevForum[i].message,
+            subject: prevForum[i].subject,
+            timestamp: prevForum[i].timestamp,
+            alertState: null,
+            isLoading: false,
+          })
+        }
+
+        revArray.map((forum, index) => {
+          return(
+            console.log("**Rev: " + forum.message)
+          )
+        })
+
+        prevForum.map((forum, index) => {
+          return(
+            console.log("++Prev: " + forum.message)
+          )
+        })
+*/
         // Push the array that we have just updated (previousForum) to the state
         //  Set forumList to the prevForum
         this.setState({
-          forumList: prevForum
+          forumList: prevForum,
         })
       })
     }
@@ -97,10 +134,12 @@ class Forum extends Component {
     }
 
     // Changes the state of the viewComment to trigger whether the modal should be displayed
-    toggleViewCommentModal(threadID){
+    toggleViewCommentModal(threadID, threadMessage, threadUserName){
       this.setState({
         viewComment: !this.state.viewComment,
         thread_id: threadID,
+        thread_message: threadMessage,
+        thread_UserName: threadUserName,
       });
     }
 
@@ -110,6 +149,18 @@ class Forum extends Component {
         thread_id: threadId,
         thread_message: threadMessage,
         thread_UserName: threadUserName,
+      })
+    }
+
+    toggleFlagCommentPost(threadId, threadMessage, threadUserName, commentId, commentMessage, commentUserName){
+        this.setState({
+        viewFlagComment: !this.state.viewFlagComment,
+        thread_id: threadId,
+        thread_message: threadMessage,
+        thread_UserName: threadUserName,
+        comment_id: commentId,
+        comment_message: commentMessage,
+        comment_UserName: commentUserName,
       })
     }
 
@@ -147,9 +198,11 @@ class Forum extends Component {
                     }
                     {
                       /* Going through the array and displaying all of the forums in a panel view*/
-                      this.state.forumList.map((forum, index) => {
+                      this.state.forumList.map((forum) => {
                           return(
-                            <ForumComponent key={index} thread_id={forum.id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost}/>
+                            <div>
+                            <ForumComponent key={forum.key} thread_id={forum.id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
+                            </div>
                           )
                         })
                     }
@@ -158,10 +211,13 @@ class Forum extends Component {
                {this.state.createComment && <CreateComment closeCreateCommentModal={this.toggleCreateCommentModal} thread_id={this.state.thread_id}/>}
 
                { /*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
-               {this.state.viewComment && <ViewComment closeViewCommentModal={this.toggleViewCommentModal} thread_id={this.state.thread_id}/>}
+               {this.state.viewComment && <ViewComment closeViewCommentModal={this.toggleViewCommentModal} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName} comment_id={this.state.comment_id} comment_message={this.state.comment_message} comment_UserName={this.state.comment_UserName} toggleFlagCommentPost={this.toggleFlagCommentPost}/>}
 
                {/*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
                {this.state.viewFlagForum && <FlagForum closeViewFlagForum={this.toggleFlagForumPost} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName}/>}
+
+               {/*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
+               {this.state.viewFlagComment && <FlagComment closeViewFlagComment={this.toggleFlagCommentPost} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName} comment_id={this.state.comment_id} comment_message={this.state.comment_message} comment_UserName={this.state.comment_UserName}/>}
 
             </div>
         )

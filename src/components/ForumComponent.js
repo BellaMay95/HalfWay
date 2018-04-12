@@ -27,7 +27,7 @@ class ForumComponent extends Component{
 
   // Calls the toggleViewCommentModal function in ForumList.js
   handleOpenViewCommentModal(){
-    this.props.toggleViewCommentModal(this.state.thread_id);
+    this.props.toggleViewCommentModal(this.state.thread_id, this.state.message, this.state.author_name);
   }
 
   // Calls the toggleFlagForumPost function in ForumList.js

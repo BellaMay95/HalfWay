@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import { app } from '../base';
-import { Modal, Button, ListGroup, ListGroupItem, Well } from 'react-bootstrap';
+import { Modal, Button, ListGroup, ListGroupItem, Well, Image } from 'react-bootstrap';
 import './ViewComment.css';
+import warning from '../images/warning.png';
 
 // create class
 class ViewComment extends Component{
@@ -12,6 +13,7 @@ class ViewComment extends Component{
     this.pullNextComments = this.pullNextComments.bind(this);
     this.nextButtonOnClickHandler = this.nextButtonOnClickHandler.bind(this);
     this.prevButtonOnClickHandler = this.prevButtonOnClickHandler.bind(this);
+    this.handleOpenFlagCommentModal = this.handleOpenFlagCommentModal.bind(this);
 
     this.state = {
       // Array of current comments being displayed and the prev comments
@@ -215,6 +217,17 @@ componentWillMount(){
     }
 }
 
+// Calls the toggleFlagForumPost function in ForumList.js
+handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
+  console.log("Comment Message: " + CommentMessage);
+
+  console.log("ViewComment:: Thread_message: " + this.props.thread_message);
+  console.log("ViewComment:: Thread_userName: " + this.props.thread_UserName);
+  console.log("ViewComment:: CommentAuthor: " + CommentAuthor);
+
+  this.props.toggleFlagCommentPost(this.props.thread_id, this.props.thread_message, this.props.thread_UserName, commentID, CommentMessage, CommentAuthor);
+}
+
   render(){
     return(
       <div className="static-modal">
@@ -240,6 +253,9 @@ componentWillMount(){
                             <div>
                               <h3>{ comment.author_name + ":"}</h3>
                               <p>{comment.message}</p>
+                              {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/}
+                              <Image className="warningSign" src={warning} responsive onClick={() => this.handleOpenFlagCommentModal(comment.id, comment.message, comment.author_name)}/>
+                              <div className="clearfix"></div>
                             </div>
                           </ListGroupItem>
                       </div>
