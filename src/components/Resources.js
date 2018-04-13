@@ -88,6 +88,19 @@ export default class Resources extends Component{
             })
           })
 
+          //remove section of jobs section
+          this.databaseJ.on('child_removed', snap => {
+            for(var i=0; i < prevJob.length; i++){
+              if (prevJob[i].id === snap.key){
+                prevJob.splice(i,1);
+              }
+            }
+
+              this.setState({
+                jobArr: prevJob
+                })
+              })
+
 /* this section outlines the set up for the affordablehousing section to pull from database*/
   var prevAffH = this.state.affHouseArr;
   // Set previousForum to current state
@@ -110,6 +123,19 @@ export default class Resources extends Component{
         affHouseArr: prevAffH
         })
       })
+//remove section of afforable Housing
+this.databaseA.on('child_removed', snap => {
+  for(var i=0; i < prevAffH.length; i++){
+    if (prevAffH[i].id === snap.key){
+      prevAffH.splice(i,1);
+    }
+  }
+
+    this.setState({
+      affHouseArr: prevAffH
+      })
+    })
+
 
 /*this section outlines for short term housing section of resources*/
   var prevSTH = this.state.stHouseArr;
@@ -133,6 +159,18 @@ export default class Resources extends Component{
             stHouseArr: prevSTH
             })
           })
+//this is the remove section of the short term Housing
+this.databaseS.on('child_removed', snap => {
+  for(var i=0; i < prevSTH.length; i++){
+    if (prevSTH[i].id === snap.key){
+      prevSTH.splice(i,1);
+    }
+  }
+    this.setState({
+      stHouseArr: prevSTH
+      })
+    })
+
 
 /*this section outlines for food section of resources*/
     var prevFood = this.state.foodArr;
@@ -175,6 +213,8 @@ export default class Resources extends Component{
             educationArr: prevEducation
           })
         })
+
+
 
 	//checks for admin privileges before rendering component
 		this.checkAdmin()
