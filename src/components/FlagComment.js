@@ -61,11 +61,7 @@ class FlagComment extends Component {
       reason_message: this.state.reasonMessage,
     }
 
-    console.log("Info thread_message: " + flagInfo.thread_message);
-    console.log("Info thread_userName: " + flagInfo.thread_userName);
-    console.log("Info this.props.comment_UserName: " + this.props.comment_UserName);
-
-    app.database().ref('flagged/comments/').push(flagInfo, (err) => {
+    app.database().ref('flaggedComments/').push(flagInfo, (err) => {
       if (!err) {
         this.setState({ isLoading: false });
         this.closeModal();
