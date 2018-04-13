@@ -59,7 +59,7 @@ class FlagForum extends Component {
       reason_message: this.state.reasonMessage,
     }
 
-    app.database().ref('flagged/').push(flagInfo, (err) => {
+    app.database().ref('flaggedForum/').push(flagInfo, (err) => {
       if (!err) {
         this.setState({ isLoading: false });
         this.closeModal();
