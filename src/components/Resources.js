@@ -92,14 +92,17 @@ export default class Resources extends Component{
           this.databaseJ.on('child_removed', snap => {
             for(var i=0; i < prevJob.length; i++){
               if (prevJob[i].id === snap.key){
+                console.log("snap.key:: " + snap.key);
+                console.log("prevJob[i].id: " + prevJob[i].id);
+                console.log("i: " + i);
                 prevJob.splice(i,1);
               }
             }
 
-              this.setState({
-                jobArr: prevJob
-                })
-              })
+            this.setState({
+              jobArr: prevJob
+            })
+          })
 
 /* this section outlines the set up for the affordablehousing section to pull from database*/
   var prevAffH = this.state.affHouseArr;
@@ -287,7 +290,9 @@ this.databaseS.on('child_removed', snap => {
            this.state.jobArr.map((job , index) => {
                let thread_id = "thread_" + index;
                return(
-                 <ResourceComponent resource_id={job.id} author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp} resIdentifier = {1}/>
+                <div key={job.id}>
+                 <ResourceComponent  resource_id={job.id} author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp} resIdentifier = {1}/>
+               </div>
                )
            })
           }
