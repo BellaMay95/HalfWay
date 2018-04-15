@@ -34,7 +34,7 @@ export default class Resources extends Component{
 
   handleSelect(activeKey) {
     console.log(activeKey);
-    let resType;
+    //let resType;
     if (activeKey == 1)
     {
       this.setState({ resType: 'job' });
@@ -196,6 +196,18 @@ this.databaseS.on('child_removed', snap => {
       })
     })
 
+    //this is the remove section of the food
+    this.databaseF.on('child_removed', snap => {
+      for(var i=0; i < prevFood.length; i++){
+        if (prevFood[i].id === snap.key){
+          prevFood.splice(i,1);
+        }
+      }
+        this.setState({
+          foodArr: prevFood
+          })
+        })
+
     /*this section outlines for education section of resources*/
         var prevEducation = this.state.educationArr;
             // Set previousForum to current state
@@ -216,6 +228,17 @@ this.databaseS.on('child_removed', snap => {
             educationArr: prevEducation
           })
         })
+        //this is the remove section of the education
+        this.databaseE.on('child_removed', snap => {
+          for(var i=0; i < prevEducation.length; i++){
+            if (prevEducation[i].id === snap.key){
+              prevEducation.splice(i,1);
+            }
+          }
+            this.setState({
+              educationArr: prevEducation
+              })
+            })
 
 
 
@@ -288,7 +311,6 @@ this.databaseS.on('child_removed', snap => {
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.jobArr.map((job , index) => {
-               let thread_id = "thread_" + index;
                return(
                 <div key={job.id}>
                  <ResourceComponent  resource_id={job.id} author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp} resIdentifier = {1}/>
@@ -309,9 +331,10 @@ this.databaseS.on('child_removed', snap => {
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.affHouseArr.map((aff , index) => {
-               let thread_id = "thread_" + index;
                return(
+                 <div key={aff.id}>
                  <ResourceComponent resource_id={aff.id} author_name={aff.author_name} message={aff.message} subject={aff.subject} timestamp = {aff.timestamp} resIdentifier = {2}/>
+                 </div>
                )
            })
           }
@@ -326,9 +349,10 @@ this.databaseS.on('child_removed', snap => {
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.stHouseArr.map((sth , index) => {
-               let thread_id = "thread_" + index;
                return(
+                 <div key={sth.id}>
                  <ResourceComponent resource_id={sth.id} author_name={sth.author_name} message={sth.message} subject={sth.subject} timestamp = {sth.timestamp} resIdentifier = {3}/>
+                 </div>
                )
            })
           }
@@ -343,9 +367,10 @@ this.databaseS.on('child_removed', snap => {
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.foodArr.map((food , index) => {
-               let thread_id = "thread_" + index;
                return(
+                 <div key={food.id}>
                  <ResourceComponent resource_id={food.id} author_name={food.author_name} message={food.message} subject={food.subject} timestamp = {food.timestamp} resIdentifier = {4}/>
+                 </div>
                )
            })
           }
@@ -360,9 +385,10 @@ this.databaseS.on('child_removed', snap => {
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.educationArr.map((edu , index) => {
-               let thread_id = "thread_" + index;
                return(
+                 <div key={edu.id}>
                  <ResourceComponent resource_id={edu.id} author_name={edu.author_name} message={edu.message} subject={edu.subject} timestamp = {edu.timestamp} resIdentifier = {5}/>
+                 </div>
                )
            })
           }

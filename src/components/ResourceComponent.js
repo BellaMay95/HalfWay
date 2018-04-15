@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem, Glyphicon, Panel, PanelGroup, Well, Button, Alert } from 'react-bootstrap';
+import {Glyphicon, Panel, PanelGroup,Button} from 'react-bootstrap';
 import { app } from '../base';
 import './ForumComponent.css';
 
