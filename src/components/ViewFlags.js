@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Button, Panel} from 'react-bootstrap';
+import {Panel} from 'react-bootstrap';
 import { app } from '../base';
 import FlagsComponent from './FlagsComponent';
 import FlagsCommentComponent from './FlagsCommentComponent'
@@ -17,7 +17,7 @@ export default class ViewFlags extends Component {
     }
   }
 
-  componentWillMount(length){
+  componentWillMount(){
 
     //section  begins for setting up flagged posts
     var flaggedPosts = this.state.flagsArr;
@@ -41,6 +41,18 @@ export default class ViewFlags extends Component {
         flagsArr: flaggedPosts,
       })
     })
+    //this is the remove section of flagged posts
+    this.database.on('child_removed', snap => {
+      for(var i=0; i < flaggedPosts.length; i++){
+        if (flaggedPosts[i].id === snap.key){
+          flaggedPosts.splice(i,1);
+        }
+      }
+        this.setState({
+          flagsArr: flaggedPosts
+          })
+        })
+
 
 //section begings for setting up getting comment flags
       var flaggedComments = this.state.flaggedCommentsArr;
@@ -66,6 +78,18 @@ export default class ViewFlags extends Component {
         })
       })
 
+      //this is the remove section of the flagged comments
+      this.databaseC.on('child_removed', snap => {
+        for(var i=0; i < flaggedComments.length; i++){
+          if (flaggedComments[i].id === snap.key){
+            flaggedComments.splice(i,1);
+          }
+        }
+          this.setState({
+            flaggedCommentsArr: flaggedComments
+            })
+          })
+
 
   }
 
@@ -90,10 +114,12 @@ export default class ViewFlags extends Component {
 
         this.state.flagsArr.map((post , index) => {
             if (index === 0){
-              return(<div><h1>Flagged Posts</h1><FlagsComponent flagged_id = {post.id}  thread_id={post.thread_id} reason_message={post.reason_message} thread_message={post.thread_message} thread_userName={post.thread_userName}/></div>);
+              return(<div key={post.id}><h1>Flagged Posts</h1><FlagsComponent flagged_id = {post.id}  thread_id={post.thread_id} reason_message={post.reason_message} thread_message={post.thread_message} thread_userName={post.thread_userName}/></div>);
             }
             return(
+              <div key={post.id}>
               <FlagsComponent flagged_id = {post.id}  thread_id={post.thread_id} reason_message={post.reason_message} thread_message={post.thread_message} thread_userName={post.thread_userName}/>
+              </div>
             )
         })
 
@@ -108,10 +134,12 @@ export default class ViewFlags extends Component {
         {
         this.state.flaggedCommentsArr.map((com , index) => {
             if (index === 0){
-              return(<div><h1>Flagged Comments</h1><FlagsCommentComponent flagged_id = {com.id}  thread_id={com.thread_id} reason_message={com.reason_message} thread_message={com.thread_message} thread_userName={com.thread_userName} comment_id={com.comment_id} comment_message={com.comment_message}/></div>);
+              return(<div key={com.id}><h1>Flagged Comments</h1><FlagsCommentComponent flagged_id = {com.id}  thread_id={com.thread_id} reason_message={com.reason_message} thread_message={com.thread_message} thread_userName={com.thread_userName} comment_id={com.comment_id} comment_message={com.comment_message}/></div>);
             }
             return(
+              <div key={com.id}>
               <FlagsCommentComponent flagged_id = {com.id}  thread_id={com.thread_id} reason_message={com.reason_message} thread_message={com.thread_message} thread_userName={com.thread_userName} comment_id={com.comment_id} comment_message={com.comment_message}/>
+              </div>
             )
         })
         }
