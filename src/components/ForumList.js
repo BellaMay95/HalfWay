@@ -52,7 +52,7 @@ class Forum extends Component {
       // Get DataSnapshot every time a child is added to the array
       // Push this new forum data onto the prevForum array
       this.database.on('child_added', snap => {
-        prevForum.push({
+        prevForum.unshift({
           id: snap.key,
           author_id: snap.val().author_id,
           author_name: snap.val().author_name,
@@ -62,44 +62,23 @@ class Forum extends Component {
           alertState: null,
           isLoading: false,
         })
-//prevForum = prevForum.reverse();
-        //console.log("Key:: " + snap.key);
 
-        //reverse the array to show newest posts first
-
-
-/*
-        let revArray = [];
-
-        for(let i = (prevForum.length-1); i>(-1); i--){
-          revArray.push({
-            id: prevForum[i].key,
-            author_id: prevForum[i].author_id,
-            author_name: prevForum[i].author_name,
-            message: prevForum[i].message,
-            subject: prevForum[i].subject,
-            timestamp: prevForum[i].timestamp,
-            alertState: null,
-            isLoading: false,
-          })
-        }
-
-        revArray.map((forum, index) => {
-          return(
-            console.log("**Rev: " + forum.message)
-          )
-        })
-
-        prevForum.map((forum, index) => {
-          return(
-            console.log("++Prev: " + forum.message)
-          )
-        })
-*/
         // Push the array that we have just updated (previousForum) to the state
         //  Set forumList to the prevForum
         this.setState({
           forumList: prevForum,
+        })
+      })
+
+      this.database.on('child_removed', snap => {     // Listening for when a child gets removed from our database
+        for(var i=0; i < prevForum.length; i++){ // Get all items in array
+          if(prevForum[i].id === snap.key){
+            prevForum.splice(i,1); // Splice out of notes array // Par (i: at this index, 1: how many to delete)
+          }
+        }
+        // Push the array that we have just updated (previousNotes) to the state
+        this.setState({
+          notes: prevForum
         })
       })
     }
@@ -189,7 +168,6 @@ class Forum extends Component {
                 </Navbar>
                 {this.state.createThread && <CreateThread showAlert={this.createThreadAlert} closeThreadModal={this.toggleThreadModal}/>}
                 {this.state.createAlert}
-
                 <div className='forumBody'>
                     {   //displays message if there aren't any forum threads to display
                         this.state.forumList.length === 0 ?
@@ -200,8 +178,8 @@ class Forum extends Component {
                       /* Going through the array and displaying all of the forums in a panel view*/
                       this.state.forumList.map((forum) => {
                           return(
-                            <div>
-                            <ForumComponent key={forum.key} thread_id={forum.id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
+                            <div key={forum.id}>
+                            <ForumComponent thread_id={forum.id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
                             </div>
                           )
                         })
