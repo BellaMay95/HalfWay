@@ -7,8 +7,9 @@ import './App.css';
 
 import Login from './components/Login';
 import Logout from './components/Logout';
-import Sidebar from './components/Sidebar';
+//import Sidebar from './components/Sidebar';
 import TopNavbar from './components/Navbar';
+import ResetPassword from './components/ResetPassword';
 
 function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
 	/*if authenticated, load requested component/route, otherwise redirect to login route*/
@@ -94,6 +95,8 @@ class App extends Component {
 						<Route exact path="/login" render={(props) => {
 							return <Login setCurrentUser={this.setCurrentUser} {...props} />
 						}} />
+						{/* 'reset' path lets the user reset their password */}
+						<Route exact path="/reset" component={ResetPassword} />
 						{/* 'logout' path returns logout component */}
 						<Route exact path="/logout" component={Logout} />
 						{/*the rest of the routes are protected. If the user is not logged in, it redirects to the login page */}
@@ -103,12 +106,12 @@ class App extends Component {
 							authenticated={this.state.authenticated}
 							component={TopNavbar}
 						/>
-						<AuthenticatedRoute
+						{/*<AuthenticatedRoute
 							exact
 							path="/sidebar"
 							authenticated={this.state.authenticated}
 							component={Sidebar}
-						/>
+						/>*/}
 
 					</div>
 				</BrowserRouter>
