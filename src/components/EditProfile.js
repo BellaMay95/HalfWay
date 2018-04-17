@@ -29,9 +29,8 @@ export default class EditProfile extends Component {
         
         this.state = {
             uid: "",
-            username: "",
-            oldname: "",
-            email: this.props.email ? this.props.email : "",
+            oldemail: "",
+            email: "",
             avatar: "",
             profileName: "",
             confirmPassword: "",
@@ -39,39 +38,58 @@ export default class EditProfile extends Component {
             isUploading: false,
             alertState: null,
             progress: 0,
-            type: "",
-            storageRef: app.storage().ref()
+            type: this.props.type ? this.props.type : "youth", //if no type sent, assume it's a youth account
+            storageRef: app.storage().ref() //only for the uploader element
         }
     }
 
     componentWillMount() {
         let user = app.auth().currentUser;
-        app.database().ref('users/' + user.uid).once('value')
-        .then((snapshot) => {
-            this.setState({
-                uid: user.uid,
-                avatar: snapshot.val().avatar ? snapshot.val().avatar : defaultProfilePic,
-                username: user.email.substr(0, user.email.indexOf('@')) ? user.email.substr(0, user.email.indexOf('@')) : "", 
-                oldname: user.email.substr(0, user.email.indexOf('@')) ? user.email.substr(0, user.email.indexOf('@')) : "",
-                profileName: user.displayName ? user.displayName : "",
-                type: snapshot.val().type
-            });
 
-            console.log(this.state);
-        })
-        .catch((err) => {
-            console.log("failed to set initial data!");
-            console.log(err);
+        this.setState({
+            uid: user.uid,
+            avatar: user.photoURL ? user.photoURL : defaultProfilePic,
+            email: user.email,
+            oldemail: user.email,
+            profileName: user.displayName
         })
     }
 
     editProfile() {
         this.setState({isLoading: true});
 
-        let avatarChange = () => {
-            return this.avatarChanged
+        let user = app.auth().currentUser;
+
+        //see if the avatar changed
+        let avatarChange = (user) => {
+            return this.avatarChanged;
         };
 
+        //set back to old values if any fields are empty
+        if (this.state.email === "") {
+            this.setState({ email: this.props.email });
+        } if (this.state.profileName === "") {
+            this.setState({ profileName: user.displayName });
+        }
+
+        //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+        // eslint-disable-next-line
+        let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        //email has to be in email format
+        if (!emailRegex.test(this.state.email)) {
+            this.setState({ 
+                alertState: <Alert bsStyle="warning">Invalid email address!</Alert>,
+                isLoading: false
+            });
+
+            window.setTimeout(() => {
+                this.setState({ alertState: null });
+            }, 5000);
+            return;
+        }
+
+        //user must enter password to approve changes
         if (this.state.confirmPassword === "") {
             this.setState({ 
                 alertState: <Alert bsStyle="warning">Enter your current password!</Alert>,
@@ -85,9 +103,7 @@ export default class EditProfile extends Component {
         }
 
         //check to see if there were any changes in the profile
-        let userEmail = this.state.username + "@halfway.com";
-        let user = app.auth().currentUser;
-        if (userEmail === user.email && this.state.email === this.props.email && !avatarChange && this.state.profileName === user.displayName) {
+        if (this.state.email === this.props.email && !avatarChange && this.state.profileName === user.displayName) {
             //console.log("no changes!");
             this.setState({ 
                 alertState: <Alert bsStyle="warning">No changes detected!</Alert>,
@@ -124,103 +140,97 @@ export default class EditProfile extends Component {
         })
     }
 
-    avatarChanged() {
-        app.database().ref('users/' + this.state.uid).once('value')
-        .then((snapshot) => {
-            //let change = true;
-            if (!snapshot.val().avatar && (this.state.avatar === defaultProfilePic)) {
-                console.log("no avatar exists");
-                return false;
-            }
-            else if (this.state.avatar === snapshot.val().avatar) {
-                console.log("avatar hasn't changed");
-                return false;
-            } else if (this.state.avatar !== snapshot.val().avatar) {
-                console.log("avatar changed!");
-                return true;
-            }
-        })
-        .catch((err) => {
-            console.log("error checking for avatar change! Assume it didn't change.");
+    avatarChanged(user) {
+        if (!user.photoURL && this.state.avatar === defaultProfilePic) {
+            console.log("no avatar before & no avatar now");
             return false;
-        });
+        }
+        else if (user.photoURL === this.state.avatar) {
+            console.log("there is an avatar and it hasn't changed");
+            return false;
+        }
+        else if (user.photoURL !== this.state.avatar) {
+            console.log("avatar's changed");
+            return true;
+        }
+        else {
+            console.log("this shouldn't ever be reached...but if so just pretend avatar hasn't changed");
+            return false;
+        }
+        
     }
 
     savePermProfile(avatarChange) {
         let user = app.auth().currentUser;
-        let self = this;
 
-        //update profile name
-        user.updateProfile({
-            displayName: this.state.profileName,
-        })
-        .then(() => { //update profile pic
-            if (avatarChange) {
-                app.database().ref('users/' + this.state.uid).update({
-                    avatar: this.state.avatar !== defaultProfilePic ? this.state.avatar : null
-                })
-                .catch((err) => {
-                    console.log("error updating avatar!");
-                    console.log(err);
-                    this.setState({ alertState: <Alert bsStyle="danger">Error Updating Avatar!</Alert>});
+        let updateError = [];
 
-                    window.setTimeout(() => {
-                        this.setState({ alertState: null });
-                    }, 5000);
-                })
-            }
+        //empty promise exists to start the promise chain since I'm not sure which fields are changed yet
+        new Promise(function(resolve, reject) {
+            resolve("dummy promise");
         })
-        .then(() => { //update username
-            let email = this.state.username + "@halfway.com";
-            if (email !== user.email && this.state.username !== "") {
-                console.log("updating username!");
-                user.updateEmail(email)
-                .catch((err) => {
-                    console.log("error updating username!");
-                    console.log(err);
-                    this.setState({ alertState: <Alert bsStyle="danger">Error Updating Username!</Alert>});
-
-                    window.setTimeout(() => {
-                        this.setState({ alertState: null });
-                    }, 5000);
-                })
-            }
-        })
-        .then(() => { //update email in database
-            if(this.state.email !== this.props.email && this.state.email !== "") {
-                app.database().ref('users/' + this.state.uid).update({
-                    email: this.state.email
-                })
+        .then(() => {
+            //update email if it's been changed
+            if (this.state.email !== user.email) {
+                user.updateEmail(this.state.email)
                 .catch((err) => {
                     console.log("error updating email!");
                     console.log(err);
-
-                    this.setState({ alertState: <Alert bsStyle="danger">Error Updating Email!</Alert>});
-
-                    window.setTimeout(() => {
-                        this.setState({ alertState: null });
-                    }, 5000);
+                    updateError.push("email");
                 })
             }
         })
         .then(() => {
-            this.setState({ isLoading: false });
-            self.props.showAlert("Saved Profile Changes Successfully!");
-            this.closeModal();
+            //update display name if it's been changed
+            if (this.state.profileName !== user.displayName) {
+                user.updateProfile({
+                    displayName: this.state.profileName
+                })
+                .catch((err) => {
+                    console.log("error updating profile name!");
+                    console.log(err);
+                    updateError.push("profile name");
+                })
+            }
         })
-        .catch((error) => {
-            console.log("error updating profile name or avatar!");
-            console.log(error);
-
-            this.setState({ 
-                alertState: <Alert bsStyle="danger">Error Updating Account Details!</Alert>,
-                isLoading: false
-            });
-
-            window.setTimeout(() => {
-                this.setState({ alertState: null });
-            }, 5000);
-        });
+        .then(() => {
+            //update avatar if it's been changed
+            if(avatarChange) {
+                user.updateProfile({
+                    photoURL: this.state.avatar
+                })
+                .catch((err) => {
+                    console.log("error updating avatar!");
+                    console.log(err);
+                    updateError.push("avatar");
+                })
+            }
+        })
+        .then(() => {
+            if (updateError.length === 0) {
+                this.setState({ isLoading: false });
+                this.props.showAlert("Profile Edited Successfully!", "success");
+                this.props.closeModal();
+            } else {
+                let message = "Error updating ";
+                for (let i=0; i < updateError.length; i++) {
+                    message += ", ";
+                    if (i === (updateError.length - 2)) {
+                        message += "and ";
+                    }
+                    message += updateError[i];
+                }
+                message += "!";
+                this.setState({ 
+                    alertState: <Alert bsStyle="danger">{message}</Alert>,
+                    isLoading: false 
+                });
+            }
+        })
+        .catch((err) => {
+            console.log("an empty promise can't possibly cause problems!");
+            console.log(err);
+        })
     }
 
     savePendingProfile(avatarChange) {
@@ -238,17 +248,13 @@ export default class EditProfile extends Component {
             }
             else {
                 userdata.comments = [];
-                //userdata.comments.push(date + ": Changes Awaiting Approval. Check back soon!");
             }
             userdata.status = "pending";
-            userdata.currname = this.state.oldname;
+            userdata.currname = this.state.oldemail;
             let user = app.auth().currentUser;
-            if ((this.state.username + "@halfway.com") !== user.email) {
-                userdata['username'] = this.state.username;
+            if (this.state.email !== user.email) {
+                userdata['username'] = this.state.email;
                 newComment += "username : "
-            } if (this.state.email !== this.props.email) {
-                userdata['email'] = this.state.email;
-                newComment += "email : "
             } if (this.state.profileName !== user.displayName) {
                 userdata['profileName'] = this.state.profileName;
                 newComment += "profile name : ";
@@ -354,13 +360,6 @@ export default class EditProfile extends Component {
                                 </Col>
                                 <Col xs={12} sm={8}>
                                     <form>
-                                        <FieldGroup
-                                        id="formControlsUsername"
-                                        type="text"
-                                        label="Username"
-                                        value={this.state.username}
-                                        onChange={(evt) => {this.setState({username: evt.target.value})}}
-                                        />
                                         <FieldGroup
                                         id="formControlsEmail"
                                         type="text"
