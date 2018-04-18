@@ -132,7 +132,7 @@ export default class ViewProfile extends Component {
             });
         })
     }
-    
+
     render() {
         let headerStyle = {
             fontFamily: "'Courier New', 'Courier', 'monospace'",
@@ -184,13 +184,13 @@ export default class ViewProfile extends Component {
                             <MenuItem eventKey="2" onClick={this.togglePasswordModal}>Change Password</MenuItem>
                             { this.state.accType === "youth" ? <MenuItem eventKey="3" onClick={this.togglePendingChangesModal}>Pending Changes</MenuItem> : null }
                         </DropdownButton>
-                            
+
                             {/*<Button bsStyle="default" onClick={this.togglePendingChangesModal}>Pending Changes <Glyphicon glyph="edit" style={{padding: '5px'}}/></Button>
                             <Button bsStyle="default" onClick={this.toggleEditModal}>Edit Profile <Glyphicon glyph="edit" style={{padding: '5px'}}/></Button>                   */}
                         </Col></div> : <h1>Profile Information</h1> }
                     </Row>
                     <Row>
-                        
+
                     </Row>
                     <Row>
                         <Col xs={4}>
