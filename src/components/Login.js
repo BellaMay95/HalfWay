@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { app } from '../base';
 import { FormControl, FormGroup, ControlLabel, HelpBlock, Button, Alert, Jumbotron } from 'react-bootstrap';
-import logo from '../images/HWtrial2.png';
+import logo from '../images/HWtrial21.png';
 
 //import logo from './logo.svg';
 
@@ -49,7 +49,7 @@ class Login extends Component {
         //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         // eslint-disable-next-line
         //let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        
+
         //console.log("username: '" + this.state.username + "'");
         //console.log("password: '" + this.state.password + "'");
 
@@ -86,7 +86,7 @@ class Login extends Component {
                         this.setState({alertShow: 0});
                     }, 5000);
                     console.log("This account does not exist!");
-                } 
+                }
                 //checks for valid password?
                 else if (providers.indexOf("password") === -1) {
                     this.setState({alertShow: 2, isLoading: false});
@@ -157,13 +157,13 @@ class Login extends Component {
 		}
 
         return (
-            <div className="container w3-animate-opacity">
+            <div className="container-fluid">
                 {loginAlert}
-                <Jumbotron>
-                  <img id = 'logo' src = {logo} alt = "HalfWay Logo" />
-                  <h1 id = "loginTitle" className = "w3-animate-top">Log in to HalfWay!</h1>
-                </Jumbotron>
+                  <div className = "col-md-4"></div>
+                <Jumbotron className = "col-sm-4">
+                  {/*<h1 id = "loginTitle" className = "w3-animate-top">HalfWay</h1>*/}
                 {/*check out ref property*/}
+                <img id = 'logo' src = {logo} alt = "HalfWay Logo" />
                 <form onSubmit={(event) => this.authUser(event)} ref={(form) => { this.loginForm = form }}>
                     <FieldGroup
                         name="username"
@@ -179,8 +179,11 @@ class Login extends Component {
                         onChange={this.onChange}
                         placeholder="Enter password"
                     />
-                    <Button className = "btn-primary" type="submit" id="loginButton" disabled = {this.state.isLoading} >Log In!</Button>
+                    <Button className = "btn-primary" type="submit" id="loginButton" disabled = {this.state.isLoading} >Log in</Button>
                 </form>
+                </Jumbotron>
+                <div className = "col-md-4"></div>
+                <div className = "col-lg-12">&copy; 3-Factor Authentication</div>
             </div>
         );
     }

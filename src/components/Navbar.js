@@ -107,7 +107,7 @@ export default class TopNavbar extends Component {
 						<Nav>
 							<NavItem id="forum" eventKey={1} onSelect={() => {this.setState({tabContent: <ForumList />})}}>
 								<OverlayTrigger placement="bottom" overlay={forumTooltip}><img height = '30' width = '30' src = {forum} alt = "Forum" /></OverlayTrigger>
-							</NavItem>
+              </NavItem>
 							{/*<NavItem id="message" eventKey={2} onSelect={() => {this.setState({tabContent: "direct message component here"})}}>
 								<OverlayTrigger placement="bottom" overlay={messageTooltip}><img height = '30' width = '30' src = {directmessage} alt = "Direct message" /></OverlayTrigger>
 							</NavItem>*/}

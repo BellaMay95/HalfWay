@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import {Glyphicon, Panel, PanelGroup, Button } from 'react-bootstrap';
 import { app } from '../base';
 import './ForumComponent.css';
+import './FlagsComponent.css';
 
 class ForumComponent extends Component{
   constructor(props){
@@ -39,19 +40,19 @@ class ForumComponent extends Component{
     return(
       <div id = "flag">
       <PanelGroup key={this.state.thread_id} id={this.state.thread_id}>
-          <Panel>
+          <Panel bsStyle="danger">
               <Panel.Heading>
-                  <Panel.Title componentClass='h3'>Flagged user: {this.state.thread_userName} <br/>Reason: {this.state.reason_message} </Panel.Title>
+                  <Panel.Title componentClass='h3' className = "flagTitle"><strong>Flagged user:</strong> {this.state.thread_userName} </Panel.Title>
               </Panel.Heading>
-              <Panel.Body>{this.state.thread_message}</Panel.Body>
+              <Panel.Body className = "flagBody"><strong>Reason:</strong> {this.state.reason_message}<br/><strong>Post: </strong>{this.state.thread_message}</Panel.Body>
               <Panel.Footer>
                 <div>
                 <Button className="deletePost" bsStyle="danger" onClick={this.removePost}>
-                  <Glyphicon glyph="minus-sign" style={{padding: '5px'}}/>
+                  <Glyphicon glyph="minus-sign" style={{padding: ''}}/>
                   Remove Post
                 </Button>
                 <Button className="keepPost" bsStyle="success" onClick={this.keepPost}>
-                  <Glyphicon glyph="plus-sign" style={{padding: '5px'}}/>
+                  <Glyphicon glyph="plus-sign" style={{padding: ''}}/>
                   Accept Post
                 </Button>
                 </div>

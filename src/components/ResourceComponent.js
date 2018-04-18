@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Glyphicon, Panel, PanelGroup,Button} from 'react-bootstrap';
 import { app } from '../base';
 import './ForumComponent.css';
+import './ResourceComponent.css';
 
 class ForumComponent extends Component{
   constructor(props){
@@ -79,9 +80,9 @@ class ForumComponent extends Component{
   render(){
     return(
       <PanelGroup key={this.state.thread_id} id={this.state.thread_id}>
-          <Panel>
+          <Panel bsStyle="info">
               <Panel.Heading>
-                  <Panel.Title componentClass='h3'>{this.state.subject} : {this.state.timestamp} : {this.state.resource_id} </Panel.Title>
+                  <Panel.Title componentClass='h3'><div className = "h"><strong>{this.state.subject}</strong></div> <div className = "timestamp"> <strong>Date Posted: </strong>{this.state.timestamp}</div> <div class="clearfix"></div></Panel.Title>
               </Panel.Heading>
               <Panel.Body>{this.state.message}</Panel.Body>
               <Panel.Footer>
