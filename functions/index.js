@@ -1,10 +1,13 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
-const RandExp = require('randexp');
+const request = require('requestify');
 
 var serviceAccount = require('./key.json');
 var databaseURL = "https://halfway-a067e.firebaseio.com/";  //get URL from config file instead
 //var databaseURL = process.env.REACT_APP_FIREBASE_DATABASE;
+//var apiKey = process.env.REACT_APP_FIREBASE_KEY;
+var apiKey = "AIzaSyAmew8GUz4Bqt9k0jak9BoC3rXn-08Hhdo";
+
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
@@ -14,12 +17,7 @@ admin.initializeApp({
 exports.createAccount = functions.https.onCall((data) => {
     console.log(data);
 
-    // *7+ characters, *at least one capital letter *at least one number *at least one symbol
-    // regex taken/modified from: https://dzone.com/articles/use-regex-test-password
-    // eslint-disable-next-line
-    //var strongRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{7,8})");
-    //var genPwd = new RandExp(strongRegex);
-
+    //generate 8-character random password from uppercase letters, lowercase letters, numbers, and some symbols
     var genPwd = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
     for(var i = 0; i < 8; i++) {
@@ -27,6 +25,8 @@ exports.createAccount = functions.https.onCall((data) => {
     }
 
     console.log("password: " + genPwd);
+
+    let newUid;
 
     return emailExists(data.email)
     .then((result) => {
@@ -43,6 +43,7 @@ exports.createAccount = functions.https.onCall((data) => {
             "displayName": data.display
         })
         .catch((err) => {
+            console.log("failed to create user!");
             console.log(err);
             throw new functions.https.HttpsError('aborted', "Failed to create user!");
         })
@@ -57,6 +58,25 @@ exports.createAccount = functions.https.onCall((data) => {
             console.log(err);
             throw new functions.https.HttpsError('aborted', "Failed to set user role");
         });
+    })
+    .then(() => {
+        //also perhaps a welcome email not just password reset?
+        let url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/getOobConfirmationCode?key=" + apiKey;
+        let body = {
+            requestType: "PASSWORD_RESET",
+            email: data.email
+        };
+        
+        return request.post(url, body)
+        .then((response) => {
+            console.log("sent email!");
+            console.log(response);
+        })
+        .catch((err) => {
+            console.log("error sending email!");
+            console.log(err);
+            throw new functions.https.HttpsError('aborted', 'failed to send verification email!');
+        })
     })
     .then(() => {
         return "User Account Created Successfully!";
@@ -186,20 +206,6 @@ exports.saveProfile = functions.https.onCall((data) => {
         resolve;
     })
     .then(() => {
-        //update email if it's been changed
-        if (data.email) {
-            //to-do: email user to verify changes
-            admin.auth().updateUser(data.uid, {
-                email: username
-            })
-            .catch((err) => {
-                console.log("error updating email!");
-                console.log(err);
-                updateError.push("email");
-            })
-        }
-    })
-    .then(() => {
         //update display name if it's been changed
         if (data.profileName) {
             admin.auth().updateUser(data.uid, {
@@ -263,7 +269,6 @@ exports.saveProfile = functions.https.onCall((data) => {
 exports.userList = functions.https.onCall(() => {
     return listAllUsers([])
     .then((userList) => {
-        //console.log("ready to return:");
         //console.log(userList);
         return userList;
     })
@@ -275,25 +280,23 @@ exports.userList = functions.https.onCall(() => {
 });
 
 function listAllUsers(userList, nextPageToken) {
-    //console.log("ready to find users...");
     // List batch of users, 1000 at a time.
     return admin.auth().listUsers(1000, nextPageToken)
     .then(function(listUsersResult) {
         //console.log("finished finding users! Adding to the list...");
         listUsersResult.users.forEach(function(userRecord) {
-            //console.log("adding record!");
+            //console.log(userRecord);
             userList.push({ 
                 uid: userRecord.uid,
                 displayName: userRecord.displayName,
-                creationTime: userRecord.metadata.creationTime
+                creationTime: userRecord.metadata.creationTime,
+                type: userRecord.customClaims
             });
         });
         if (listUsersResult.pageToken) {
-            //console.log("we need to fetch more users!");
             // List next batch of users.
             return listAllUsers(userList, listUsersResult.pageToken)
         } else {
-            //console.log("preliminary test:");
             //console.log(userList);
             return userList;
         }

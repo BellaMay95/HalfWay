@@ -42,9 +42,10 @@ export default class ViewProfile extends Component {
         user.getIdToken()
         .then((idToken) => {
             // Parse the ID token.
-            var idToken = idToken.replace(/-/g, "+").replace(/_/g, "/");
+            idToken = idToken.replace(/-/g, "+").replace(/_/g, "/");
             const payload = JSON.parse(atob(idToken.split('.')[1]));
             //const payload = JSON.parse(b64DecodeUnicode(idToken.split('.')[1]));
+            //console.log(payload);
             this.setState({
                 profileName: user.displayName,
                 email: user.email,
@@ -111,11 +112,13 @@ export default class ViewProfile extends Component {
     }
 
     setUserProfile(user) {
+        console.log(user);
         this.setState({
             email: user.email,
             profileName: user.displayName,
             avatar: user.photoURL ? user.photoURL : defaultProfilePic,
             created: user.creationTime,
+            accType: user.type.type,
             searchTerm: ""
         });
     }
@@ -186,6 +189,7 @@ export default class ViewProfile extends Component {
                         <Col xs={8}>
                             <p>Display Name: {this.state.profileName}</p>
                             <p>Member Since: {this.state.created}</p>
+                            <p>User Role: {this.state.accType}</p>
                             { this.state.email ? <p>Email: {this.state.email}</p> : null}
                         </Col>
                     </Row>

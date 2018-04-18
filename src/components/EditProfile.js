@@ -49,9 +49,9 @@ export default class EditProfile extends Component {
         this.setState({
             uid: user.uid,
             avatar: user.photoURL ? user.photoURL : defaultProfilePic,
-            email: user.email,
-            oldemail: user.email,
-            profileName: user.displayName
+            email: user.email ? user.email : "",
+            oldemail: user.email ? user.email : "",
+            profileName: user.displayName ? user.displayName : ""
         })
     }
 
@@ -252,10 +252,10 @@ export default class EditProfile extends Component {
             userdata.status = "pending";
             userdata.currname = this.state.oldemail;
             let user = app.auth().currentUser;
-            if (this.state.email !== user.email) {
+            /*if (this.state.email !== user.email) {
                 userdata['username'] = this.state.email;
                 newComment += "username : "
-            } if (this.state.profileName !== user.displayName) {
+            }*/ if (this.state.profileName !== user.displayName) {
                 userdata['profileName'] = this.state.profileName;
                 newComment += "profile name : ";
             } if (avatarChange && this.state.avatar === defaultProfilePic) {
@@ -274,8 +274,26 @@ export default class EditProfile extends Component {
     
             app.database().ref('pendingProfiles/' + this.state.uid).update(userdata)
             .then(() => {
+                if (this.state.email !== user.email) {
+                    user.updateEmail(this.state.email)
+                    .catch((err) => {
+                        console.log("Error updating email!");
+                        console.log(err);
+
+                        this.setState({ 
+                            alertState: <Alert bsStyle="danger">Error Updating Email!</Alert>,
+                            isLoading: false
+                        });
+            
+                        window.setTimeout(() => {
+                            this.setState({ alertState: null });
+                        }, 5000);
+                    })
+                }
+            })
+            .then(() => {
                 this.setState({ isLoading: false });
-                self.props.showAlert("Saved Profile Changes Successfully!");
+                self.props.showAlert("Profile Changes Seccessfully Submitted for Review!");
                 this.closeModal();
             })
             .catch((err) => {

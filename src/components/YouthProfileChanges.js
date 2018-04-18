@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { app } from '../base';
 
 import { Modal, Table, Button, Image } from 'react-bootstrap';
-import defaultProfilePic from '../images/defaultProfile.jpg';
+//import defaultProfilePic from '../images/defaultProfile.jpg';
 
 export default class PendingChanges extends Component {
     constructor(props) {
