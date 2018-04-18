@@ -5,8 +5,8 @@ import { FormControl, FormGroup, ControlLabel, HelpBlock, Button, Alert, Jumbotr
 import logo from '../images/HWtrial2.png';
 import '../login.css';
 
-import firebase from 'firebase';
-require("firebase/functions");
+//import firebase from 'firebase';
+//require("firebase/functions");
 
 
 //import logo from './logo.svg';
@@ -187,8 +187,8 @@ export default class Login extends Component {
                         onChange={this.onChange}
                         placeholder="Enter password"
                     />
-                    <Button id="forgot" href="/reset">Forgot Password</Button>
-                    <Button className = "btn-primary" type="submit" id="loginButton" disabled = {this.state.isLoading} >Log In!</Button>
+                    <Button id="forgot" href="/reset" style={{ margin: 5}}>Forgot Password</Button>
+                    <Button className = "btn-primary" style={{ margin: 5}} type="submit" id="loginButton" disabled = {this.state.isLoading} >Log In!</Button>
                 </form>
             </div>
         );
