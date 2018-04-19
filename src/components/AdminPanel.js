@@ -19,7 +19,7 @@ export default class AdminPanel extends Component {
         //console.log(option);
         if (option === 1) {
             this.setState({
-                panelContent: <Tabs defaultActiveKey={3} id="manage-account-tabs">
+                panelContent: <Tabs defaultActiveKey={1} id="manage-account-tabs">
                     <Tab eventKey={1} title="Create New Account">
                         <CreateAccount />
                     </Tab>

@@ -132,7 +132,7 @@ export class ViewProfileChanges extends Component {
     componentWillMount() {
         let self = this;
 
-        var getUser = firebase.functions().httpsCallable('getUser');
+        var getUser = firebase.functions().httpsCallable('getUserRecordByUid');
         getUser({ uid: this.props.uid })
         .then((data) => {
             console.log(data);
