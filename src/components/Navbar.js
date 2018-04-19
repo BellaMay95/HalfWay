@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 //import { render } from 'react-dom';
 import forum from '../images/forum.png';
-import directmessage from '../images/directmessage.png';
+//import directmessage from '../images/directmessage.png';
 import help from '../images/help.png';
 import settings from '../images/settings.png';
 import logout from '../images/logout.png';
@@ -20,19 +20,16 @@ import ViewProfile from './ViewProfile';
 
 
 export default class TopNavbar extends Component {
-  constructor() {
-	super();
-	this.checkAdmin = this.checkAdmin.bind(this);
-	this.state = {
-	  tabContent: <ForumList />,
-	  admin: false,
-	  displayName: null,
-	  userName: null,
-	  avatarUrl: null
+	constructor() {
+		super();
+		this.checkAdmin = this.checkAdmin.bind(this);
+		this.state = {
+			tabContent: <ForumList />,
+			admin: false
+		}
 	}
-  }
 
-  componentWillMount() {
+  	componentWillMount() {
 	//checks for admin privileges before rendering component
 		this.checkAdmin()
 		.then((result) => {
@@ -56,20 +53,26 @@ export default class TopNavbar extends Component {
 				avatarUrl: user.photoURL
 			});
 		}*/
-  }
+  	}
 
-  checkAdmin() {
-		//get user ID for lookup in database table
-		let uid = app.auth().currentUser.uid;
-		return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-			//return whether the user has admin privileges
-			if (snapshot.val().type === "admin") {
+  	checkAdmin() {
+		//check user token for account type
+		return app.auth().currentUser.getIdToken()
+        .then((idToken) => {
+            // Parse the ID token.
+            idToken = idToken.replace(/-/g, "+").replace(/_/g, "/");
+			const payload = JSON.parse(atob(idToken.split('.')[1]));
+			if (payload['type'] === "admin") {
 				return true;
-			}
-			else {
+			} else {
 				return false;
 			}
-		});
+		})
+		.catch((err) => {
+			console.log("couldn't get token!");
+			console.log(err);
+			return false; //if we can't determine, say they aren't an admin
+		})
   	}
 
 	render() {

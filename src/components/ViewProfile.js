@@ -14,7 +14,6 @@ const KEYS_TO_FILTERS = ['username', 'displayName'];
 export default class ViewProfile extends Component {
     constructor() {
         super();
-        this.getData = this.getData.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.togglePendingChangesModal = this.togglePendingChangesModal.bind(this);
         this.togglePasswordModal = this.togglePasswordModal.bind(this);
@@ -23,9 +22,9 @@ export default class ViewProfile extends Component {
 
         this.state = {
             profileName: null,
-            userName: null,
             avatar: defaultProfilePic,
             email: null,
+            created: "",
             editProfile: false,
             pendingChanges: false,
             showChanges: false,
@@ -39,17 +38,26 @@ export default class ViewProfile extends Component {
 
     componentWillMount() {
         let user = app.auth().currentUser;
-        //console.log(user);
-        this.getData(user.uid)
-        .then((data) => {
+
+        user.getIdToken()
+        .then((idToken) => {
+            // Parse the ID token.
+            idToken = idToken.replace(/-/g, "+").replace(/_/g, "/");
+            const payload = JSON.parse(atob(idToken.split('.')[1]));
+            //const payload = JSON.parse(b64DecodeUnicode(idToken.split('.')[1]));
+            //console.log(payload);
             this.setState({
                 profileName: user.displayName,
-                userName: user.email.substr(0, user.email.indexOf('@')),
-                avatar: data.avatar ? data.avatar : defaultProfilePic,
-                email: data.email,
-                accType: data.type
-            });
+                email: user.email,
+                avatar: user.photoURL ? user.photoURL : defaultProfilePic,
+                accType: payload['type'] ? payload['type'] : "youth", //default to youth access if credentials can't be determined
+                created: user.metadata.creationTime
+            })
+        })
+        .catch((error) => {
+            console.log(error);
         });
+        
 
         var getUsers = app.functions().httpsCallable('userList');
         getUsers()
@@ -71,16 +79,6 @@ export default class ViewProfile extends Component {
                 console.log("no pending changes!");
             }
         });
-    }
-
-    getData(uid) {
-        return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-            return {
-                email: snapshot.val().email,
-                type: snapshot.val().type,
-                avatar: snapshot.val().avatar
-            };
-		});
     }
 
     toggleEditModal() {
@@ -114,23 +112,15 @@ export default class ViewProfile extends Component {
     }
 
     setUserProfile(user) {
-        app.database().ref('users/' + user.uid).once('value')
-        .then((snapshot) => {
-            this.setState({
-                userName: user.username,
-                profileName: user.displayName,
-                avatar: snapshot.val().avatar
-            })
-        })
-        .catch((err) => {
-            console.log("failed to extract avatar!");
-            console.log(err);
-            this.setState({
-                userName: user.username,
-                profileName: user.displayName,
-                avatar: defaultProfilePic   //will make this the right thing later
-            });
-        })
+        console.log(user);
+        this.setState({
+            email: user.email,
+            profileName: user.displayName,
+            avatar: user.photoURL ? user.photoURL : defaultProfilePic,
+            created: user.creationTime,
+            accType: user.type.type,
+            searchTerm: ""
+        });
     }
 
     render() {
@@ -162,7 +152,7 @@ export default class ViewProfile extends Component {
                             <SearchInput className="search-input" style={{width: "90%"}} onChange={this.setSearch} />
                             { this.state.searchTerm !== "" ? <ListGroup> {filteredUsers.map((record) => {
                                 return (
-                                    <ListGroupItem key={record.uid} header={record.displayName} onClick={() => {this.setUserProfile(record)}}>{record.username}</ListGroupItem>
+                                    <ListGroupItem key={record.uid} onClick={() => {this.setUserProfile(record)}}>{record.displayName}</ListGroupItem>
                                 )
                             })} </ListGroup> : null }
                         </Col>
@@ -198,7 +188,8 @@ export default class ViewProfile extends Component {
                         </Col>
                         <Col xs={8}>
                             <p>Display Name: {this.state.profileName}</p>
-                            <p>Username: {this.state.userName}</p>
+                            <p>Member Since: {this.state.created}</p>
+                            <p>User Role: {this.state.accType}</p>
                             { this.state.email ? <p>Email: {this.state.email}</p> : null}
                         </Col>
                     </Row>
@@ -208,9 +199,9 @@ export default class ViewProfile extends Component {
                     </Row>*/}
                 </Grid>
 
-                {this.state.editProfile && <EditProfile showAlert={this.saveChangesAlert} email={this.state.email} closeModal={this.toggleEditModal} />}
+                {this.state.editProfile && <EditProfile showAlert={this.saveChangesAlert} type={this.state.accType} closeModal={this.toggleEditModal} />}
                 {this.state.changePassword && <ChangePassword showAlert={this.saveChangesAlert} closeModal={this.togglePasswordModal} />}
-                {this.state.accType === "youth" && this.state.showChanges && <PendingChanges email={this.state.email} avatar={this.state.avatar} closeModal={this.togglePendingChangesModal} />}
+                {this.state.accType === "youth" && this.state.showChanges && <PendingChanges closeModal={this.togglePendingChangesModal} />}
             </div>
         );
     }
