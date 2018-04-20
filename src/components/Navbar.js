@@ -5,7 +5,7 @@ import forum from '../images/forum.png';
 import help from '../images/help.png';
 import settings from '../images/settings.png';
 import logout from '../images/logout.png';
-import logo from '../images/HWtrial2.png';
+import logo from '../images/HWtrial21.png';
 import admin from '../images/usersecret.png';
 import './Navbar.css';
 
@@ -100,9 +100,9 @@ export default class TopNavbar extends Component {
 
 		return (
 			<div>
-				<Navbar collapseOnSelect>
+				<Navbar collapseOnSelect className = "navbar">
 					<Navbar.Header>
-						<Navbar.Brand>
+						<Navbar.Brand className = "logo">
 							<a href="/" style={{padding: 3}}>< img height = '55px' width = '55px' src = {logo} alt = "HalfWay logo" /></a>
 						</Navbar.Brand>
 						<Navbar.Toggle />
@@ -126,7 +126,7 @@ export default class TopNavbar extends Component {
 							}
 						</Nav>
 						<Nav pullRight>
-							<NavItem eventKey={1} href="/logout">
+							<NavItem eventKey={1} href="/logout" id = "logout">
 								<img height = '30' width = '30' src = { logout } alt = "logout" /> Logout
 							</NavItem>
 						</Nav>

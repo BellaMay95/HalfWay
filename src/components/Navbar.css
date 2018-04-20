@@ -1,3 +1,54 @@
 .navbar{
-  color: #c24a46;
+  background-color:  #2e7bb3;
+
+}
+.logo{
+  margin-right: 10px;
+  background: white;
+  height: 100%;
+
+}
+
+#forum {
+  color: white;
+  font-size: 15px;
+}
+#forum:hover
+{
+  background-color: white;
+  color:black;
+}
+#settings{
+  color:white;
+  font-size:15px;
+}
+#settings:hover
+{
+  background-color: white;
+  color:black;
+}
+#resources{
+  color: white;
+  font-size: 15px;
+}
+#resources:hover
+{
+  background-color: white;
+  color:black;
+}
+#admin{
+  color: white;
+  font-size: 15px;
+}
+#admin:hover
+{
+  background-color: white;
+  color:black;
+}
+
+#logout{
+  color:white;
+}
+#logout:hover{
+  background-color: red;
 }
