@@ -3,7 +3,7 @@ import { Navbar, Panel, PanelGroup } from 'react-bootstrap';
 import { app } from '../base';
 import CreateResource from './CreateResource';
 import ResourceComponent from './ResourceComponent';
-
+import './Resources.css';
 
 export default class Resources extends Component{
 
@@ -289,9 +289,9 @@ this.databaseS.on('child_removed', snap => {
 
     return(
       <div className="container">
-        <Navbar collapseOnSelect style={{marginTop: '5px'}}>
+        <Navbar className="navbarResources" collapseOnSelect style={{marginTop: '5px'}}>
             <Navbar.Header>
-                <Navbar.Brand id="resourcesHeader" style={headerStyle}>Resources</Navbar.Brand>
+              <span><h3 className="brandResources">Resources</h3></span>
                 {/*<Navbar.Toggle />*/}
             </Navbar.Header>
         </Navbar>
@@ -301,6 +301,7 @@ this.databaseS.on('child_removed', snap => {
           id="resources-list"
           activeKey={this.state.activeKey}
           onSelect={this.handleSelect}
+          bsStyle="primary"
         >
         <Panel eventKey="1">
 
