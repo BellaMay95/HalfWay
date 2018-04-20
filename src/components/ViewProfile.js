@@ -8,6 +8,7 @@ import defaultProfilePic from '../images/defaultProfile.jpg';
 import EditProfile from './EditProfile';
 import PendingChanges from './YouthProfileChanges';
 import ChangePassword from './ChangePassword';
+import './ViewProfile.css';
 
 const KEYS_TO_FILTERS = ['username', 'displayName'];
 
@@ -57,7 +58,7 @@ export default class ViewProfile extends Component {
         .catch((error) => {
             console.log(error);
         });
-        
+
 
         var getUsers = app.functions().httpsCallable('userList');
         getUsers()
@@ -134,16 +135,16 @@ export default class ViewProfile extends Component {
         const filteredUsers = this.state.userList.length > 0 ? this.state.userList.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS)) : [];
 
         return (
-            <div className="container">              
-                <Navbar collapseOnSelect style={{marginTop: '5px', paddingRight: '0px'}}>
+            <div className="container">
+                <Navbar className="navbarProfile" collapseOnSelect style={{marginTop: '5px', paddingRight: '0px'}}>
                     <Navbar.Header>
-                        <Navbar.Brand id="profileHeader" style={headerStyle}>User Profiles</Navbar.Brand>
+                      <span><h3 className="brandProfile">User Profiles</h3></span>
                     </Navbar.Header>
                 </Navbar>
 
                 {this.state.alertState}
 
-                <Grid style={{padding: '15px'}} fluid={true}>
+                <Grid className="gridProfile" style={{padding: '15px'}} fluid={true}>
                     <Row>
                         <Col xs={4}>
                             <label>Search For User!</label>
