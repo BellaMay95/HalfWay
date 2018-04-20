@@ -305,7 +305,7 @@ this.databaseS.on('child_removed', snap => {
         <Panel eventKey="1">
 
           <Panel.Heading>
-            <Panel.Title toggle>Job Opportunities</Panel.Title>
+            <Panel.Title toggle><h4>Job Opportunities</h4></Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal }>add info</button>  : null}
           {
@@ -325,7 +325,7 @@ this.databaseS.on('child_removed', snap => {
 
         <Panel eventKey="2">
           <Panel.Heading>
-            <Panel.Title toggle>Affordable Housing</Panel.Title>
+            <Panel.Title toggle><h4>Affordable Housing</h4></Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
           {
@@ -343,7 +343,7 @@ this.databaseS.on('child_removed', snap => {
         </Panel>
         <Panel eventKey="3">
           <Panel.Heading>
-            <Panel.Title toggle>Short Term Housing</Panel.Title>
+            <Panel.Title toggle><h4>Short Term Housing</h4></Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
           {
@@ -361,7 +361,7 @@ this.databaseS.on('child_removed', snap => {
         </Panel>
         <Panel eventKey="4">
           <Panel.Heading>
-            <Panel.Title toggle>Food</Panel.Title>
+            <Panel.Title toggle><h4>Food</h4></Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
           {
@@ -379,7 +379,7 @@ this.databaseS.on('child_removed', snap => {
         </Panel>
         <Panel eventKey="5">
           <Panel.Heading>
-            <Panel.Title toggle>Education</Panel.Title>
+            <Panel.Title toggle><h4>Education</h4></Panel.Title>
           </Panel.Heading>
           <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
           {

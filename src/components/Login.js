@@ -188,7 +188,7 @@ export default class Login extends Component {
                         placeholder="Enter password"
                     />
                     <Button id="forgot" href="/reset" style={{ margin: 5}}>Forgot Password</Button>
-                    <Button className = "btn-primary" style={{ margin: 5}} type="submit" id="loginButton" disabled = {this.state.isLoading} >Log In!</Button>
+                    <Button className = "btn-primary" style={{ margin: 5}} type="submit" id="loginButton" disabled = {this.state.isLoading} >Log In</Button>
                 </form>
                 </Jumbotron>
                 <div className = "col-md-4"></div>

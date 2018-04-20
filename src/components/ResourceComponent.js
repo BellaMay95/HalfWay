@@ -84,12 +84,12 @@ class ForumComponent extends Component{
               <Panel.Heading>
                   <Panel.Title componentClass='h3'><div className = "h"><strong>{this.state.subject}</strong></div> <div className = "timestamp"> <strong>Date Posted: </strong>{this.state.timestamp}</div> <div class="clearfix"></div></Panel.Title>
               </Panel.Heading>
-              <Panel.Body>{this.state.message}</Panel.Body>
-              <Panel.Footer>
+              <Panel.Body className = "body">{this.state.message}</Panel.Body>
+              <Panel.Footer className = "footer">
                 <div>
                 { this.state.admin ?
                 <Button className="deleteResource" bsStyle="link" onClick={this.removeResource}>
-                  <Glyphicon glyph="minus-sign" style={{padding: '5px'}}/>
+                  <Glyphicon glyph="minus-sign"/>
                   Remove Resource
                 </Button> : null}
                 </div>
