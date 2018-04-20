@@ -19,3 +19,8 @@
     float: left;
     margin: 10px;
 }
+
+.cite{
+  float: right;
+  color: #c24a46;
+}

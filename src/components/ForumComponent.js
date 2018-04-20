@@ -43,7 +43,11 @@ class ForumComponent extends Component{
               <Panel.Heading>
                   <div>
 
-                    <Panel.Title className="PanelTitle" componentClass='h3'>{this.state.author_name} : {this.state.subject} : {this.state.thread_id} </Panel.Title>
+                    <Panel.Title className="PanelTitle" componentClass='h3'>
+                      <div>
+                        {this.state.subject}
+                      </div>
+                    </Panel.Title>
 
                     <Button className="newComment" bsStyle="link" onClick={() => this.handleOpenCreateCommentModal()}>
                       {/* I will need to pass the id of the thread to the toggleModal prop eventually*/}
@@ -54,7 +58,12 @@ class ForumComponent extends Component{
                   </div>
                   <div className="clearfix"></div>
               </Panel.Heading>
-              <Panel.Body>{this.state.message}</Panel.Body>
+              <Panel.Body>
+                <div>
+                  <p>{this.state.message}</p>
+                  <p className="cite"><cite>Author: {this.state.author_name}</cite></p>
+                </div>
+              </Panel.Body>
               <Panel.Footer>
                 <div>
 
