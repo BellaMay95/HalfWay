@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { app } from '../base';
-import { Modal, Button, ListGroup, ListGroupItem, Well, Image } from 'react-bootstrap';
+import { Modal, Button, ListGroup, ListGroupItem, Well, Image, Alert } from 'react-bootstrap';
 import './ViewComment.css';
 import warning from '../images/warning.png';
 
@@ -30,6 +30,9 @@ class ViewComment extends Component{
       prevCommentsToDisplay: [],
       // Next Comments that will be displayed if the nextButton is clicked
       nextCommentsToDisplay: [],
+      // If on the first page or last Page
+      firstPage: false,
+      lastPage: false,
     }
   }
 
@@ -80,7 +83,7 @@ componentWillMount(){
         newComments.push({
           id: snap.key,
           author_id: snap.val().author_id,
-          author_name: snap.val().author_name,
+          author_name: snap.val().username,
           message: snap.val().message,
           timestamp: snap.val().timestamp,
         })
@@ -129,6 +132,11 @@ componentWillMount(){
 
   // Function that is called when next button is pressed
   nextButtonOnClickHandler(){
+
+    this.setState({
+      firstPage: false,
+      lastPage: false,
+    })
 
     // Check if we are in the middle of the array
     if(this.state.currentPage !== this.state.totalPage){
@@ -179,7 +187,10 @@ componentWillMount(){
       }
       else{
         // If not then it display no new comments message to the closeCreateCommentModal
-        alert("You are on the last page.");
+        /*alert("You are on the last page."); */
+        this.setState({
+          lastPage: true,
+        })
       }
     }
   }
@@ -188,9 +199,17 @@ componentWillMount(){
               set the commentToDisplay to them ---------*/
   prevButtonOnClickHandler(){
 
+    this.setState({
+      firstPage: false,
+      lastPage: false,
+    })
+
     // Check if the their should be a prev page
     if(this.state.currentPage === 1){
-        alert("You are on the first page.");
+        /*alert("You are on the first page*/
+        this.setState({
+          firstPage: true,
+        })
     }else if(this.state.currentPage === 0){
         alert("There are no comments to be displayed");
     }else{
@@ -232,7 +251,7 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
     return(
       <div className="static-modal">
         <Modal.Dialog>
-            <Modal.Header>
+            <Modal.Header className="commentModalHeader">
               {console.log("ViewComment:: In the render")}
               <Modal.Title>View Comments</Modal.Title>
             </Modal.Header>
@@ -242,7 +261,13 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                 <div>
                   {   //displays message if there aren't any Comments to display
                       this.state.commentToDisplay.length === 0 ?
-                          <Well id="emptyMessage">No comments yet! Be the first to start the conversation!</Well>
+                          <Alert bsStyle="warning">No comments yet! Be the first to start the conversation!</Alert>
+                      : null
+                  }
+                  {
+                    // display on last page alertState
+                    this.state.firstPage === true ?
+                          <Alert bsStyle="success">You are on the first page.</Alert>
                       : null
                   }
                   {
@@ -251,16 +276,24 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                         <div>
                           <ListGroupItem className="commentItem" key={index}>
                             <div>
-                              <h3>{ comment.author_name + ":"}</h3>
                               <p>{comment.message}</p>
-                              {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/}
-                              <Image className="warningSign" src={warning} responsive onClick={() => this.handleOpenFlagCommentModal(comment.id, comment.message, comment.author_name)}/>
+                              <p className="cite"><cite>{comment.author_name}</cite></p>
+                              <div className="keywordbullshit">
+                                {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/}
+                                <Image className="warningSign" src={warning} responsive onClick={() => this.handleOpenFlagCommentModal(comment.id, comment.message, comment.author_name)}/>
+                              </div>
                               <div className="clearfix"></div>
                             </div>
                           </ListGroupItem>
                       </div>
                     )
                   })
+                }
+                {
+                  // display on last page alertState
+                  this.state.lastPage === true ?
+                        <Alert bsStyle="success">You are on the last page.</Alert>
+                    : null
                 }
                 </div>
               </ListGroup>

@@ -7,6 +7,7 @@ import settings from '../images/settings.png';
 import logout from '../images/logout.png';
 import logo from '../images/HWtrial2.png';
 import admin from '../images/usersecret.png';
+import './Navbar.css';
 
 import { Navbar, Nav, NavItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 //import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
@@ -109,20 +110,17 @@ export default class TopNavbar extends Component {
 					<Navbar.Collapse>
 						<Nav>
 							<NavItem id="forum" eventKey={1} onSelect={() => {this.setState({tabContent: <ForumList />})}}>
-								<OverlayTrigger placement="bottom" overlay={forumTooltip}><img height = '30' width = '30' src = {forum} alt = "Forum" /></OverlayTrigger>
-              </NavItem>
-							{/*<NavItem id="message" eventKey={2} onSelect={() => {this.setState({tabContent: "direct message component here"})}}>
-								<OverlayTrigger placement="bottom" overlay={messageTooltip}><img height = '30' width = '30' src = {directmessage} alt = "Direct message" /></OverlayTrigger>
-							</NavItem>*/}
+								Forum
+							</NavItem>
 							<NavItem id="settings" eventKey={3} onSelect={() => {this.setState({tabContent: <ViewProfile />})}}>
-								<OverlayTrigger placement="bottom" overlay={settingTooltip}><img height = '30' width = '30' src = {settings} alt = "User settings" /></OverlayTrigger>
+								Settings
 							</NavItem>
 							<NavItem id="resources" eventKey={4} onSelect={() => {this.setState({tabContent: <Resources />})}}>
-							<OverlayTrigger placement="bottom" overlay={resourceTooltip}><img height = '30' width = '30' src = {help} alt = "Resources page" /></OverlayTrigger>
+								Resources
 							</NavItem>
 							{ this.state.admin ?
 								<NavItem id="admin" eventKey={5} onSelect={() => {this.setState({tabContent: <AdminPanel />})}}>
-									<OverlayTrigger placement="bottom" overlay={adminTooltip}><img height = '30' width = '30' src = {admin} alt = "Admin panel" /></OverlayTrigger>
+									Admin
 								</NavItem>
 								: null
 							}

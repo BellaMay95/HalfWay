@@ -7,6 +7,7 @@ import CreateComment from './CreateComment';
 import ViewComment from './ViewComment';
 import FlagForum from './FlagForum';
 import FlagComment from './FlagComment';
+import './ForumList.css';
 
 class Forum extends Component {
     constructor(props) {
@@ -152,9 +153,10 @@ class Forum extends Component {
 
         return (
             <div className="container">
-                <Navbar collapseOnSelect style={{marginTop: '5px'}}>
+                <Navbar className="navbarForum"  collapseOnSelect style={{marginTop: '5px'}}>
+                  <div>
                     <Navbar.Header>
-                        <Navbar.Brand id="forumHeader" style={headerStyle}>Forums</Navbar.Brand>
+                        <span><h3 className="brandForum">Forums</h3></span>
                         <Navbar.Toggle />
                     </Navbar.Header>
                     <Navbar.Collapse>
@@ -165,6 +167,7 @@ class Forum extends Component {
                             </NavItem>
                         </Nav>
                     </Navbar.Collapse>
+                  </div>
                 </Navbar>
                 {this.state.createThread && <CreateThread showAlert={this.createThreadAlert} closeThreadModal={this.toggleThreadModal}/>}
                 {this.state.createAlert}
