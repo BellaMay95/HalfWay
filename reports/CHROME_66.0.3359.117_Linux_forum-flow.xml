@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="1"
+            failures="0"
+            tests="4">
+
+  <testsuite name="forum-flow"
+    errors="1" failures="0" hostname="" id="" package="forum-flow" skipped="1"
+    tests="4" time="18.82" timestamp="Sat, 21 Apr 2018 19:28:00 GMT">
+  
+    <testcase name="log on to site and view forum threads" classname="forum-flow" time="9.230" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="create new forum thread with empty title" classname="forum-flow" time="3.994" assertions="5">
+
+    
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="add comment on forum thread" classname="forum-flow" time="5.592" assertions="0">
+    </testcase>
+  
+
+  
+    <system-err>
+        Error while running [Forum Flow / add comment on forum thread]:
+
+  TypeError: Cannot read property &#39;to&#39; of undefined
+    at Object.browser.getAlertText (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/forum-flow.js:103:35)
+    at HttpRequest.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/index.js:366:18)
+    at emitTwo (events.js:106:13)
+    at HttpRequest.emit (events.js:191:7)
+    at HttpRequest.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/index.js:382:15)
+    at emitThree (events.js:116:13)
+    at HttpRequest.emit (events.js:194:7)
+    at IncomingMessage.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/http/request.js:170:16)
+    at emitNone (events.js:91:20)
+    at IncomingMessage.emit (events.js:185:7)
+    </system-err>
+  
+
+  
+    
+    <testcase
+      name="view forum thread (comment(s) present)" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+  
+  </testsuite>
+</testsuites>

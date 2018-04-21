@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="6">
+
+  <testsuite name="auth-flow"
+    errors="0" failures="0" hostname="" id="" package="auth-flow" skipped="0"
+    tests="6" time="32.15" timestamp="Sat, 21 Apr 2018 18:58:13 GMT">
+  
+    <testcase name="get to login page" classname="auth-flow" time="4.646" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="logging in with empty email" classname="auth-flow" time="16.81" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging in with invalid email format" classname="auth-flow" time="1.490" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging in with invalid username and invalid password" classname="auth-flow" time="2.165" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging in with valid credentials" classname="auth-flow" time="4.383" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="logging out" classname="auth-flow" time="2.658" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+
+  
+
+  
+  </testsuite>
+</testsuites>

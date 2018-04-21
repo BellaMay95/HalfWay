@@ -113,7 +113,7 @@ export default class TopNavbar extends Component {
 								Forum
 							</NavItem>
 							<NavItem id="settings" eventKey={3} onSelect={() => {this.setState({tabContent: <ViewProfile />})}}>
-								Settings
+								Profiles & Settings
 							</NavItem>
 							<NavItem id="resources" eventKey={4} onSelect={() => {this.setState({tabContent: <Resources />})}}>
 								Resources
