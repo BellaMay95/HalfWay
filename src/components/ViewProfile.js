@@ -33,7 +33,8 @@ export default class ViewProfile extends Component {
             accType: "",
             alertState: null,
             searchTerm: "",
-            userList: []
+            disableSearch: true,
+            userList: [],
         }
     }
 
@@ -64,7 +65,10 @@ export default class ViewProfile extends Component {
         getUsers()
         .then((list) => {
             console.log(list);
-            this.setState({ userList: list.data });
+            this.setState({ 
+                userList: list.data, 
+                disableSearch: false
+            });
         })
         .catch((err) => {
             console.log("error getting user list!");
@@ -150,7 +154,7 @@ export default class ViewProfile extends Component {
                             <label>Search For User!</label>
                         </Col>
                         <Col xs={8}>
-                            <SearchInput className="search-input" style={{width: "90%"}} onChange={this.setSearch} />
+                            <SearchInput className="search-input" style={{width: "90%"}} onChange={this.setSearch} disabled={this.state.disableSearch} />
                             { this.state.searchTerm !== "" ? <ListGroup> {filteredUsers.map((record) => {
                                 return (
                                     <ListGroupItem key={record.uid} onClick={() => {this.setUserProfile(record)}}>{record.displayName}</ListGroupItem>

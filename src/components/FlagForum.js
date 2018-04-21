@@ -82,7 +82,7 @@ class FlagForum extends Component {
   render(){
     return (
         <div className="static-modal">
-          <Modal.Dialog>
+          <Modal.Dialog style={{overflow: 'auto'}}>
               <Modal.Header>
                 <Modal.Title>Report this forum post.</Modal.Title>
               </Modal.Header>

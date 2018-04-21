@@ -68,7 +68,7 @@ class CreateResource extends Component {
 
     render() {
         return (<div className="static-modal">
-            <Modal.Dialog>
+            <Modal.Dialog style={{overflow: 'auto'}}>
                 <Modal.Header>
                 <Modal.Title>Create New Resource!</Modal.Title>
                 </Modal.Header>

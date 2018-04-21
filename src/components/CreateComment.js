@@ -49,10 +49,10 @@ class CreateComment extends Component{
     // Pushing to the database
     app.database().ref('forum/' + this.state.thread_id + '/comments').push(postInfo, (err) => {
       if (!err) {
-        alert("Thread Posted Successfully!");
+        alert("Comment Posted Successfully!");
         this.closeModal();
       } else {
-        alert("Error posting thread!");
+        alert("Error posting comment!");
         this.closeModal();
       }
     });
@@ -64,7 +64,7 @@ class CreateComment extends Component{
   render(){
     return (
         <div className="static-modal">
-          <Modal.Dialog>
+          <Modal.Dialog style={{overflow: 'auto'}}>
               <Modal.Header>
                 <Modal.Title>Create Comment</Modal.Title>
               </Modal.Header>
@@ -88,8 +88,8 @@ class CreateComment extends Component{
               </Modal.Body>
 
               <Modal.Footer>
-                  <Button onClick={this.closeModal}>Close</Button>
-                  <Button bsStyle="primary" onClick={this.saveComment}>Create Comment!</Button>
+                  <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                  <Button id="createComment" bsStyle="primary" onClick={this.saveComment}>Create Comment!</Button>
               </Modal.Footer>
           </Modal.Dialog>
       </div>

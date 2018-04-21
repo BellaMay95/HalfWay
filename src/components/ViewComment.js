@@ -250,7 +250,7 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
   render(){
     return(
       <div className="static-modal">
-        <Modal.Dialog>
+        <Modal.Dialog style={{overflow: 'auto'}}>
             <Modal.Header className="commentModalHeader">
               {console.log("ViewComment:: In the render")}
               <Modal.Title>View Comments</Modal.Title>
@@ -261,7 +261,7 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                 <div>
                   {   //displays message if there aren't any Comments to display
                       this.state.commentToDisplay.length === 0 ?
-                          <Alert bsStyle="warning">No comments yet! Be the first to start the conversation!</Alert>
+                          <Alert bsStyle="warning" id="emptyComments">No comments yet! Be the first to start the conversation!</Alert>
                       : null
                   }
                   {
@@ -272,9 +272,10 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                   }
                   {
                     this.state.commentToDisplay.map((comment, index) => {
+                      let commentId = "comment" + index;
                       return(
                         <div>
-                          <ListGroupItem className="commentItem" key={index}>
+                          <ListGroupItem className="commentItem" key={index} id={commentId}>
                             <div>
                               <p>{comment.message}</p>
                               <p className="cite"><cite>{comment.author_name}</cite></p>
@@ -300,9 +301,9 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
             </Modal.Body>
 
             <Modal.Footer>
-                <Button onClick={this.closeModal}>Close</Button>
-                <Button bsStyle="primary" onClick={this.prevButtonOnClickHandler}>Previous Page</Button>
-                <Button bsStyle="primary" onClick={this.nextButtonOnClickHandler}>Next Page</Button>
+                <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                <Button id="prevComments" bsStyle="primary" onClick={this.prevButtonOnClickHandler}>Previous Page</Button>
+                <Button id="nextComments" bsStyle="primary" onClick={this.nextButtonOnClickHandler}>Next Page</Button>
             </Modal.Footer>
         </Modal.Dialog>
       </div>

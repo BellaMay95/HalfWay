@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="1"
+            tests="10">
+
+  <testsuite name="forum-flow"
+    errors="0" failures="1" hostname="" id="" package="forum-flow" skipped="9"
+    tests="10" time="5.190" timestamp="Thu, 19 Apr 2018 02:08:02 GMT">
+  
+    <testcase name="log on to site and view forum threads" classname="forum-flow" time="5.190" assertions="1">  <failure message="Testing if the URL equals &#34;http://localhost:3000/login&#34;.">    at Object.log on to site and view forum threads (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/forum-flow.js:3:47)
+    at _combinedTickCallback (internal/process/next_tick.js:73:7)</failure>
+
+    
+    </testcase>
+  
+
+  
+
+  
+    
+    <testcase
+      name="create new forum thread with empty title" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="create new forum thread success" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="verify created thread is shown at top of list" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="view forum thread (no comments present)" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="add comment on forum thread" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="edit your own thread post" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="edit your comment on thread post" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="delete your comment on thread post" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="delete your own thread" classname="forum-flow">
+      <skipped />
+    </testcase>
+    
+  
+  </testsuite>
+</testsuites>

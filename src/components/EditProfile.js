@@ -353,15 +353,15 @@ export default class EditProfile extends Component {
     render() {
         return (
             <div className="static-modal">
-                <Modal.Dialog style={{ overflow: 'auto' }}g>
+                <Modal.Dialog style={{ overflow: 'auto' }}>
                     <Modal.Header>
                         <Modal.Title>Edit Profile Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {this.state.alertState}
-                        <Grid fluid={true}>
+                        <Grid fluid={true} style={{backgroundColor: 'white'}} >
                             <Row>
-                                <Col xs={12} sm={4}>
+                                <Col xs={12} sm={4} style={{margin: 0}}>
                                     <ControlLabel>User Avatar</ControlLabel>
                                     <Image src={this.state.avatar} responsive rounded />
                                     <label style={{backgroundColor: 'steelblue', color: 'white', padding: 10, borderRadius: 4, pointer: 'cursor'}}>

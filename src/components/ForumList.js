@@ -175,16 +175,14 @@ class Forum extends Component {
                     {   //displays message if there aren't any forum threads to display
                         this.state.forumList.length === 0 ?
                             <Well id="emptyMessage">No threads yet! Be the first to start the conversation!</Well>
-                        : null
-                    }
-                    {
-                      /* Going through the array and displaying all of the forums in a panel view*/
-                      this.state.forumList.map((forum) => {
-                          return(
-                            <div key={forum.id}>
-                            <ForumComponent thread_id={forum.id} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
-                            </div>
-                          )
+                        : /* Going through the array and displaying all of the forums in a panel view*/
+                        this.state.forumList.map((forum, index) => {
+                            let forum_id = "thread_" + index;
+                            return(
+                                <div key={forum.id} id={forum_id}>
+                                <ForumComponent thread_id={forum.id} array_id={index} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
+                                </div>
+                            )
                         })
                     }
                </div>

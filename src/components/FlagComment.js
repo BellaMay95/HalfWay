@@ -86,7 +86,7 @@ class FlagComment extends Component {
   render(){
     return (
         <div className="static-modal">
-          <Modal.Dialog>
+          <Modal.Dialog style={{overflow: 'auto'}}>
               <Modal.Header>
                 <Modal.Title>Report this comment.</Modal.Title>
               </Modal.Header>

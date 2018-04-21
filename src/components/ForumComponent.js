@@ -36,6 +36,9 @@ class ForumComponent extends Component{
   }
 
   render(){
+    let newCommentId = "newCommentThread" + this.props.array_id;
+    let viewCommentId = "viewCommentThread" + this.props.array_id;
+
     return(
       <div>
       <PanelGroup bsStyle="primary" key={this.state.thread_id} id={this.state.thread_id}>
@@ -49,7 +52,7 @@ class ForumComponent extends Component{
                       </div>
                     </Panel.Title>
 
-                    <Button className="newComment" bsStyle="link" onClick={() => this.handleOpenCreateCommentModal()}>
+                    <Button id={newCommentId} className="newComment" bsStyle="link" onClick={() => this.handleOpenCreateCommentModal()}>
                       {/* I will need to pass the id of the thread to the toggleModal prop eventually*/}
                       <Glyphicon glyph="plus-sign" style={{padding: '5px'}}/>
                       Create Comment
@@ -67,7 +70,7 @@ class ForumComponent extends Component{
               <Panel.Footer>
                 <div>
 
-                <Button className="viewComments" bsStyle="link" onClick={() => this.handleOpenViewCommentModal()}>
+                <Button id={viewCommentId} className="viewComments" bsStyle="link" onClick={() => this.handleOpenViewCommentModal()}>
                   View Comments
                 </Button>
 

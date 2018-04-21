@@ -55,7 +55,7 @@ export default class Login extends Component {
         let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         //checks for empty fields
-        if (this.state.username === "" || this.state.password === "") {
+        if (this.state.email === "" || this.state.password === "") {
         	this.setState({alertShow: 1, isLoading: false });
             //shows alert for 5 seconds
             window.setTimeout(() => {
@@ -64,8 +64,7 @@ export default class Login extends Component {
             console.log("You have one or more empty fields!");
             return;
         }
-
-        if (emailRegex.test(this.state.email)) { //make sure this could possibly be a valid email
+        else if (emailRegex.test(this.state.email)) { //make sure this could possibly be a valid email
             this.loginWithUsername(this.state.email);
         } else {
             this.setState({alertShow: 2, isLoading: false });
