@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="1"
+            failures="0"
+            tests="9">
+
+  <testsuite name="profile-admin-flow"
+    errors="1" failures="0" hostname="" id="" package="profile-admin-flow" skipped="8"
+    tests="9" time="0.01800" timestamp="Sun, 22 Apr 2018 03:53:04 GMT">
+  
+    <testcase name="view own profile" classname="profile-admin-flow" time="0.01800" assertions="0">
+    </testcase>
+  
+
+  
+    <system-err>
+        Error while running [Profile Admin Flow / view own profile]:
+
+  TypeError: Cannot read property &#39;0&#39; of undefined
+    at Object.view own profile (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/profile-admin-flow.js:27:54)
+    at Module.call (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/module.js:62:34)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testcase.js:70:29
+    at _fulfilled (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:834:54)
+    at self.promiseDispatch.done (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:863:30)
+    at Promise.promise.promiseDispatch (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:796:13)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:556:49
+    at runSingle (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:137:13)
+    at flush (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:125:13)
+    at _combinedTickCallback (internal/process/next_tick.js:73:7)
+    </system-err>
+  
+
+  
+    
+    <testcase
+      name="view another profile" classname="profile-admin-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="edit profile (no password)" classname="profile-admin-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="edit profile success" classname="profile-admin-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="change password empty fields" classname="profile-admin-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="change password no match" classname="profile-admin-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="change password too weak" classname="profile-admin-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="change password wrong current" classname="profile-admin-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="change password success" classname="profile-admin-flow">
+      <skipped />
+    </testcase>
+    
+  
+  </testsuite>
+</testsuites>

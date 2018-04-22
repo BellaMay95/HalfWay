@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="1"
+            tests="5">
+
+  <testsuite name="resources-flow"
+    errors="0" failures="1" hostname="" id="" package="resources-flow" skipped="3"
+    tests="5" time="21.82" timestamp="Sun, 22 Apr 2018 00:51:45 GMT">
+  
+    <testcase name="navigate to resources page" classname="resources-flow" time="11.36" assertions="4">
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="navigate panels" classname="resources-flow" time="10.46" assertions="1">  <failure message="Timed out while waiting for element &lt;#resources-list-heading-2&gt; to be present for 2000 milliseconds.">    at Object.navigate panels (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/resources-flow.js:26:17)
+    at _combinedTickCallback (internal/process/next_tick.js:73:7)</failure>
+
+    
+    </testcase>
+  
+
+  
+
+  
+    
+    <testcase
+      name="add resource with empty field" classname="resources-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="add resource success" classname="resources-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="remove resource" classname="resources-flow">
+      <skipped />
+    </testcase>
+    
+  
+  </testsuite>
+</testsuites>
