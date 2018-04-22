@@ -154,7 +154,7 @@ export default class ViewProfile extends Component {
                             <label>Search For User!</label>
                         </Col>
                         <Col xs={8}>
-                            <SearchInput className="search-input" style={{width: "90%"}} onChange={this.setSearch} disabled={this.state.disableSearch} />
+                            <SearchInput id="searchUsers" className="search-input" style={{width: "90%"}} onChange={this.setSearch} disabled={this.state.disableSearch} />
                             { this.state.searchTerm !== "" ? <ListGroup> {filteredUsers.map((record) => {
                                 return (
                                     <ListGroupItem key={record.uid} onClick={() => {this.setUserProfile(record)}}>{record.displayName}</ListGroupItem>
@@ -175,8 +175,8 @@ export default class ViewProfile extends Component {
                             title="View/Edit Profile"
                             id="editProfileDropdown"
                             >
-                            <MenuItem eventKey="1" onClick={this.toggleEditModal}>Edit Profile</MenuItem>
-                            <MenuItem eventKey="2" onClick={this.togglePasswordModal}>Change Password</MenuItem>
+                            <MenuItem id="editProfile" eventKey="1" onClick={this.toggleEditModal}>Edit Profile</MenuItem>
+                            <MenuItem id="changePassword" eventKey="2" onClick={this.togglePasswordModal}>Change Password</MenuItem>
                             { this.state.accType === "youth" ? <MenuItem eventKey="3" onClick={this.togglePendingChangesModal}>Pending Changes</MenuItem> : null }
                         </DropdownButton>
 
@@ -192,10 +192,10 @@ export default class ViewProfile extends Component {
                             <Image src={this.state.avatar} rounded responsive />
                         </Col>
                         <Col xs={8}>
-                            <p>Display Name: {this.state.profileName}</p>
-                            <p>Member Since: {this.state.created}</p>
-                            <p>User Role: {this.state.accType}</p>
-                            { this.state.email ? <p>Email: {this.state.email}</p> : null}
+                            <p id="userDisplay">Display Name: {this.state.profileName}</p>
+                            <p id="userCreated">Member Since: {this.state.created}</p>
+                            <p id="userType">User Role: {this.state.accType}</p>
+                            { this.state.email ? <p id="userEmail">Email: {this.state.email}</p> : null}
                         </Col>
                     </Row>
                     {/*<hr />

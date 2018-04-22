@@ -39,6 +39,14 @@
           "browserName": "chrome"
         }
       },
+
+      "firefox" : {
+        "desiredCapabilities": {
+          "browserName": "firefox",
+          "javascriptEnabled": true,
+          "acceptSslCerts": true
+        }
+      },
   
       "edge" : {
         "desiredCapabilities": {

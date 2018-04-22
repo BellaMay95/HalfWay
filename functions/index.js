@@ -15,7 +15,7 @@ admin.initializeApp({
 });
 
 exports.createAccount = functions.https.onCall((data) => {
-    console.log(data);
+    //console.log(data);
 
     //generate 8-character random password from uppercase letters, lowercase letters, numbers, and some symbols
     var genPwd = "";
@@ -24,7 +24,7 @@ exports.createAccount = functions.https.onCall((data) => {
         genPwd += possible.charAt(Math.floor(Math.random() * possible.length));
     }
 
-    console.log("password: " + genPwd);
+    //console.log("password: " + genPwd);
 
     let newUid;
 
@@ -36,7 +36,7 @@ exports.createAccount = functions.https.onCall((data) => {
         }
     })
     .then(() => {
-        console.log("Creating user in Firebase!");
+        //console.log("Creating user in Firebase!");
         return admin.auth().createUser({
             "email": data.email,
             "password": genPwd, //make password a randomly generated strong password of 8 characters
@@ -49,12 +49,13 @@ exports.createAccount = functions.https.onCall((data) => {
         })
     })
     .then((userRecord) => {
-        console.log("setting custom claims");
+        //console.log("setting custom claims");
         let customClaims = {
             'type': data.type
         }
         return admin.auth().setCustomUserClaims(userRecord.uid, customClaims)
         .catch((err) => {
+            console.log("failed to set user roles!");
             console.log(err);
             throw new functions.https.HttpsError('aborted', "Failed to set user role");
         });
@@ -89,7 +90,7 @@ exports.createAccount = functions.https.onCall((data) => {
 });
 
 exports.changeAccount = functions.https.onCall((data) => {
-    console.log(data);
+    //console.log(data);
     return admin.auth().getUserByEmail(data.email) //get user record by username in auth
     .then((userRecord) => {
         // See the UserRecord reference doc for the contents of userRecord.
@@ -105,11 +106,13 @@ exports.changeAccount = functions.https.onCall((data) => {
             return "User Type Updated Successfully!";
         })
         .catch((err) => {
+            console.log("error updating user type");
             console.log(err);
             throw new functions.https.HttpsError('aborted', "Failed to change user role");
         });
     })
     .catch((err) => {
+        console.log("couldn't find user account!")
         console.log(err);
         throw new functions.https.HttpsError('aborted', "Failed to find user account!");
     })
@@ -118,50 +121,57 @@ exports.changeAccount = functions.https.onCall((data) => {
 exports.deleteAccount = functions.https.onCall((data) => {
     return emailExists(data.email) //check if the email exists
     .then((result) => {
-        console.log("checking for email result...");
+        //console.log("checking for email result...");
         if (!result) { //email doesn't exist, set variables and jump to catch block
             console.log("account doesn't exist!");
             throw new functions.https.HttpsError('aborted', "Account Not Found!");
         }
     })
     .then(() => {
-        console.log("get user record for username")
+        //console.log("get user record for username")
         return admin.auth().getUserByEmail(data.email)
         .catch((error) => {
-            console.log("error getting user instance");
+            console.log("error getting user account");
             console.log(error);
             throw new functions.https.HttpsError('aborted', "Error Finding Account!");
         });
     })
     .then((userdata) => {
         let uid = userdata.uid;
-        console.log("deleting user record in auth...")
+        //console.log("deleting user record in auth...")
         return admin.auth().deleteUser(userdata.uid)
         .then(() => {
             console.log("Successfully deleted account!");
             return "Successfully Deleted User Account!";
         })
         .catch((error) => {
+            console.log("error deleting account!")
             console.log(error);
             throw new functions.https.HttpsError('aborted', "Failed to Delete User Account!");
         });
     })
     .catch((err) => {
-        console.log("error somewhere else");
-        console.log(err);
-        throw new functions.https.HttpsError('aborted', "Server Error. Please Contact Administrator.");
+        if (err.message === "Account Not Found!") {
+            console.log("account doesn't exist!");
+            throw new functions.https.HttpsError('aborted', "Account Not Found!");
+        } else {
+            console.log("error somewhere else");
+            console.log(err);
+            throw new functions.https.HttpsError('aborted', "Server Error. Please Contact Administrator.");
+        }
     })
 });
 
 var emailExists = (email) => {
-    console.log("email function called!");
-   // let email = username + "@halfway.com";
+    //console.log("email function called!");
     
     return admin.auth().getUserByEmail(email)
     .then((userRecord) => {
         if (userRecord) {
             //true: userRecord exists
             return userRecord;
+        } else {
+            return false;
         }
     })
     //throws an error if user doesn't exist
@@ -233,7 +243,7 @@ exports.saveProfile = functions.https.onCall((data) => {
     })
     .then(() => {
         if (updateError.length === 0) {
-            console.log("successfully updated profile!");
+            //console.log("successfully updated profile!");
             return admin.database().ref('pendingProfiles/' + data.uid).set({})
             .then(() => {
                 let result = {
@@ -257,6 +267,7 @@ exports.saveProfile = functions.https.onCall((data) => {
                 message += updateError[i];
             }
             message += "!";
+            console.log(message);
             throw new functions.https.HttpsError('aborted', message);
         }
     })

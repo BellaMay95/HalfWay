@@ -407,8 +407,8 @@ export default class EditProfile extends Component {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button onClick={this.closeModal}>Close</Button>
-                        <Button bsStyle="primary" onClick={this.editProfile} disabled={this.state.isLoading}>Edit Profile!</Button>
+                        <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                        <Button id="submitProfile" bsStyle="primary" onClick={this.editProfile} disabled={this.state.isLoading}>Edit Profile!</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
             </div>

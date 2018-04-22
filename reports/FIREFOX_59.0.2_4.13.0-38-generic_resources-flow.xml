@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="3"
+            failures="1"
+            tests="5">
+
+  <testsuite name="resources-flow"
+    errors="3" failures="1" hostname="" id="" package="resources-flow" skipped="4"
+    tests="5" time="43.61" timestamp="Sun, 22 Apr 2018 00:30:57 GMT">
+  
+    <testcase name="navigate to resources page" classname="resources-flow" time="43.61" assertions="2">
+
+      <failure message="Testing if the URL equals &#34;http://localhost:3000/&#34;.">    at Object.before (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/resources-flow.js:8:24)</failure>
+
+    
+    </testcase>
+  
+
+  
+    <system-err>
+      ERROR: Unable to locate element: &#34;input[name=&#34;email&#34;]&#34; using: css selector
+    at Object.before (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/resources-flow.js:4:17)
+    at Object.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/util/utils.js:35:8)
+    at TestSuite.runHookMethod (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:591:17)
+    at TestSuite.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:105:16)
+    at TestSuite.makePromise (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:528:8)
+    at Object.before (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:84:21)
+    at TestSuite.before (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:426:21)
+    at TestSuite.runTestSuiteModule (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:313:15)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:227:21
+    at _fulfilled (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:834:54)
+ERROR: Unable to locate element: &#34;input[name=&#34;password&#34;]&#34; using: css selector
+    at Object.before (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/resources-flow.js:5:17)
+    at Object.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/util/utils.js:35:8)
+    at TestSuite.runHookMethod (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:591:17)
+    at TestSuite.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:105:16)
+    at TestSuite.makePromise (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:528:8)
+    at Object.before (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:84:21)
+    at TestSuite.before (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:426:21)
+    at TestSuite.runTestSuiteModule (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:313:15)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:227:21
+    at _fulfilled (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:834:54)
+ERROR: Unable to locate element: &#34;#loginButton&#34; using: css selector
+    at Object.before (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/resources-flow.js:6:17)
+    at Object.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/util/utils.js:35:8)
+    at TestSuite.runHookMethod (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:591:17)
+    at TestSuite.&lt;anonymous&gt; (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:105:16)
+    at TestSuite.makePromise (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:528:8)
+    at Object.before (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:84:21)
+    at TestSuite.before (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:426:21)
+    at TestSuite.runTestSuiteModule (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:313:15)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testsuite.js:227:21
+    at _fulfilled (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:834:54)
+    </system-err>
+  
+
+  
+    
+    <testcase
+      name="navigate panels" classname="resources-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="add resource with empty field" classname="resources-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="add resource success" classname="resources-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="remove resource" classname="resources-flow">
+      <skipped />
+    </testcase>
+    
+  
+  </testsuite>
+</testsuites>

@@ -450,7 +450,7 @@ export class DeleteAccount extends Component {
     
                         <Modal.Footer>
                             <Button id="confirmClose" onClick={() => {this.setState({confirmModal: false, isLoading: false})}}>Close</Button>
-                            <Button bsStyle="danger" onClick={this.deleteAccount}>Delete Account</Button>
+                            <Button id="confirmDelete" bsStyle="danger" onClick={this.deleteAccount}>Delete Account</Button>
                         </Modal.Footer>
                     </Modal.Dialog>
                 </div> : null }

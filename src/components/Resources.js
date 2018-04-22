@@ -71,7 +71,7 @@ export default class Resources extends Component{
 
           // Get DataSnapshot every time a child is added to the array
           this.databaseJ.on('child_added', snap => {
-            prevJob.push({
+            prevJob.unshift({
               id: snap.key,
               author_id: snap.val().author_id,
               //author_name: snap.val().author_name,
@@ -79,9 +79,6 @@ export default class Resources extends Component{
               subject: snap.val().subject,
               timestamp: this.getDateTime(snap.val().timestamp),
             })
-
-            //reverse the array to show newest posts first
-            //prevJob = prevJob.reverse();
             // Push the array that we have just updated (previousForum) to the state
             this.setState({
               jobArr: prevJob
@@ -110,7 +107,7 @@ export default class Resources extends Component{
 
   // Get DataSnapshot every time a child is added to the array
   this.databaseA.on('child_added', snap => {
-    prevAffH.push({
+    prevAffH.unshift({
       id: snap.key,
       author_id: snap.val().author_id,
       //author_name: snap.val().author_name,
@@ -118,9 +115,6 @@ export default class Resources extends Component{
       subject: snap.val().subject,
       timestamp: this.getDateTime(snap.val().timestamp),
       })
-
-      //reverse the array to show newest posts first
-      //prevAffH = prevAffH.reverse();
       // Push the array that we have just updated (previousForum) to the state
       this.setState({
         affHouseArr: prevAffH
@@ -146,7 +140,7 @@ this.databaseA.on('child_removed', snap => {
 
       // Get DataSnapshot every time a child is added to the array
       this.databaseS.on('child_added', snap => {
-        prevSTH.push({
+        prevSTH.unshift({
           id: snap.key,
           author_id: snap.val().author_id,
           //author_name: snap.val().author_name,
@@ -155,8 +149,6 @@ this.databaseA.on('child_removed', snap => {
           timestamp: this.getDateTime(snap.val().timestamp),
           })
 
-          //reverse the array to show newest posts first
-          //prevAffH = prevAffH.reverse();
           // Push the array that we have just updated (previousForum) to the state
           this.setState({
             stHouseArr: prevSTH
@@ -180,7 +172,7 @@ this.databaseS.on('child_removed', snap => {
         // Set previousForum to current state
           // Get DataSnapshot every time a child is added to the array
     this.databaseF.on('child_added', snap => {
-      prevFood.push({
+      prevFood.unshift({
         id: snap.key,
         author_id: snap.val().author_id,
         //author_name: snap.val().author_name,
@@ -188,8 +180,6 @@ this.databaseS.on('child_removed', snap => {
         subject: snap.val().subject,
         timestamp: this.getDateTime(snap.val().timestamp),
       })
-      //reverse the array to show newest posts first
-      //prevAffH = prevAffH.reverse();
       // Push the array that we have just updated (previousForum) to the state
       this.setState({
         foodArr: prevFood
@@ -213,7 +203,7 @@ this.databaseS.on('child_removed', snap => {
             // Set previousForum to current state
               // Get DataSnapshot every time a child is added to the array
         this.databaseE.on('child_added', snap => {
-          prevEducation.push({
+          prevEducation.unshift({
             id: snap.key,
             author_id: snap.val().author_id,
             //author_name: snap.val().author_name,
@@ -221,8 +211,6 @@ this.databaseS.on('child_removed', snap => {
             subject: snap.val().subject,
             timestamp: this.getDateTime(snap.val().timestamp),
           })
-          //reverse the array to show newest posts first
-          //prevAffH = prevAffH.reverse();
           // Push the array that we have just updated (previousForum) to the state
           this.setState({
             educationArr: prevEducation
@@ -265,18 +253,24 @@ this.databaseS.on('child_removed', snap => {
   }
 
   checkAdmin() {
-    //get user ID for lookup in database table
-    let uid = app.auth().currentUser.uid;
-    return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-      //return whether the user has admin privileges
-      if (snapshot.val().type === "admin") {
-        return true;
-      }
-      else {
-        return false;
-      }
-    });
-    }
+		//check user token for account type
+		return app.auth().currentUser.getIdToken()
+        .then((idToken) => {
+            // Parse the ID token.
+            idToken = idToken.replace(/-/g, "+").replace(/_/g, "/");
+			const payload = JSON.parse(atob(idToken.split('.')[1]));
+			if (payload['type'] === "admin") {
+				return true;
+			} else {
+				return false;
+			}
+		})
+		.catch((err) => {
+			console.log("couldn't get token!");
+			console.log(err);
+			return false; //if we can't determine, say they aren't an admin
+		})
+  }
 
 
   render(){
@@ -308,13 +302,13 @@ this.databaseS.on('child_removed', snap => {
           <Panel.Heading>
             <Panel.Title toggle><h4>Job Opportunities</h4></Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal }>add info</button>  : null}
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" id="addJobResource" className="btn btn-info" onClick={this.toggleResourceModal }>add info</button>  : null}
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.jobArr.map((job , index) => {
                return(
                 <div key={job.id}>
-                 <ResourceComponent  resource_id={job.id} author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp} resIdentifier = {1}/>
+                 <ResourceComponent index={index} resource_id={job.id} author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp} resIdentifier = {1}/>
                </div>
                )
            })
@@ -328,13 +322,13 @@ this.databaseS.on('child_removed', snap => {
           <Panel.Heading>
             <Panel.Title toggle><h4>Affordable Housing</h4></Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" id="addAffHousingResource" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.affHouseArr.map((aff , index) => {
                return(
                  <div key={aff.id}>
-                 <ResourceComponent resource_id={aff.id} author_name={aff.author_name} message={aff.message} subject={aff.subject} timestamp = {aff.timestamp} resIdentifier = {2}/>
+                 <ResourceComponent index={index} resource_id={aff.id} author_name={aff.author_name} message={aff.message} subject={aff.subject} timestamp = {aff.timestamp} resIdentifier = {2}/>
                  </div>
                )
            })
@@ -346,13 +340,13 @@ this.databaseS.on('child_removed', snap => {
           <Panel.Heading>
             <Panel.Title toggle><h4>Short Term Housing</h4></Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" id="addStHousingResource" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.stHouseArr.map((sth , index) => {
                return(
                  <div key={sth.id}>
-                 <ResourceComponent resource_id={sth.id} author_name={sth.author_name} message={sth.message} subject={sth.subject} timestamp = {sth.timestamp} resIdentifier = {3}/>
+                 <ResourceComponent index={index} resource_id={sth.id} author_name={sth.author_name} message={sth.message} subject={sth.subject} timestamp = {sth.timestamp} resIdentifier = {3}/>
                  </div>
                )
            })
@@ -364,13 +358,13 @@ this.databaseS.on('child_removed', snap => {
           <Panel.Heading>
             <Panel.Title toggle><h4>Food</h4></Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" id="addFoodResource" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.foodArr.map((food , index) => {
                return(
                  <div key={food.id}>
-                 <ResourceComponent resource_id={food.id} author_name={food.author_name} message={food.message} subject={food.subject} timestamp = {food.timestamp} resIdentifier = {4}/>
+                 <ResourceComponent index={index} resource_id={food.id} author_name={food.author_name} message={food.message} subject={food.subject} timestamp = {food.timestamp} resIdentifier = {4}/>
                  </div>
                )
            })
@@ -382,13 +376,13 @@ this.databaseS.on('child_removed', snap => {
           <Panel.Heading>
             <Panel.Title toggle><h4>Education</h4></Panel.Title>
           </Panel.Heading>
-          <Panel.Body collapsible>{this.state.admin ? <button type="button" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" id="addEducationResource" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
           {
             /*Going through the array and displaying all of the forums in a panel view*/
            this.state.educationArr.map((edu , index) => {
                return(
                  <div key={edu.id}>
-                 <ResourceComponent resource_id={edu.id} author_name={edu.author_name} message={edu.message} subject={edu.subject} timestamp = {edu.timestamp} resIdentifier = {5}/>
+                 <ResourceComponent index={index} resource_id={edu.id} author_name={edu.author_name} message={edu.message} subject={edu.subject} timestamp = {edu.timestamp} resIdentifier = {5}/>
                  </div>
                )
            })
