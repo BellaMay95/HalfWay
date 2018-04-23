@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { app } from '../base';
-import { Modal, Button, ListGroup, ListGroupItem, Well, Image, Alert } from 'react-bootstrap';
+import { Modal, Button, ListGroup, ListGroupItem, Image, Alert } from 'react-bootstrap';
 import './ViewComment.css';
 import warning from '../images/warning.png';
 

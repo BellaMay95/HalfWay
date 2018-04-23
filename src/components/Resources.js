@@ -33,25 +33,26 @@ export default class Resources extends Component{
   }
 
   handleSelect(activeKey) {
-    console.log(activeKey);
+    //console.log(typeof activeKey);
+    //console.log(activeKey);
     //let resType;
-    if (activeKey == 1)
+    if (activeKey === "1")
     {
       this.setState({ resType: 'job' });
     }
-    if (activeKey == 2)
+    if (activeKey === "2")
     {
       this.setState({ resType: 'affordablehousing' });
     }
-    if (activeKey == 3)
+    if (activeKey === "3")
     {
       this.setState({ resType: 'shorttermhousing' });
     }
-    if (activeKey == 4)
+    if (activeKey === "4")
     {
       this.setState({ resType: 'food' });
     }
-    if (activeKey == 5)
+    if (activeKey === "5")
     {
       this.setState({ resType: 'education' });
     }
@@ -274,13 +275,6 @@ this.databaseS.on('child_removed', snap => {
 
 
   render(){
-    //let resType = '';
-    let headerStyle = {
-      fontFamily: "'Courier New', 'Courier', 'monospace'",
-      fontSize: 36,
-      fontWeight: "bold"
-    }
-
     return(
       <div className="container">
         <Navbar className="navbarResources" collapseOnSelect style={{marginTop: '5px'}}>

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 //import { render } from 'react-dom';
-import forum from '../images/forum.png';
+//import forum from '../images/forum.png';
 //import directmessage from '../images/directmessage.png';
-import help from '../images/help.png';
-import settings from '../images/settings.png';
+//import help from '../images/help.png';
+//import settings from '../images/settings.png';
 import logout from '../images/logout.png';
 import logo from '../images/HWtrial21.png';
-import admin from '../images/usersecret.png';
+//import admin from '../images/usersecret.png';
 import './Navbar.css';
 
-import { Navbar, Nav, NavItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Navbar, Nav, NavItem, /*OverlayTrigger, Tooltip*/ } from 'react-bootstrap';
 //import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 
 import { app } from '../base';
@@ -78,15 +78,15 @@ export default class TopNavbar extends Component {
 
 	render() {
 		//console.log("Admin: " + this.state.admin);
-		const forumTooltip = (
+		/*const forumTooltip = (
 			<Tooltip id="tooltip">Forums</Tooltip>
-		);
+		);*/
 
 		/*const messageTooltip = (
 			<Tooltip id="tooltip">Messages</Tooltip>
 		);*/
 
-		const settingTooltip = (
+		/*const settingTooltip = (
 			<Tooltip id="tooltip">Profiles & Settings</Tooltip>
 		);
 
@@ -96,7 +96,7 @@ export default class TopNavbar extends Component {
 
 		const adminTooltip = (
 			<Tooltip id="tooltip">Admin Panel</Tooltip>
-		);
+		);*/
 
 		return (
 			<div>

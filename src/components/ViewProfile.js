@@ -129,11 +129,6 @@ export default class ViewProfile extends Component {
     }
 
     render() {
-        let headerStyle = {
-            fontFamily: "'Courier New', 'Courier', 'monospace'",
-            fontSize: 36,
-            fontWeight: "bold"
-        }
         let myProfile = (this.state.profileName === app.auth().currentUser.displayName);
 
         const filteredUsers = this.state.userList.length > 0 ? this.state.userList.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS)) : [];
