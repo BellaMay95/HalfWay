@@ -88,7 +88,7 @@ class ForumComponent extends Component{
       <PanelGroup key={this.state.thread_id} id={this.state.thread_id}>
           <Panel bsStyle="info">
               <Panel.Heading>
-                  <Panel.Title componentClass='h3'><div className = "h"><strong>{this.state.subject}</strong></div> <div className = "timestamp"> <strong>Date Posted: </strong>{this.state.timestamp}</div> <div class="clearfix"></div></Panel.Title>
+                  <Panel.Title componentClass='h3'><div className = "h"><strong>{this.state.subject}</strong></div> <div className = "timestamp"> <strong>Date Posted: </strong>{this.state.timestamp}</div> <div className="clearfix"></div></Panel.Title>
               </Panel.Heading>
               <Panel.Body className = "body">{this.state.message}</Panel.Body>
               <Panel.Footer className = "footer">
@@ -99,7 +99,7 @@ class ForumComponent extends Component{
                   Remove Resource
                 </Button> : null}
                 </div>
-                <div class="clearfix"></div>
+                <div className="clearfix"></div>
               </Panel.Footer>
           </Panel>
       </PanelGroup>

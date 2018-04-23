@@ -58,7 +58,7 @@ class ForumComponent extends Component{
                   Accept Comment
                 </Button>
                 </div>
-                <div class="clearfix"></div>
+                <div className="clearfix"></div>
               </Panel.Footer>
           </Panel>
       </PanelGroup>
