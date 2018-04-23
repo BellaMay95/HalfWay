@@ -13,7 +13,7 @@ module.exports = {
         //login to website
         browser.waitForElementPresent('input[name="email"]', 5000);
         browser.setValue('input[name="email"]', "halfway@halfway.com");
-        browser.setValue('input[name="password"]', "Password1!");
+        browser.setValue('input[name="password"]', oldPassword);
         browser.click('#loginButton');
         //give time for page to load and login
         browser.pause(3000);

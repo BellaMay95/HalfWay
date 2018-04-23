@@ -1,17 +1,6 @@
 import React, {Component} from 'react';
-import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock, Alert } from 'react-bootstrap';
+import { Modal, Button, FormGroup, ControlLabel, FormControl, Alert } from 'react-bootstrap';
 import { app } from '../base';
-
-// FieldGroup set-up pull directly from react boostrap
-function FieldGroup({ id, label, help, ...props }) {
-  return (
-    <FormGroup controlId={id}>
-      <ControlLabel>{label}</ControlLabel>
-      <FormControl {...props} />
-      {help && <HelpBlock>{help}</HelpBlock>}
-    </FormGroup>
-  );
-}
 
 class FlagComment extends Component {
 
@@ -78,8 +67,6 @@ class FlagComment extends Component {
         }, 5000);
       }
     });
-
-    this.closeModal;
   }
 
 

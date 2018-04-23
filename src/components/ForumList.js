@@ -145,12 +145,6 @@ class Forum extends Component {
     }
 
     render() {
-        let headerStyle = {
-            fontFamily: "'Courier New', 'Courier', 'monospace'",
-            fontSize: 36,
-            fontWeight: "bold"
-        }
-
         return (
             <div className="container">
                 <Navbar className="navbarForum"  collapseOnSelect style={{marginTop: '5px'}}>

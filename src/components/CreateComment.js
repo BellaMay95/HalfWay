@@ -58,7 +58,7 @@ class CreateComment extends Component{
     });
 
     // After saving call closeModal to toggle the Modal
-    this.closeModal;
+    //this.closeModal();
   }
 
   render(){

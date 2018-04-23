@@ -43,12 +43,6 @@ export default class AdminPanel extends Component {
     }
 
     render() {
-        let headerStyle = {
-            fontFamily: "'Courier New', 'Courier', 'monospace'",
-            fontSize: 36,
-            fontWeight: "bold"
-        }
-
         return ((<div className="container">
             <Navbar className="navbarAdmin" collapseOnSelect style={{marginTop: '5px'}}>
                 <Navbar.Header>

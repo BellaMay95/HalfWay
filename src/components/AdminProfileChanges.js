@@ -57,7 +57,10 @@ export default class ProfileChanges extends Component {
                         <td>{changes[profile].currname}</td>
                         <td>{changes[profile].status}</td>
                         <td>
-                            <Button bsStyle="primary" onClick={() => {this.viewProfile(profile)}}>View</Button>
+                            <Button bsStyle="primary" onClick={
+                                //eslint-disable-next-line
+                                () => {this.viewProfile(profile)}
+                            }>View</Button>
                         </td>
                     </tr>
                 );
