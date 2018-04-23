@@ -56,7 +56,7 @@ class ForumComponent extends Component{
                   Accept Post
                 </Button>
                 </div>
-                <div class="clearfix"></div>
+                <div className="clearfix"></div>
               </Panel.Footer>
           </Panel>
       </PanelGroup>
