@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+//import ReactDOM from 'react-dom';
 import {Glyphicon, Panel, PanelGroup, Button } from 'react-bootstrap';
 import { app } from '../base';
 import './ForumComponent.css';

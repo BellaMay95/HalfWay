@@ -30,7 +30,7 @@ export default class ProfileChanges extends Component {
             tableContents: null,
             showProfile: false,
             uid: null,
-            alertState: null,
+            alertShow: null,
         }
     }
 
@@ -51,13 +51,14 @@ export default class ProfileChanges extends Component {
         let count = 0;
 
         for (var profile in changes) {
+            let profileId = "viewProfile" + count;
             if( changes.hasOwnProperty(profile) ) {
-                tempContents.push(
-                    <tr key = {count}>
+                tempContents.unshift(
+                    <tr key = {count} id="">
                         <td>{changes[profile].currname}</td>
                         <td>{changes[profile].status}</td>
                         <td>
-                            <Button bsStyle="primary" onClick={
+                            <Button id={profileId} bsStyle="primary" onClick={
                                 //eslint-disable-next-line
                                 () => {this.viewProfile(profile)}
                             }>View</Button>
@@ -89,14 +90,14 @@ export default class ProfileChanges extends Component {
         });
 
         window.setTimeout(() => {
-            this.setState({ alertState: null });
+            this.setState({ alertShow: null });
         }, 5000);
     }
 
     render() {
         return (
             <div>
-                {this.state.alertState}
+                {this.state.alertShow}
                 <Table responsive bordered striped>
                     <thead>
                         <tr>
@@ -179,9 +180,12 @@ export class ViewProfileChanges extends Component {
             .then(function(result) {
                 console.log(result);
     
-                self.setState({ isLoading: false });
+                /*self.setState({ isLoading: false });
                 self.props.showAlert("Profile Changes Approved!", "success");
-                self.props.closeModal();
+                self.props.closeModal();*/
+                this.setState({ isLoading: false });
+                this.props.showAlert("Profile Changes Approved!", "success");
+                this.props.closeModal();
             })
             .catch((err) => {
                 console.log("error!");
@@ -240,7 +244,7 @@ export class ViewProfileChanges extends Component {
             let changes = this.state.changes;
             let date = new Date().toLocaleString();
     
-            changes.comments.push(date + ": " + this.state.reason);
+            changes.comments.push(date + ": rejected: " + this.state.reason);
             changes.status = "rejected";
     
             app.database().ref('pendingProfiles/' + this.props.uid).update(changes)
@@ -336,9 +340,9 @@ export class ViewProfileChanges extends Component {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button bsStyle="default" onClick={this.props.closeModal} >Close</Button>
-                    <Button bsStyle="danger" onClick={this.rejectChanges} disabled={this.state.isLoading || this.state.changes.status === "rejected"}>Reject</Button>
-                    <Button bsStyle="success" onClick={this.approveChanges} disabled={this.state.isLoading || this.state.changes.status === "rejected"}>Approve</Button>
+                    <Button id="closeModal" bsStyle="default" onClick={this.props.closeModal} >Close</Button>
+                    <Button id="rejectChanges" bsStyle="danger" onClick={this.rejectChanges} disabled={this.state.isLoading || this.state.changes.status === "rejected"}>Reject</Button>
+                    <Button id="acceptChanges" bsStyle="success" onClick={this.approveChanges} disabled={this.state.isLoading || this.state.changes.status === "rejected"}>Approve</Button>
                 </Modal.Footer>
             </Modal.Dialog>
         );

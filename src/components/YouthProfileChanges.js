@@ -74,7 +74,7 @@ export default class PendingChanges extends Component {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button bsStyle="primary" onClick={this.props.closeModal} >Close</Button>
+                    <Button id="closeModal" bsStyle="primary" onClick={this.props.closeModal} >Close</Button>
                 </Modal.Footer>
             </Modal.Dialog>
         );
