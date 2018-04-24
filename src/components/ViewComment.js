@@ -273,6 +273,7 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                   {
                     this.state.commentToDisplay.map((comment, index) => {
                       let commentId = "comment" + index;
+                      let flagId = "flagComment" + index;
                       return(
                         <div>
                           <ListGroupItem className="commentItem" key={index} id={commentId}>
@@ -281,7 +282,7 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                               <p className="cite"><cite>{comment.author_name}</cite></p>
                               <div className="keywordbullshit">
                                 {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/}
-                                <Image className="warningSign" src={warning} responsive onClick={() => this.handleOpenFlagCommentModal(comment.id, comment.message, comment.author_name)}/>
+                                <Image className="warningSign" src={warning} id={flagId} responsive onClick={() => this.handleOpenFlagCommentModal(comment.id, comment.message, comment.author_name)}/>
                               </div>
                               <div className="clearfix"></div>
                             </div>

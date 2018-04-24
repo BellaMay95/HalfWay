@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="14">
+
+  <testsuite name="flag-flow"
+    errors="0" failures="0" hostname="" id="" package="flag-flow" skipped="0"
+    tests="14" time="107.1" timestamp="Tue, 24 Apr 2018 07:08:47 GMT">
+  
+    <testcase name="flag created post with empty reason" classname="flag-flow" time="39.26" assertions="14">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="flag created post successfully" classname="flag-flow" time="17.75" assertions="4">
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="verify post is marked as flagged on forum" classname="flag-flow" time="0.3270" assertions="0">
+    </testcase>
+  
+    <testcase name="view flagged post on admin panel" classname="flag-flow" time="1.499" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="flag comment on created post" classname="flag-flow" time="5.831" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="view flagged comment on admin panel" classname="flag-flow" time="1.932" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="accept comment on flagged post" classname="flag-flow" time="4.761" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="verify comment is no longer flagged" classname="flag-flow" time="5.844" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="reject comment on flagged post" classname="flag-flow" time="5.022" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="verify comment is removed from post" classname="flag-flow" time="12.04" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="accept flagged post" classname="flag-flow" time="4.187" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="verify post is no longer flagged" classname="flag-flow" time="2.383" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="reject flagged post" classname="flag-flow" time="4.676" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="verify post is removed from forum" classname="flag-flow" time="1.580" assertions="4">
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+
+  
+
+  
+  </testsuite>
+</testsuites>

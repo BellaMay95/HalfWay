@@ -18,6 +18,15 @@ module.exports = {
 		browser.timeoutsImplicitWait(10000);
     },
 
+    after: (browser) => {
+        //log out and end the session
+        browser.click('a[href="/logout"]');
+		browser.assert.urlEquals('http://localhost:3000/logout');
+		browser.pause(1000);
+		browser.assert.urlEquals('http://localhost:3000/login');
+		browser.end();
+    },
+
     'navigate to admin panel / manage accounts': (browser) => {
         //click on the admin button on the navbar
         browser.waitForElementPresent('#admin', 2000);
@@ -225,8 +234,5 @@ module.exports = {
         browser.waitForElementPresent('.alert', 10000);
         browser.expect.element('.alert').text.to.equal("Successfully Deleted User Account!");
         browser.waitForElementNotPresent('.alert', 5000);
-
-        //tests are over!
-        browser.end();
     }
 }

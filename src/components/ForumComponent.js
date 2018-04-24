@@ -36,12 +36,14 @@ class ForumComponent extends Component{
   }
 
   render(){
+    let postId = "thread" + this.props.array_id;
     let newCommentId = "newCommentThread" + this.props.array_id;
     let viewCommentId = "viewCommentThread" + this.props.array_id;
+    let flagPostId = "flagPost" + this.props.array_id;
 
     return(
       <div>
-      <PanelGroup bsStyle="primary" key={this.state.thread_id} id={this.state.thread_id}>
+      <PanelGroup bsStyle="primary" key={this.state.thread_id} id={postId}>
           <Panel>
               <Panel.Heading>
                   <div>
@@ -76,7 +78,7 @@ class ForumComponent extends Component{
 
                 <div>
                   {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/}
-                  <Image className="warningSign" src={warning} responsive onClick={() => this.handleOpenFlagForumModal()}/>
+                  <Image className="warningSign" src={warning} id={flagPostId} responsive onClick={() => this.handleOpenFlagForumModal()}/>
                 </div>
 
                 </div>

@@ -53,9 +53,11 @@ class FlagComment extends Component {
     app.database().ref('flaggedComments/').push(flagInfo, (err) => {
       if (!err) {
         this.setState({ isLoading: false });
+        alert("Comment Flagged Successfully!");
+        //this.props.showAlert("Comment Flagged Successfully!", "success");
         this.closeModal();
       } else {
-        alert("Error posting thread!");
+        //alert("Error posting thread!");
         this.closeModal();
         this.setState({
           alertState: <Alert bsStyle="danger">Error Flagging Comment! Try again later.</Alert>,
@@ -77,6 +79,8 @@ class FlagComment extends Component {
               <Modal.Header>
                 <Modal.Title>Report this comment.</Modal.Title>
               </Modal.Header>
+
+              {this.state.alertState}
 
               <Modal.Body>
                 <div className='modalBody'>
@@ -102,8 +106,8 @@ class FlagComment extends Component {
               </Modal.Body>
 
               <Modal.Footer>
-                  <Button onClick={this.closeModal}>Close</Button>
-                  <Button bsStyle="primary" onClick={this.flagCommentPost}>Submit</Button>
+                  <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                  <Button id="flagCommentNow" bsStyle="primary" onClick={this.flagCommentPost}>Submit</Button>
               </Modal.Footer>
           </Modal.Dialog>
       </div>
