@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="1"
+            failures="0"
+            tests="12">
+
+  <testsuite name="profile-youth-flow"
+    errors="1" failures="0" hostname="" id="" package="profile-youth-flow" skipped="2"
+    tests="12" time="217.1" timestamp="Tue, 24 Apr 2018 09:09:40 GMT">
+  
+    <testcase name="view own profile as youth" classname="profile-youth-flow" time="23.80" assertions="9">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="check for pending changes as youth (none exist)" classname="profile-youth-flow" time="2.634" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="edit profile (no password)" classname="profile-youth-flow" time="23.38" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="edit profile success" classname="profile-youth-flow" time="27.39" assertions="5">
+
+    
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="view pending changes as admin" classname="profile-youth-flow" time="6.426" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="reject pending changes as admin no password" classname="profile-youth-flow" time="31.74" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="reject pending changes as admin no reason" classname="profile-youth-flow" time="31.36" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="reject pending changes as admin wrong password" classname="profile-youth-flow" time="32.04" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="reject pending changes as admin success" classname="profile-youth-flow" time="38.35" assertions="5">
+
+    
+
+    
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="view pending/rejected changes as youth and resubmit" classname="profile-youth-flow" time="0.02100" assertions="0">
+    </testcase>
+  
+
+  
+    <system-err>
+        Error while running [Profile Youth Flow / view pending/rejected changes as youth and resubmit]:
+
+  ReferenceError: button is not defined
+    at Object.view pending/rejected changes as youth and resubmit (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/profile-youth-flow.js:210:9)
+    at Module.call (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/module.js:62:34)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/lib/runner/testcase.js:70:29
+    at _fulfilled (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:834:54)
+    at self.promiseDispatch.done (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:863:30)
+    at Promise.promise.promiseDispatch (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:796:13)
+    at /home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:556:49
+    at runSingle (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:137:13)
+    at flush (/home/gabrielle/.nvm/versions/node/v6.11.5/lib/node_modules/nightwatch/node_modules/q/q.js:125:13)
+    at _combinedTickCallback (internal/process/next_tick.js:73:7)
+    at process._tickCallback (internal/process/next_tick.js:104:9)
+    </system-err>
+  
+
+  
+    
+    <testcase
+      name="accept pending changes as admin" classname="profile-youth-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="view own profile with applied changes as youth" classname="profile-youth-flow">
+      <skipped />
+    </testcase>
+    
+  
+  </testsuite>
+</testsuites>

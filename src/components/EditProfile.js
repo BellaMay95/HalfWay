@@ -293,7 +293,7 @@ export default class EditProfile extends Component {
             })
             .then(() => {
                 this.setState({ isLoading: false });
-                self.props.showAlert("Profile Changes Seccessfully Submitted for Review!");
+                self.props.showAlert("Profile Changes Successfully Submitted for Review!");
                 this.closeModal();
             })
             .catch((err) => {

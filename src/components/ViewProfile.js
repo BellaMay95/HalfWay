@@ -172,7 +172,7 @@ export default class ViewProfile extends Component {
                             >
                             <MenuItem id="editProfile" eventKey="1" onClick={this.toggleEditModal}>Edit Profile</MenuItem>
                             <MenuItem id="changePassword" eventKey="2" onClick={this.togglePasswordModal}>Change Password</MenuItem>
-                            { this.state.accType === "youth" ? <MenuItem eventKey="3" onClick={this.togglePendingChangesModal}>Pending Changes</MenuItem> : null }
+                            { this.state.accType === "youth" ? <MenuItem id="viewPending" eventKey="3" onClick={this.togglePendingChangesModal}>Pending Changes</MenuItem> : null }
                         </DropdownButton>
 
                             {/*<Button bsStyle="default" onClick={this.togglePendingChangesModal}>Pending Changes <Glyphicon glyph="edit" style={{padding: '5px'}}/></Button>

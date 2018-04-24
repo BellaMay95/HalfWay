@@ -118,6 +118,23 @@ module.exports = {
         browser.waitForElementNotPresent('.alert', 5000);
     },
 
+    'edit profile (wrong password)': (browser) => {
+        browser.click('#settings');
+
+        //edit profile
+        browser.click('#editProfileDropdown');
+        browser.click('#editProfile');
+        browser.setValue('input[type="file"]', require('path').resolve('/home/gabrielle/Dropbox/badsanta.jpg'));
+        browser.clearValue('#formControlsProfileName');
+        browser.setValue('#formControlsProfileName', newDisplay);
+        browser.click('#submitProfile');
+
+        //wait for alert to display message
+        browser.waitForElementPresent('.alert', 10000);
+        browser.expect.element('.alert').text.to.equal("Invalid Password!");
+        browser.waitForElementNotPresent('.alert', 5000);
+    },
+
     'edit profile success': (browser) => {
         browser.click("#settings");
         //edit profile
