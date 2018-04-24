@@ -50,13 +50,17 @@ class FlagForum extends Component {
 
     app.database().ref('flaggedForum/').push(flagInfo, (err) => {
       if (!err) {
-        this.setState({ isLoading: false });
-        this.closeModal();
-      } else {
-        alert("Error posting thread!");
-        this.closeModal();
         this.setState({
-          alertState: <Alert bsStyle="danger">Error Creating Thread! Try again later.</Alert>,
+          isLoading: false 
+        });
+        this.props.showAlert("Flagged Forum Post!", "success");
+        this.closeModal();
+
+      } else {
+        //alert("Error flagging post!");
+        //this.closeModal();
+        this.setState({
+          alertState: <Alert bsStyle="danger">Error Flagging Post!</Alert>,
           isLoading: false
         });
 
@@ -75,6 +79,7 @@ class FlagForum extends Component {
               <Modal.Header>
                 <Modal.Title>Report this forum post.</Modal.Title>
               </Modal.Header>
+              {this.state.alertState}
 
               <Modal.Body>
                 <div className='modalBody'>
@@ -100,8 +105,8 @@ class FlagForum extends Component {
               </Modal.Body>
 
               <Modal.Footer>
-                  <Button onClick={this.closeModal}>Close</Button>
-                  <Button bsStyle="primary" onClick={this.flagForumPost}>Submit</Button>
+                  <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                  <Button id="flagPostNow" bsStyle="primary" onClick={this.flagForumPost}>Submit</Button>
               </Modal.Footer>
           </Modal.Dialog>
       </div>

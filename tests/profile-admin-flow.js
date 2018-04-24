@@ -26,6 +26,49 @@ module.exports = {
 		browser.timeoutsImplicitWait(15000);
     },
 
+    after: (browser) => {
+        //restore profile
+        //get to change password screen
+        browser.click('#settings');
+        browser.click('#editProfileDropdown');
+        browser.click('#changePassword');
+
+        //fill out form and submit
+        browser.clearValue('#formControlsCurrent')
+        browser.clearValue('#formControlsNew');
+        browser.clearValue('#formControlsNewConfirm');
+        browser.setValue('#formControlsCurrent', newPassword);
+        browser.setValue('#formControlsNew', oldPassword);
+        browser.setValue('#formControlsNewConfirm', oldPassword);
+        browser.click('#submitPwChange');
+
+        //wait for alert to show status
+        browser.waitForElementPresent('.alert', 10000);
+        browser.expect.element('.alert').text.to.equal("Changed Password Successfully!");
+        browser.waitForElementNotPresent('.alert', 5000);
+
+        browser.click("#settings");
+        //edit profile
+        browser.click('#editProfileDropdown');
+        browser.click('#editProfile');
+        browser.clearValue('#formControlsProfileName');
+        browser.setValue('#formControlsProfileName', oldDisplay);
+        browser.setValue('#formControlsConfirmPassword', oldPassword);
+        browser.click('#submitProfile');
+
+        //wait for alert to display message
+        browser.waitForElementPresent('.alert', 10000);
+        browser.expect.element('.alert').text.to.equal("Profile Edited Successfully!");
+        browser.waitForElementNotPresent('.alert', 5000);
+
+        //log out and end the session
+        browser.click('a[href="/logout"]');
+		browser.assert.urlEquals('http://localhost:3000/logout');
+		browser.pause(1000);
+		browser.assert.urlEquals('http://localhost:3000/login');
+		browser.end();
+    },
+
     'view own profile': (browser) => {
         //navigate to profile
         browser.click('#settings');
@@ -66,7 +109,7 @@ module.exports = {
         browser.click('#editProfile');
         browser.setValue('input[type="file"]', require('path').resolve('/home/gabrielle/Dropbox/badsanta.jpg'));
         browser.clearValue('#formControlsProfileName');
-        browser.setValue('#formControlsProfileName', "Janie Q. Adminzing");
+        browser.setValue('#formControlsProfileName', newDisplay);
         browser.click('#submitProfile');
 
         //wait for alert to display message
@@ -187,7 +230,9 @@ module.exports = {
         browser.waitForElementPresent('.alert', 10000);
         browser.expect.element('.alert').text.to.equal("Changed Password Successfully!");
         browser.waitForElementNotPresent('.alert', 5000);
-
-        browser.end();
     },
+
+    'restore profile': (browser) => {
+        
+    }
 }

@@ -65,7 +65,7 @@ class CreateThread extends Component {
           if (!err) {
             //alert("Thread Posted Successfully!");
             this.setState({ isLoading: false });
-            this.props.showAlert();
+            this.props.showAlert("Thread Posted Successfully!", "success");
             this.closeModal();
           } else {
             //alert("Error posting thread!");

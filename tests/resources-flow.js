@@ -14,6 +14,15 @@ module.exports = {
 		browser.refresh();
 		browser.timeoutsImplicitWait(10000);
     },
+
+    after: (browser) => {
+        //log out and end the session
+        browser.click('a[href="/logout"]');
+		browser.assert.urlEquals('http://localhost:3000/logout');
+		browser.pause(1000);
+		browser.assert.urlEquals('http://localhost:3000/login');
+		browser.end();
+    },
     
     'navigate to resources page': (browser) => {
         browser.waitForElementPresent('#resources', 500);
@@ -91,6 +100,5 @@ module.exports = {
             //browser.expect.message.to.equal("Resource removed succesfully! Refresh to see changes.")
             browser.acceptAlert();
         });
-        browser.end();
     }
 }

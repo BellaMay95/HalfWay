@@ -26,34 +26,58 @@ class ForumComponent extends Component{
 
   removeComment(thread_id, flagged_id, comment_id){
 
-    this.databaseOfFlagsC.child(this.props.flagged_id).remove();
-    this.databaseOfPosts.child(this.props.thread_id).child('comments').child(this.props.comment_id).remove();
-
-    alert("Post removed.");
-
+    this.databaseOfFlagsC.child(this.props.flagged_id).remove()
+    .then(() => {
+      this.databaseOfPosts.child(this.props.thread_id).child('comments').child(this.props.comment_id).remove()
+      .then(() => {
+        this.props.showAlert("Comment Removed Successfully!", "success");
+      })
+      .catch((err) => {
+        this.props.showAlert("Error Removing Comment from Database!", "danger");
+      })
+    })
+    .catch((err) => {
+      console.log("error removing comment from flags table");
+      console.log(err);
+      this.props.showAlert("Error Removing Flag from Comment!", "danger");
+    })
+    //alert("Post removed.");
   }
 
   keepComment(flagged_id){
-    this.databaseOfFlagsC.child(this.props.flagged_id).remove();
-    alert("Post kept.");
+    console.log("keeping comment")
+    this.databaseOfFlagsC.child(this.props.flagged_id).remove()
+    .then(() => {
+      console.log("ready to show alert!");
+      this.props.showAlert("Removed Flag from Comment!", "success");
+    })
+    .catch((err) => {
+      console.log("Error removing flag from comment!");
+      console.log(err);
+      this.props.showAlert("Error Removing Flag from Comment!", "danger");
+    });
+    //alert("Post kept.");
   }
 
   render(){
+    let commentId = "flagComment" + this.props.id;
+    let acceptId = "acceptComment" + this.props.id;
+    let rejectId = "rejectComment" + this.props.id;
     return(
       <div id = "flag">
-      <PanelGroup key={this.state.thread_id} id={this.state.thread_id}>
+      <PanelGroup key={this.state.thread_id} id={commentId}>
           <Panel bsStyle="danger">
               <Panel.Heading>
                   <Panel.Title componentClass='h3' className = "flagTitle"><strong>Flagged user:</strong> {this.state.thread_userName} </Panel.Title>
               </Panel.Heading>
-              <Panel.Body className = "flagBody"><strong>Reason:</strong> {this.state.reason_message} <br/><strong>Original Post:</strong> {this.state.thread_message}<br/><strong>Post: </strong>{this.state.comment_message}</Panel.Body>
+              <Panel.Body className = "flagBody"><strong>Reason:</strong> {this.state.reason_message} <br/><strong>Original Post:</strong> {this.state.thread_message}<br/><strong>Comment: </strong>{this.state.comment_message}</Panel.Body>
               <Panel.Footer>
                 <div>
-                <Button className="deleteComment" bsStyle="danger" onClick={this.removeComment}>
+                <Button className="deleteComment" id={rejectId} bsStyle="danger" onClick={this.removeComment}>
                   <Glyphicon glyph="minus-sign" style={{padding: ''}}/>
                   Remove Comment
                 </Button>
-                <Button className="keepComment" bsStyle="success" onClick={this.keepComment}>
+                <Button className="keepComment" id={acceptId} bsStyle="success" onClick={this.keepComment}>
                   <Glyphicon glyph="plus-sign" style={{padding: ''}}/>
                   Accept Comment
                 </Button>

@@ -24,22 +24,48 @@ class ForumComponent extends Component{
 
   removePost(thread_id, flagged_id){
 
-    this.databaseOfFlags.child(this.props.flagged_id).remove();
-    this.databaseOfPosts.child(this.props.thread_id).remove();
+    this.databaseOfFlags.child(this.props.flagged_id).remove()
+    .then(() => {
+      this.databaseOfPosts.child(this.props.thread_id).remove()
+      .then(() => {
+        this.props.showAlert("Removed Post Successfully!");
+        //ReactDOM.unmountComponentAtNode(document.getElementById('flag'));
+      })
+      .catch((err) => {
+        console.log("error removing post from database!");
+        console.log(err);
+        this.props.showAlert("Error Removing Post!", "danger");
+      })
+    })
+    .catch((err) => {
+      console.log("error removing post from flags table");
+      console.log(err);
+      this.props.showAlert("Error Removing Flag from Post!", "danger");
+    })
 
-    alert("Post removed.");
-    ReactDOM.unmountComponentAtNode(document.getElementById('flag'));
+    //alert("Post removed.");
   }
 
   keepPost(flagged_id){
-    this.databaseOfFlags.child(this.props.flagged_id).remove();
-    alert("Post kept.");
+    this.databaseOfFlags.child(this.props.flagged_id).remove()
+    .then(() => {
+      this.props.showAlert("Removed Flag from Post!", "success");
+    })
+    .catch((err) => {
+      console.log("error removing flag from post");
+      console.log(err);
+      this.props.showAlert("Error Removing Flag from Post!", "danger");
+    })
+    //alert("Post kept.");
   }
 
   render(){
+    let forumId = "flagPost" + this.props.id;
+    let acceptId = "acceptPost" + this.props.id;
+    let rejectId = "rejectPost" + this.props.id;
     return(
       <div id = "flag">
-      <PanelGroup key={this.state.thread_id} id={this.state.thread_id}>
+      <PanelGroup key={this.state.thread_id} id={forumId}>
           <Panel bsStyle="danger">
               <Panel.Heading>
                   <Panel.Title componentClass='h3' className = "flagTitle"><strong>Flagged user:</strong> {this.state.thread_userName} </Panel.Title>
@@ -47,11 +73,11 @@ class ForumComponent extends Component{
               <Panel.Body className = "flagBody"><strong>Reason:</strong> {this.state.reason_message}<br/><strong>Post: </strong>{this.state.thread_message}</Panel.Body>
               <Panel.Footer>
                 <div>
-                <Button className="deletePost" bsStyle="danger" onClick={this.removePost}>
+                <Button className="deletePost" id={rejectId} bsStyle="danger" onClick={this.removePost}>
                   <Glyphicon glyph="minus-sign" style={{padding: ''}}/>
                   Remove Post
                 </Button>
-                <Button className="keepPost" bsStyle="success" onClick={this.keepPost}>
+                <Button className="keepPost" id={acceptId} bsStyle="success" onClick={this.keepPost}>
                   <Glyphicon glyph="plus-sign" style={{padding: ''}}/>
                   Accept Post
                 </Button>

@@ -97,8 +97,8 @@ class Forum extends Component {
         });
     }
 
-    createThreadAlert() {
-        this.setState({ createAlert: <Alert bsStyle="success">Created Thread Successfully!</Alert>});
+    createThreadAlert(message, status) {
+        this.setState({ createAlert: <Alert bsStyle={status}>{message}</Alert>});
 
         window.setTimeout(() => {
             this.setState({ createAlert: null });
@@ -181,16 +181,16 @@ class Forum extends Component {
                     }
                </div>
                { /*This will check if the state of the Create comment is true. If it is, it will call the CreateComment file which displays the Modal*/}
-               {this.state.createComment && <CreateComment closeCreateCommentModal={this.toggleCreateCommentModal} thread_id={this.state.thread_id}/>}
+               {this.state.createComment && <CreateComment showAlert={this.createThreadAlert} closeCreateCommentModal={this.toggleCreateCommentModal} thread_id={this.state.thread_id}/>}
 
                { /*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
-               {this.state.viewComment && <ViewComment closeViewCommentModal={this.toggleViewCommentModal} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName} comment_id={this.state.comment_id} comment_message={this.state.comment_message} comment_UserName={this.state.comment_UserName} toggleFlagCommentPost={this.toggleFlagCommentPost}/>}
+               {this.state.viewComment && <ViewComment showAlert={this.createThreadAlert} closeViewCommentModal={this.toggleViewCommentModal} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName} comment_id={this.state.comment_id} comment_message={this.state.comment_message} comment_UserName={this.state.comment_UserName} toggleFlagCommentPost={this.toggleFlagCommentPost}/>}
 
-               {/*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
-               {this.state.viewFlagForum && <FlagForum closeViewFlagForum={this.toggleFlagForumPost} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName}/>}
+               {/*This will check if the state of the View Flag Forum is true. If it is, it will call the FlagForum file which displays the Modal*/}
+               {this.state.viewFlagForum && <FlagForum showAlert={this.createThreadAlert} closeViewFlagForum={this.toggleFlagForumPost} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName}/>}
 
-               {/*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
-               {this.state.viewFlagComment && <FlagComment closeViewFlagComment={this.toggleFlagCommentPost} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName} comment_id={this.state.comment_id} comment_message={this.state.comment_message} comment_UserName={this.state.comment_UserName}/>}
+               {/*This will check if the state of the View Flag Comment is true. If it is, it will call the FlagComment file which displays the Modal*/}
+               {this.state.viewFlagComment && <FlagComment showAlert={this.createThreadAlert} closeViewFlagComment={this.toggleFlagCommentPost} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName} comment_id={this.state.comment_id} comment_message={this.state.comment_message} comment_UserName={this.state.comment_UserName}/>}
 
             </div>
         )

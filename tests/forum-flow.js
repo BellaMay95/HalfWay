@@ -14,6 +14,15 @@ module.exports = {
 		browser.refresh();
 		browser.timeoutsImplicitWait(10000);
     },
+
+    after: (browser) => {
+        //log out and end the session
+        browser.click('a[href="/logout"]');
+		browser.assert.urlEquals('http://localhost:3000/logout');
+		browser.pause(1000);
+		browser.assert.urlEquals('http://localhost:3000/login');
+		browser.end();
+    },
     
     'log on to site and view forum threads': (browser) => {
         browser.url(browser.launchUrl).assert.urlEquals('http://localhost:3000/login'); //change for prod server
@@ -48,9 +57,6 @@ module.exports = {
         browser.waitForElementPresent('.modal-title', 2000);
         browser.expect.element('.modal-title').text.to.equal("Create New Thread!");
 
-        browser.waitForElementPresent('.modal-title', 2000);
-        browser.expect.element('.modal-title').text.to.equal("Create New Thread!");
-
         browser.setValue('#formControlsSubject', "Nightwatch: New Thread!");
         browser.clearValue('#formControlsMessage');
 
@@ -59,12 +65,9 @@ module.exports = {
         browser.expect.element('.alert').text.to.equal("One or more required fields are empty.");
     },*/
 
-    /*'create new forum thread success': (browser) => {
+    'create new forum thread success': (browser) => {
         browser.expect.element('#createThread').to.be.present;
         browser.click('#createThread');
-
-        browser.waitForElementPresent('.modal-title', 2000);
-        browser.expect.element('.modal-title').text.to.equal("Create New Thread!");
 
         browser.waitForElementPresent('.modal-title', 2000);
         browser.expect.element('.modal-title').text.to.equal("Create New Thread!");
@@ -96,7 +99,7 @@ module.exports = {
 
         //to-do: expect prev/next buttons to be disabled/not present
         browser.click('#closeModal'); //close modal
-    },*/
+    },
 
     'add comment on forum thread': (browser) => {
         //add comment on thread we just made
@@ -119,8 +122,7 @@ module.exports = {
         browser.expect.element('#comment0').to.be.present; //at least one comment is present
 
         //also include navigating "previous" and "next"
-        
-        browser.end();
+ 
     },
 
     /*'edit your own thread post': (browser) => {
@@ -138,6 +140,5 @@ module.exports = {
     'delete your own thread': (browser) => {
         //delete the thread you created on test two of this suite
 
-        //browser.end()
     }*/
 }
