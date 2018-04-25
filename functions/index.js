@@ -8,7 +8,6 @@ var databaseURL = "https://halfway-a067e.firebaseio.com/";  //get URL from confi
 //var apiKey = process.env.REACT_APP_FIREBASE_KEY;
 var apiKey = "AIzaSyAmew8GUz4Bqt9k0jak9BoC3rXn-08Hhdo";
 
-
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: databaseURL
@@ -209,11 +208,13 @@ exports.getUserRecordByUid = functions.https.onCall((data) => {
 })
 
 exports.saveProfile = functions.https.onCall((data) => {
+    console.log('ready to save profile!');
+    console.log(data);
     let updateError = [];
 
     //empty promise exists to start the promise chain since I'm not sure which fields are changed yet
     return new Promise(function(resolve, reject) {
-        resolve;
+        resolve("starting chain!");
     })
     .then(() => {
         //update display name if it's been changed
@@ -231,6 +232,90 @@ exports.saveProfile = functions.https.onCall((data) => {
     .then(() => {
         //update avatar if it's been changed
         if(data.avatar) {
+            let bucket = admin.storage().bucket('userAvatars');
+            let oldUrl = data.oldavatar;
+            console.log("old url: " + oldUrl);
+            if (oldUrl) {
+                let oldRef = oldUrl.substr(oldUrl.indexOf(data.currname), oldUrl.indexOf("?"));
+                console.log("oldRef: " + oldRef)
+                bucket.file(oldRef).delete()
+                .then(() => {
+                    console.log("deleted the old avatar")
+                    if (data.avatar !== "removed") {
+                        bucket.file(this.state.filename).save(this.state.avatar)
+                        .catch((err) => {
+                            console.log("error uploading new file!")
+                            console.log(err);
+                            updateError.push("avatar");
+                        })
+                    }
+                })
+                .then(() => {
+                    if (data.avatar !== "removed") {
+                        let year = new Date.getFullYear();
+                        var config = {
+                            action: 'read',
+                            expires: '01-01-' + year
+                        };
+                        bucket.file(data.filename).getSignedUrl(config)
+                        .catch((err) => {
+                            console.log("error getting url from photo");
+                            console.log(err);
+                            updateError.push("avatar");
+                        })
+                    }
+                })
+                .then((url) => {
+                    console.log("got new url")
+                    user.updateProfile({
+                        photoURL: url ? url[0] : null
+                    })
+                    .catch((err) => {
+                        console.log("error updating avatar!");
+                        console.log(err);
+                        updateError.push("avatar");
+                    })
+                })
+                .catch((err) => {
+                    console.log("error deleting previous file!");
+                    console.log(err);
+                    updateError.push("avatar");
+                })
+            } else {
+                console.log("no old url!");
+                //console.log(this.state.filename);
+                //console.log(this.state.avatar);
+                bucket.file(data.filename).save(this.state.avatar)
+                .then(() => {
+                    let year = new Date.getFullYear();
+                    var config = {
+                        action: 'read',
+                        expires: '01-01-' + year
+                    };
+                    bucket.file(data.filename).getSignedUrl(config)
+                    .catch((err) => {
+                        console.log("error getting url from photo");
+                        console.log(err);
+                        updateError.push("avatar");
+                    })
+                })
+                .then((url) => {
+                    //console.log("uploaded file with url: " + url[0]);
+                    user.updateProfile({
+                        photoURL: url[0]
+                    })
+                    .catch((err) => {
+                        console.log("error updating avatar!");
+                        console.log(err);
+                        updateError.push("avatar");
+                    })
+                })
+                .catch((err) => {
+                    console.log("error uploading new file!")
+                    console.log(err);
+                    updateError.push("avatar");
+                })
+            }
             admin.auth().updateUser(data.uid, {
                 photoURL: data.avatar !== "removed" ? data.avatar : null
             })
@@ -243,13 +328,13 @@ exports.saveProfile = functions.https.onCall((data) => {
     })
     .then(() => {
         if (updateError.length === 0) {
-            //console.log("successfully updated profile!");
             return admin.database().ref('pendingProfiles/' + data.uid).set({})
             .then(() => {
                 let result = {
                     success: true,
                     message: "Successfully Updated User Profile!"
                 }
+                console.log(result);
                 return result;
             })
             .catch((err) => {
@@ -274,6 +359,7 @@ exports.saveProfile = functions.https.onCall((data) => {
     .catch((err) => {
         console.log("an empty promise can't possibly cause problems!");
         console.log(err);
+        throw new functions.https.HttpsError('aborted', "Problem Saving Profile!");
     })
 });
 
@@ -301,7 +387,8 @@ function listAllUsers(userList, nextPageToken) {
                 uid: userRecord.uid,
                 displayName: userRecord.displayName,
                 creationTime: userRecord.metadata.creationTime,
-                type: userRecord.customClaims
+                type: userRecord.customClaims,
+                avatar: userRecord.photoURL
             });
         });
         if (listUsersResult.pageToken) {

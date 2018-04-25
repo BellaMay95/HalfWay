@@ -153,6 +153,7 @@ export class ViewProfileChanges extends Component {
     }
     
     approveChanges() {
+        console.log("approving changes...");
         this.setState({isLoading: true});
 
         if (this.state.password === "") {
@@ -169,23 +170,26 @@ export class ViewProfileChanges extends Component {
         }
 
         let self = this;
+        console.log("ready to authenticate")
 
         firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.password))
         .then(() => {
             let body = this.state.changes;
             body.uid = this.props.uid;
     
+            console.log("saving profile now...")
             var saveProfile = firebase.functions().httpsCallable('saveProfile');
             saveProfile(body)
             .then(function(result) {
+                console.log("finished!")
                 console.log(result);
     
-                /*self.setState({ isLoading: false });
+                self.setState({ isLoading: false });
                 self.props.showAlert("Profile Changes Approved!", "success");
-                self.props.closeModal();*/
-                this.setState({ isLoading: false });
+                self.props.closeModal();
+                /*this.setState({ isLoading: false });
                 this.props.showAlert("Profile Changes Approved!", "success");
-                this.props.closeModal();
+                this.props.closeModal();*/
             })
             .catch((err) => {
                 console.log("error!");

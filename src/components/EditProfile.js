@@ -39,7 +39,8 @@ export default class EditProfile extends Component {
             alertState: null,
             progress: 0,
             type: this.props.type ? this.props.type : "youth", //if no type sent, assume it's a youth account
-            storageRef: app.storage().ref() //only for the uploader element
+            storageRef: app.storage().ref('userAvatars'), //only for the uploader element,
+            filename: ""
         }
     }
 
@@ -196,14 +197,61 @@ export default class EditProfile extends Component {
         .then(() => {
             //update avatar if it's been changed
             if(avatarChange) {
-                user.updateProfile({
-                    photoURL: this.state.avatar
-                })
-                .catch((err) => {
-                    console.log("error updating avatar!");
-                    console.log(err);
-                    updateError.push("avatar");
-                })
+                let oldUrl = user.photoURL;
+                console.log("old url: " + oldUrl);
+                if (oldUrl) {
+                    let oldRef = oldUrl.substr(oldUrl.indexOf(user.email), oldUrl.indexOf("?"));
+                    console.log("oldRef: " + oldRef)
+                    this.state.storageRef.child(oldRef).delete()
+                    .then(() => {
+                        console.log("deleted the old avatar")
+                        if(this.state.avatar !== defaultProfilePic) {
+                            this.state.storageRef.child(this.state.filename).putString(this.state.avatar, 'data_url')
+                            .catch((err) => {
+                                console.log("error uploading new file!")
+                                console.log(err);
+                                updateError.push("avatar");
+                            })
+                        }
+                    })
+                    .then((snapshot) => {
+                        console.log("got new url")
+                        user.updateProfile({
+                            photoURL: snapshot && snapshot.downloadURL ? snapshot.downloadURL : null
+                        })
+                        .catch((err) => {
+                            console.log("error updating avatar!");
+                            console.log(err);
+                            updateError.push("avatar");
+                        })
+                    })
+                    .catch((err) => {
+                        console.log("error deleting previous file!");
+                        console.log(err);
+                        updateError.push("avatar");
+                    })
+                } else {
+                    console.log("no old url!");
+                    console.log(this.state.filename);
+                    console.log(this.state.avatar);
+                    this.state.storageRef.child(this.state.filename).putString(this.state.avatar, 'data_url')
+                    .then((snapshot) => {
+                        console.log("uploaded file with url: " + snapshot.downloadURL);
+                        user.updateProfile({
+                            photoURL: snapshot.downloadURL
+                        })
+                        .catch((err) => {
+                            console.log("error updating avatar!");
+                            console.log(err);
+                            updateError.push("avatar");
+                        })
+                    })
+                    .catch((err) => {
+                        console.log("error uploading new file!")
+                        console.log(err);
+                        updateError.push("avatar");
+                    })
+                }
             }
         })
         .then(() => {
@@ -235,6 +283,9 @@ export default class EditProfile extends Component {
 
     savePendingProfile(avatarChange) {
         let self = this;
+        console.log(this.state.avatar)
+        console.log(this.state.avatar === defaultProfilePic);
+        console.log(avatarChange);
 
         app.database().ref('pendingProfiles/' + this.state.uid).once('value')
         .then((snapshot) => {
@@ -260,11 +311,15 @@ export default class EditProfile extends Component {
                 newComment += "profile name : ";
             } if (avatarChange && this.state.avatar === defaultProfilePic) {
                 //avatar was removed
+                userdata['oldavatar'] = user.photoURL;
                 userdata['avatar'] = "removed";
+                userdata['filename'] = this.state.filename;
                 newComment += "avatar : "
             } if (avatarChange && this.state.avatar !== defaultProfilePic) {
                 //avatar actually changed
+                userdata['oldavatar'] = user.photoURL;
                 userdata['avatar'] = this.state.avatar;
+                userdata['filename'] = this.state.filename;
                 newComment += "avatar : ";
             }
 
@@ -330,8 +385,9 @@ export default class EditProfile extends Component {
         let self = this;
 
         reader.onloadend = () => {
+            console.log(image);
             self.setState({
-                //avatarImg: image,
+                filename: this.state.email + "." + image.name.split('.')[1],
                 avatar: reader.result
             });
         }
@@ -380,7 +436,7 @@ export default class EditProfile extends Component {
                                     <form>
                                         <FieldGroup
                                         id="formControlsEmail"
-                                        type="text"
+                                        type="email"
                                         label="Email"
                                         value={this.state.email}
                                         onChange={(evt) => {this.setState({email: evt.target.value})}}
