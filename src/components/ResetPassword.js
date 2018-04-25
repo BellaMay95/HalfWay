@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FormGroup, ControlLabel, HelpBlock, FormControl, Button, Navbar, Alert } from 'react-bootstrap';
-import logo from '../images/HWtrial2.png';
+import logo from '../images/HWtrial21.png';
 import { app } from '../base';
 
 function FieldGroup({ id, label, help, ...props }) {

@@ -213,6 +213,7 @@ module.exports = {
         //re-submit changes
         browser.click('#editProfileDropdown');
         browser.click('#editProfile');
+        browser.setValue('#formControlsProfileName', "");
         browser.clearValue('#formControlsProfileName');
         browser.setValue('#formControlsProfileName', newDisplay);
         browser.setValue('#formControlsConfirmPassword', oldPassword);
@@ -246,7 +247,7 @@ module.exports = {
         browser.setValue('#formControlsPassword', "Password1!");
         browser.pause(8000);
         browser.click('#acceptChanges');
-        browser.waitForElementPresent('.alert', 10000);
+        browser.waitForElementPresent('.alert', 25000);
         browser.expect.element('.alert').text.to.equal("Profile Changes Approved!");
         browser.waitForElementNotPresent('.alert', 5000);
 

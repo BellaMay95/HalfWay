@@ -175,7 +175,7 @@ export default class Login extends Component {
                     <FieldGroup
                         name="email"
                         label="Email"
-                        type="text"
+                        type="email"
                         onChange={this.onChange}
                         placeholder="Enter username"
                     />
