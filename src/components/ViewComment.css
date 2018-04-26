@@ -21,3 +21,9 @@
 .commentModalHeader{
   background-color: #c24a46;
 }
+
+.static-modal{
+  max-height: 400px;
+  height: 100%;
+  overflow: auto;
+}

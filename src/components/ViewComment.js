@@ -238,11 +238,6 @@ componentWillMount(){
 
 // Calls the toggleFlagForumPost function in ForumList.js
 handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
-  console.log("Comment Message: " + CommentMessage);
-
-  console.log("ViewComment:: Thread_message: " + this.props.thread_message);
-  console.log("ViewComment:: Thread_userName: " + this.props.thread_UserName);
-  console.log("ViewComment:: CommentAuthor: " + CommentAuthor);
 
   this.props.toggleFlagCommentPost(this.props.thread_id, this.props.thread_message, this.props.thread_UserName, commentID, CommentMessage, CommentAuthor);
 }
@@ -257,6 +252,7 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
             </Modal.Header>
 
             <Modal.Body>
+              {this.props.showAlert}
               <ListGroup componentClass="ul">
                 <div>
                   {   //displays message if there aren't any Comments to display
@@ -270,12 +266,12 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                           <Alert bsStyle="success">You are on the first page.</Alert>
                       : null
                   }
-                  {
+                                    {
                     this.state.commentToDisplay.map((comment, index) => {
                       let commentId = "comment" + index;
                       let flagId = "flagComment" + index;
                       return(
-                        <div>
+                        <div key={comment.message}>
                           <ListGroupItem className="commentItem" key={index} id={commentId}>
                             <div>
                               <p>{comment.message}</p>

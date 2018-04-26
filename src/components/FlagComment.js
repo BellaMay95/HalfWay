@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Modal, Button, FormGroup, ControlLabel, FormControl, Alert } from 'react-bootstrap';
 import { app } from '../base';
+import './FlagComment.css';
 
 class FlagComment extends Component {
 
@@ -14,6 +15,9 @@ class FlagComment extends Component {
       alertState: null,
       isLoading: false,
       reasonMessage: "",
+      thread_id: this.props.thread_id,
+      createAlert: null,
+      submitted: false,
     }
   }
 
@@ -41,7 +45,7 @@ class FlagComment extends Component {
 
     // Push to the flagged post to the database
     let flagInfo = {
-      thread_id: this.props.thread_id,
+      thread_id: this.state.thread_id,
       thread_message: this.props.thread_message,
       thread_userName: this.props.thread_UserName,
       comment_id: this.props.comment_id,
@@ -53,9 +57,12 @@ class FlagComment extends Component {
     app.database().ref('flaggedComments/').push(flagInfo, (err) => {
       if (!err) {
         this.setState({ isLoading: false });
-        alert("Comment Flagged Successfully!");
-        //this.props.showAlert("Comment Flagged Successfully!", "success");
-        this.closeModal();
+
+        this.setState({
+          submitted: true,
+        })
+
+        //this.closeModal();
       } else {
         //alert("Error posting thread!");
         this.closeModal();
@@ -71,7 +78,6 @@ class FlagComment extends Component {
     });
   }
 
-
   render(){
     return (
         <div className="static-modal">
@@ -84,30 +90,50 @@ class FlagComment extends Component {
 
               <Modal.Body>
                 <div className='modalBody'>
-                  <h4 className='modalBodyHeader'>Thank you for reporting this comment.</h4>
-
-                  <p className='modalBodyParagraph' align="left">Please fill out the reason you are reporting this comment. Some of the reasons for reporting this comment may include:</p>
-                  <ul className='modalBodyList' align="left">
-                    <li>Inappropriate language</li>
-                    <li>Advertising spam</li>
-                    <li>Unfit/Bullying content</li>
-                  </ul>
                   <div>
-                    <form>
-                      {/* Text Box that the user enters their comments in */}
-                      <FormGroup controlId="formControlsTextarea">
-                        <ControlLabel>Add your reason for flagging this comment:</ControlLabel>
-                        <FormControl componentClass="textarea" placeholder="Reason" onChange={(evt) => {this.setState({reasonMessage: evt.target.value})}}/>
-                      </FormGroup>
-                    </form>
+                  {
+                    this.state.submitted === true ?
+                    <div>
+                      <Alert bsStyle="success" classNote="alertFlagComment">{"Comment Flagged Successfully!"}</Alert>
+                    </div>
+                    :
+                    <div>
+                      <h4 className='modalBodyHeader'>Thank you for reporting this comment.</h4>
+                      <p className='modalBodyParagraph' align="left">Please fill out the reason you are reporting this comment. Some of the reasons for reporting this comment may include:</p>
+                      <ul className='modalBodyList' align="left">
+                        <li>Inappropriate language</li>
+                        <li>Advertising spam</li>
+                        <li>Unfit/Bullying content</li>
+                      </ul>
+                      <div>
+                        <form>
+                          {/* Text Box that the user enters their comments in */}
+                          <FormGroup controlId="formControlsTextarea">
+                            <ControlLabel>Add your reason for flagging this comment:</ControlLabel>
+                            <FormControl componentClass="textarea" placeholder="Reason" onChange={(evt) => {this.setState({reasonMessage: evt.target.value})}}/>
+                          </FormGroup>
+                        </form>
+                      </div>
+                    </div>
+                  }
                   </div>
-              </div>
-              <div className="clearfix"></div>
+                </div>
+                <div className="clearfix"></div>
+
               </Modal.Body>
 
               <Modal.Footer>
-                  <Button id="closeModal" onClick={this.closeModal}>Close</Button>
-                  <Button id="flagCommentNow" bsStyle="primary" onClick={this.flagCommentPost}>Submit</Button>
+                  {
+                    this.state.submitted === true ?
+                    <div>
+                      <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                    </div>
+                    :
+                    <div>
+                      <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                      <Button id="flagCommentNow" bsStyle="primary" onClick={this.flagCommentPost}>Submit</Button>
+                    </div>
+                  }
               </Modal.Footer>
           </Modal.Dialog>
       </div>
