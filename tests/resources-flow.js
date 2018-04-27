@@ -90,6 +90,10 @@ module.exports = {
         });
     },
 
+    'verify added resource': (browser) => {
+        
+    },
+
     'remove resource': (browser) => {
         browser.waitForElementPresent('#delResource4-0');
         browser.click('#delResource4-0');

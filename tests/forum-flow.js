@@ -7,6 +7,8 @@ module.exports = {
         browser.click('#loginButton');
         browser.pause(3000);
         browser.assert.urlEquals('http://localhost:3000/'); //change for prod server
+
+        browser.expect.element('.brandForum').to.be.present;
     },
     
     beforeEach : function(browser) {
@@ -24,7 +26,7 @@ module.exports = {
 		browser.end();
     },
     
-    'log on to site and view forum threads': (browser) => {
+    /*'log on to site and view forum threads': (browser) => {
         browser.url(browser.launchUrl).assert.urlEquals('http://localhost:3000/login'); //change for prod server
         browser.setValue('input[name="email"]', "halfway@halfway.com");
         browser.setValue('input[name="password"]', "Password1!");
@@ -33,7 +35,7 @@ module.exports = {
         browser.assert.urlEquals('http://localhost:3000/'); //change for prod server
 
         browser.expect.element('.brandForum').to.be.present;
-    },
+    },*/
 
     'create new forum thread with empty title': (browser) => {
         browser.expect.element('#createThread').to.be.present;
