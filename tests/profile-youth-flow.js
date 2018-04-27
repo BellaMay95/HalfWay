@@ -36,14 +36,40 @@ module.exports = {
 
         //wait for alert to display message
         browser.waitForElementPresent('.alert', 10000);
-        browser.expect.element('.alert').text.to.equal("Profile Edited Successfully!");
+        browser.expect.element('.alert').text.to.equal("Profile Changes Successfully Submitted for Review!");
         browser.waitForElementNotPresent('.alert', 5000);
 
-        //log out and end the session
+        //log out and login as admin to approve changes
+        browser.click('a[href="/logout"]');
+		browser.assert.urlEquals('http://localhost:3000/logout');
+		browser.pause(1000);
+        browser.assert.urlEquals('http://localhost:3000/login');
+        browser.waitForElementPresent('input[name="email"]', 5000);
+        browser.setValue('input[name="email"]', "halfway@halfway.com");
+        browser.setValue('input[name="password"]', oldPassword);
+        browser.click('#loginButton');
+        //give time for page to load and login
+        browser.pause(3000);
+        browser.assert.urlEquals('http://localhost:3000/'); //change for prod server
+        //accept pending changes
+        browser.click('#admin');
+        browser.click('#select-func');
+        browser.click('#profile');
+        browser.click('#viewProfile0');
+        browser.setValue('#formControlsPassword', "Password1!");
+        browser.pause(8000);
+        browser.click('#acceptChanges');
+        browser.waitForElementPresent('.alert', 25000);
+        browser.expect.element('.alert').text.to.equal("Profile Changes Approved!");
+        browser.waitForElementNotPresent('.alert', 5000);
+
+        //logout as admin
         browser.click('a[href="/logout"]');
 		browser.assert.urlEquals('http://localhost:3000/logout');
 		browser.pause(1000);
 		browser.assert.urlEquals('http://localhost:3000/login');
+
+        //end the session
 		browser.end();
     },
 
@@ -78,7 +104,7 @@ module.exports = {
         //edit profile
         browser.click('#editProfileDropdown');
         browser.click('#editProfile');
-        browser.setValue('input[type="file"]', require('path').resolve('/home/gabrielle/Dropbox/ezgif.com-add-text.gif'));
+        //browser.setValue('input[type="file"]', require('path').resolve('/home/gabrielle/Dropbox/ezgif.com-add-text.gif'));
         browser.clearValue('#formControlsProfileName');
         browser.setValue('#formControlsProfileName', "Jessica Rabbitz");
         browser.click('#submitProfile');
@@ -94,7 +120,7 @@ module.exports = {
         //edit profile
         browser.click('#editProfileDropdown');
         browser.click('#editProfile');
-        browser.setValue('input[type="file"]', require('path').resolve('/home/gabrielle/Dropbox/ezgif.com-add-text.gif'));
+        //browser.setValue('input[type="file"]', require('path').resolve('/home/gabrielle/Dropbox/ezgif.com-add-text.gif'));
         browser.clearValue('#formControlsProfileName');
         browser.setValue('#formControlsProfileName', "Jessica Rabbitz");
         browser.setValue('#formControlsConfirmPassword', oldPassword);

@@ -62,9 +62,24 @@ export default class EditProfile extends Component {
         let user = app.auth().currentUser;
 
         //see if the avatar changed
-        let avatarChange = (user) => {
-            return this.avatarChanged;
-        };
+        let avatarChange = false;
+        if (!user.photoURL && this.state.avatar === defaultProfilePic) {
+            console.log("no avatar before & no avatar now");
+            avatarChange = false;
+        }
+        else if (user.photoURL === this.state.avatar) {
+            console.log("there is an avatar and it hasn't changed");
+            avatarChange = false;
+        }
+        else if (user.photoURL !== this.state.avatar) {
+            console.log("avatar's changed");
+            avatarChange = true;
+        }
+        else {
+            console.log("this shouldn't ever be reached...but if so just pretend avatar hasn't changed");
+            avatarChange = false;
+        }
+
 
         //set back to old values if any fields are empty
         if (this.state.email === "") {
@@ -141,7 +156,9 @@ export default class EditProfile extends Component {
         })
     }
 
-    avatarChanged(user) {
+    /*avatarChanged(user) {
+        console.log("photoURL: " + user.photoURL);
+        console.log("this.state.avatar: " + this.state.avatar);
         if (!user.photoURL && this.state.avatar === defaultProfilePic) {
             console.log("no avatar before & no avatar now");
             return false;
@@ -159,7 +176,7 @@ export default class EditProfile extends Component {
             return false;
         }
         
-    }
+    }*/
 
     savePermProfile(avatarChange) {
         let user = app.auth().currentUser;
@@ -303,19 +320,16 @@ export default class EditProfile extends Component {
             userdata.status = "pending";
             userdata.currname = this.state.oldemail;
             let user = app.auth().currentUser;
-            /*if (this.state.email !== user.email) {
-                userdata['username'] = this.state.email;
-                newComment += "username : "
-            }*/ if (this.state.profileName !== user.displayName) {
+            if (this.state.profileName !== user.displayName) {
                 userdata['profileName'] = this.state.profileName;
                 newComment += "profile name : ";
-            } if (avatarChange && this.state.avatar === defaultProfilePic) {
+            } if (avatarChange && (this.state.avatar === defaultProfilePic)) {
                 //avatar was removed
                 userdata['oldavatar'] = user.photoURL;
                 userdata['avatar'] = "removed";
                 userdata['filename'] = this.state.filename;
                 newComment += "avatar : "
-            } if (avatarChange && this.state.avatar !== defaultProfilePic) {
+            } if (avatarChange && (this.state.avatar !== defaultProfilePic)) {
                 //avatar actually changed
                 userdata['oldavatar'] = user.photoURL;
                 userdata['avatar'] = this.state.avatar;

@@ -247,9 +247,5 @@ module.exports = {
         browser.waitForElementPresent('.alert', 10000);
         browser.expect.element('.alert').text.to.equal("Changed Password Successfully!");
         browser.waitForElementNotPresent('.alert', 5000);
-    },
-
-    'restore profile': (browser) => {
-        
     }
 }
