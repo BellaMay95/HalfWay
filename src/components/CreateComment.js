@@ -49,7 +49,7 @@ class CreateComment extends Component{
     // Pushing to the database
     app.database().ref('forum/' + this.state.thread_id + '/comments').push(postInfo, (err) => {
       if (!err) {
-        alert("Comment Posted Successfully!");
+        this.props.showAlert("Comment Posted Successfully!", "success");
         this.closeModal();
       } else {
         alert("Error posting comment!");

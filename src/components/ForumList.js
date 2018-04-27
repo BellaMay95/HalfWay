@@ -18,6 +18,7 @@ class Forum extends Component {
         this.toggleViewCommentModal = this.toggleViewCommentModal.bind(this);
         this.toggleFlagForumPost = this.toggleFlagForumPost.bind(this);
         this.toggleFlagCommentPost = this.toggleFlagCommentPost.bind(this);
+        this.createCommentAlert = this.createCommentAlert.bind(this);
 
     // Make a reference to a database on firebase //list of notes stored on db property
     // app refers to our application
@@ -30,6 +31,7 @@ class Forum extends Component {
             // Used to see and togle the thread or comment modal is up
             createThread: false,
             createAlert: null,
+            createCommentAlert: null,
             createComment: false,
             viewComment: false,
             viewFlagForum: false,
@@ -105,6 +107,14 @@ class Forum extends Component {
         }, 5000);
     }
 
+    createCommentAlert(message, status) {
+        this.setState({ createCommentAlert: <Alert bsStyle={status}>{message}</Alert>});
+
+       window.setTimeout(() => {
+            this.setState({ createCommentAlert: null });
+        }, 5000);
+    }
+
     // Changes the state of the createComment to the opposite of what it is
     toggleCreateCommentModal(threadID){
       this.setState({
@@ -173,6 +183,7 @@ class Forum extends Component {
                 </Navbar>
                 {this.state.createThread && <CreateThread showAlert={this.createThreadAlert} closeThreadModal={this.toggleThreadModal}/>}
                 {this.state.createAlert}
+                {this.state.createCommentAlert}
                 <div className='forumBody'>
                     {   //displays message if there aren't any forum threads to display
                         this.state.forumList.length === 0 ?
@@ -189,7 +200,7 @@ class Forum extends Component {
                     }
                </div>
                { /*This will check if the state of the Create comment is true. If it is, it will call the CreateComment file which displays the Modal*/}
-               {this.state.createComment && <CreateComment showAlert={this.createThreadAlert} closeCreateCommentModal={this.toggleCreateCommentModal} thread_id={this.state.thread_id}/>}
+               {this.state.createComment && <CreateComment showAlert={this.createCommentAlert} closeCreateCommentModal={this.toggleCreateCommentModal} thread_id={this.state.thread_id}/>}
 
                { /*This will check if the state of the View comment is true. If it is, it will call the ViewComment file which displays the Modal*/}
                {this.state.viewComment && <ViewComment closeViewCommentModal={this.toggleViewCommentModal} thread_id={this.state.thread_id} thread_message={this.state.thread_message} thread_UserName={this.state.thread_UserName} comment_id={this.state.comment_id} comment_message={this.state.comment_message} comment_UserName={this.state.comment_UserName} toggleFlagCommentPost={this.toggleFlagCommentPost}/>}
