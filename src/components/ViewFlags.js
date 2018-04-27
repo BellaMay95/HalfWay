@@ -96,37 +96,34 @@ export default class ViewFlags extends Component {
   }
 
   showAlert(message, status) {
-    this.setState({ showAlert: <Alert bsStyle={status}>{message}</Alert>});
+    this.setState({ alertState: <Alert bsStyle={status}>{message}</Alert>});
 
       window.setTimeout(() => {
-          this.setState({ showAlert: null });
+          this.setState({ alertState: null });
       }, 5000);
-      alert(message);
+      //alert(message);
   }
 
 
 
     render(){
-      if (this.state.flagsArr.length === 0 && this.state.flaggedCommentsArr.length === 0)
+      /*if (this.state.flagsArr.length === 0 && this.state.flaggedCommentsArr.length === 0)
       {
         return(<div>{this.state.alertState}<h1>Currently NO Flagged Posts or Comments</h1></div>);
 
-      }
-      return(
-        <div>
+      }*/
+      return(<div>
         {this.state.alertState}
-        <Panel>
+        {(this.state.flagsArr.length === 0 && this.state.flaggedCommentsArr.length === 0) ?
+          <h1>Currently NO Flagged Posts or Comments</h1> :
+        <div><Panel>
 
         {/*.map function runs through all flagged posts and sends them to the flag component*/}
         <Panel.Body>
 
-        {
-
-
-
-        this.state.flagsArr.map((post , index) => {
+        {this.state.flagsArr.map((post , index) => {
             if (index === 0){
-              return(<div key={post.id}>{this.state.alertState}<h1>Flagged Posts</h1><FlagsComponent showAlert={this.showAlert} id={index} flagged_id = {post.id}  thread_id={post.thread_id} reason_message={post.reason_message} thread_message={post.thread_message} thread_userName={post.thread_userName}/></div>);
+              return(<div key={post.id}><h1>Flagged Posts</h1><FlagsComponent showAlert={this.showAlert} id={index} flagged_id = {post.id}  thread_id={post.thread_id} reason_message={post.reason_message} thread_message={post.thread_message} thread_userName={post.thread_userName}/></div>);
             }
             return(
               <div key={post.id}>
@@ -134,19 +131,18 @@ export default class ViewFlags extends Component {
               </div>
             )
         })
-
-
         }
         </Panel.Body>
-        </Panel>
-        {/*.map function runs through all flagged comments and sends them to the flag component*/}
+        </Panel> 
+        
 
         <Panel>
+          {/*.map function runs through all flagged comments and sends them to the flag component*/}
         <Panel.Body>
         {
         this.state.flaggedCommentsArr.map((com , index) => {
             if (index === 0){
-              return(<div key={com.id}>{this.state.alertState}<h1>Flagged Comments</h1><FlagsCommentComponent showAlert={this.showAlert} id={index} flagged_id = {com.id}  thread_id={com.thread_id} reason_message={com.reason_message} thread_message={com.thread_message} thread_userName={com.thread_userName} comment_id={com.comment_id} comment_message={com.comment_message}/></div>);
+              return(<div key={com.id}><h1>Flagged Comments</h1><FlagsCommentComponent showAlert={this.showAlert} id={index} flagged_id = {com.id}  thread_id={com.thread_id} reason_message={com.reason_message} thread_message={com.thread_message} thread_userName={com.thread_userName} comment_id={com.comment_id} comment_message={com.comment_message}/></div>);
             }
             return(
               <div key={com.id}>
@@ -156,9 +152,9 @@ export default class ViewFlags extends Component {
         })
         }
         </Panel.Body>
-        </Panel>
+        </Panel></div> }
+        
         </div>
-
       );
 
     }

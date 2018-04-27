@@ -3,7 +3,7 @@ import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock, Alert }
 import { app } from '../base';
 
 // FieldGroup set-up pull directly from react boostrap
-function FieldGroup({ id, label, help, ...props }) {
+/*function FieldGroup({ id, label, help, ...props }) {
   return (
     <FormGroup controlId={id}>
       <ControlLabel>{label}</ControlLabel>
@@ -11,7 +11,7 @@ function FieldGroup({ id, label, help, ...props }) {
       {help && <HelpBlock>{help}</HelpBlock>}
     </FormGroup>
   );
-}
+}*/
 
 class CreateComment extends Component{
   constructor(props){
@@ -45,6 +45,7 @@ class CreateComment extends Component{
       "username": username,
       "userId": userId,
       "timestamp": timestamp,
+      "flagged": false
     }
 
     // Pushing to the database
