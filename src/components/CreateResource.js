@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock, Alert } from 'react-bootstrap';
 import { app } from '../base';
 
 
@@ -21,7 +21,8 @@ class CreateResource extends Component {
         this.saveNewResource = this.saveNewResource.bind(this);
         this.state = {
           title: "",
-          message: ""
+          message: "",
+          alertState: null
         }
     }
 
@@ -55,11 +56,17 @@ class CreateResource extends Component {
         };
         app.database().ref('resources/' + this.props.myProp).push(postInfo, (err) => {
           if (!err) {
-            alert("Resource Posted Successfully!");
+            //alert("Resource Posted Successfully!");
+            this.props.showAlert("Resource Posted Successfully!", "success");
             this.closeModal();
           } else {
-            alert("Error posting Resource!");
-            this.closeModal();
+            //alert("Error posting Resource!");
+            //this.closeModal();
+            this.setState({ alertState: <Alert bsStyle="danger">Error posting Resource!</Alert>});
+    
+            window.setTimeout(() => {
+                this.setState({ alertState: null });
+            }, 5000);
           }
         });
         //alert(JSON.stringify(postInfo));
@@ -74,6 +81,7 @@ class CreateResource extends Component {
                 </Modal.Header>
 
                 <Modal.Body>
+                  {this.state.alertState}
                   <form>
                     <FieldGroup
                       id="formControlsSubject"
