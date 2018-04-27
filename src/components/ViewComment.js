@@ -3,6 +3,7 @@ import { app } from '../base';
 import { Modal, Button, ListGroup, ListGroupItem, Image, Alert } from 'react-bootstrap';
 import './ViewComment.css';
 import warning from '../images/warning.png';
+import warningGrey from '../images/warning-grey.png';
 
 // create class
 class ViewComment extends Component{
@@ -76,6 +77,7 @@ componentWillMount(){
         author_name: snap.val().author_name,
         message: snap.val().message,
         timestamp: snap.val().timestamp,
+        flagged: snap.val().flagged
       })
 
       // Getting the comments that will be displayed to the screen
@@ -86,6 +88,7 @@ componentWillMount(){
           author_name: snap.val().username,
           message: snap.val().message,
           timestamp: snap.val().timestamp,
+          flagged: snap.val().flagged
         })
       }
     })
@@ -221,7 +224,7 @@ componentWillMount(){
           firstPage: true,
         })
     }else if(this.state.currentPage === 0){
-        alert("There are no comments to be displayed");
+        //alert("There are no comments to be displayed");
     }else{
 
       let location = (((this.state.currentPage-1)*5) - 10);
@@ -289,11 +292,14 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                         <div key={comment.message}>
                           <ListGroupItem className="commentItem" key={index} id={commentId}>
                             <div>
+                              {comment.flagged ? <Alert bsStyle="warning"><strong>THIS COMMENT IS CURRENTLY FLAGGED FOR REVIEW!</strong></Alert> : null}
                               <p>{comment.message}</p>
                               <p className="cite"><cite>{comment.author_name}</cite></p>
                               <div className="keywordbullshit">
-                                {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/}
-                                <Image className="warningSign" src={warning} id={flagId} responsive onClick={() => this.handleOpenFlagCommentModal(comment.id, comment.message, comment.author_name)}/>
+                                {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/
+                                  comment.flagged ? <Image className="warningSign" src={warningGrey} responsive />
+                                : <Image className="warningSign" src={warning} id={flagId} responsive onClick={() => this.handleOpenFlagCommentModal(comment.id, comment.message, comment.author_name)}/>
+                                }
                               </div>
                               <div className="clearfix"></div>
                             </div>

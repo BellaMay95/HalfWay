@@ -48,8 +48,16 @@ class ForumComponent extends Component{
     console.log("keeping comment")
     this.databaseOfFlagsC.child(this.props.flagged_id).remove()
     .then(() => {
-      console.log("ready to show alert!");
-      this.props.showAlert("Removed Flag from Comment!", "success");
+      app.database().ref('forum/' + this.props.thread_id + '/comments/' + this.props.comment_id).update({ flagged: false })
+      .then(() => {
+        console.log("ready to show alert!");
+        this.props.showAlert("Removed Flag from Comment!", "success");
+      })
+      .catch((err) => {
+        console.log("Error removing flag from comment!");
+        console.log(err);
+        this.props.showAlert("Error Removing Flag from Comment!", "danger");
+      })
     })
     .catch((err) => {
       console.log("Error removing flag from comment!");

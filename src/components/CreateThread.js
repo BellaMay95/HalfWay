@@ -59,7 +59,8 @@ class CreateThread extends Component {
           "author_name": username,
           "message": message,
           "subject": title,
-          "timestamp": timestamp
+          "timestamp": timestamp,
+          "flagged": false
         };
         app.database().ref('forum').push(postInfo, (err) => {
           if (!err) {

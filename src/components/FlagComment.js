@@ -56,16 +56,30 @@ class FlagComment extends Component {
 
     app.database().ref('flaggedComments/').push(flagInfo, (err) => {
       if (!err) {
-        this.setState({ isLoading: false });
-
-        this.setState({
-          submitted: true,
+        app.database().ref('forum/' + flagInfo.thread_id + "/comments/" + flagInfo.comment_id).update({
+          flagged: true
         })
+        .then(() => {
+          this.setState({ isLoading: false });
+
+          this.setState({
+            submitted: true,
+          })
+        })
+        .catch((err) => {
+          this.setState({
+            alertState: <Alert bsStyle="danger">Error Flagging Comment! Try again later.</Alert>,
+            isLoading: false
+          });
+  
+          window.setTimeout(() => {
+              this.setState({ alertState: null });
+          }, 5000);
+        });
 
         //this.closeModal();
       } else {
         //alert("Error posting thread!");
-        this.closeModal();
         this.setState({
           alertState: <Alert bsStyle="danger">Error Flagging Comment! Try again later.</Alert>,
           isLoading: false
@@ -74,6 +88,8 @@ class FlagComment extends Component {
         window.setTimeout(() => {
             this.setState({ alertState: null });
         }, 5000);
+
+        //this.closeModal();
       }
     });
   }
@@ -94,7 +110,7 @@ class FlagComment extends Component {
                   {
                     this.state.submitted === true ?
                     <div>
-                      <Alert bsStyle="success" classNote="alertFlagComment">{"Comment Flagged Successfully!"}</Alert>
+                      <Alert bsStyle="success" className="alertFlagComment">{"Comment Flagged Successfully!"}</Alert>
                     </div>
                     :
                     <div>

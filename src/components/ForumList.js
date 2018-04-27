@@ -64,6 +64,7 @@ class Forum extends Component {
           timestamp: this.getDateTime(snap.val().timestamp),
           alertState: null,
           isLoading: false,
+          flagged: snap.val().flagged
         })
 
         // Push the array that we have just updated (previousForum) to the state
@@ -193,7 +194,7 @@ class Forum extends Component {
                             let forum_id = "thread_" + index;
                             return(
                                 <div key={forum.id} id={forum_id}>
-                                <ForumComponent thread_id={forum.id} array_id={index} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
+                                <ForumComponent thread_id={forum.id} array_id={index} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} flagStatus={forum.flagged} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
                                 </div>
                             )
                         })

@@ -35,8 +35,13 @@ class CreateResource extends Component {
     saveNewResource(myProp) {
 
       if(this.state.title === "" || this.state.message === "") {
-        alert("One or more required fields are blank.")
-          return;
+        //alert("One or more required fields are blank.")
+        this.setState({ alertState: <Alert bsStyle="warning">One or more required fields are blank.</Alert>});
+    
+        window.setTimeout(() => {
+            this.setState({ alertState: null });
+        }, 5000);
+        return;
       }
 
         //alert("title: " + this.state.title + " and message: " + this.state.message);

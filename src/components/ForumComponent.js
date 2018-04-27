@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import {Glyphicon, Panel, PanelGroup, Button, Image } from 'react-bootstrap';
+import {Glyphicon, Panel, PanelGroup, Button, Image, Alert } from 'react-bootstrap';
 import './ForumComponent.css';
 import warning from '../images/warning.png';
+import warningGrey from '../images/warning-grey.png';
 //import CreateComment from './CreateComment';
 
 class ForumComponent extends Component{
@@ -65,6 +66,7 @@ class ForumComponent extends Component{
               </Panel.Heading>
               <Panel.Body>
                 <div>
+                  { this.props.flagStatus ? <Alert bsStyle="warning"><strong>THIS POST IS CURRENTLY FLAGGED FOR REVIEW!</strong></Alert> : null }
                   <p>{this.state.message}</p>
                   <p className="cite"><cite>Author: {this.state.author_name}</cite></p>
                 </div>
@@ -77,9 +79,11 @@ class ForumComponent extends Component{
                 </Button>
 
                 <div>
-                  {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/}
-                  <Image className="warningSign" src={warning} id={flagPostId} responsive onClick={() => this.handleOpenFlagForumModal()}/>
-                </div>
+                  {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/
+                    this.props.flagStatus ? <Image className="warningSign" src={warningGrey} responsive /> :
+                  <Image className="warningSign" src={warning} id={flagPostId} responsive onClick={() => {this.handleOpenFlagForumModal()}}/>
+                  }
+                  </div>
 
                 </div>
                 <div className="clearfix"></div>

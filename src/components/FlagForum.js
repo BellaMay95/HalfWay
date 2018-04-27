@@ -50,12 +50,26 @@ class FlagForum extends Component {
 
     app.database().ref('flaggedForum/').push(flagInfo, (err) => {
       if (!err) {
-        this.setState({
-          isLoading: false 
-        });
-        this.props.showAlert("Flagged Forum Post!", "success");
-        this.closeModal();
-
+        app.database().ref('forum/' + flagInfo.thread_id).update({
+          flagged: true
+        })
+        .then(() => {
+          this.setState({
+            isLoading: false 
+          });
+          this.props.showAlert("Flagged Forum Post!", "success");
+          this.closeModal();
+        })
+        .catch((err) => {
+          this.setState({
+            alertState: <Alert bsStyle="danger">Error Flagging Post!</Alert>,
+            isLoading: false
+          });
+  
+          window.setTimeout(() => {
+              this.setState({ alertState: null });
+          }, 5000);
+        })
       } else {
         //alert("Error flagging post!");
         //this.closeModal();
