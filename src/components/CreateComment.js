@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock, Alert } from 'react-bootstrap';
 import { app } from '../base';
 
 // FieldGroup set-up pull directly from react boostrap
@@ -23,6 +23,7 @@ class CreateComment extends Component{
     this.state = {
       comment: "",
       thread_id: this.props.thread_id,
+      alertState: null
     }
   }
 
@@ -52,8 +53,13 @@ class CreateComment extends Component{
         this.props.showAlert("Comment Posted Successfully!", "success");
         this.closeModal();
       } else {
-        alert("Error posting comment!");
-        this.closeModal();
+        //alert("Error posting comment!");
+        //this.closeModal();
+        this.setState({ alertState: <Alert bsStyle="danger">Error Posting Comment!</Alert>});
+
+        window.setTimeout(() => {
+            this.setState({ alertState: null });
+        }, 5000); 
       }
     });
 
@@ -70,6 +76,7 @@ class CreateComment extends Component{
               </Modal.Header>
 
               <Modal.Body>
+                {this.state.alertState}
                 <form>
                   {/* Text Box that the user enters their comments in */}
                   <FormGroup controlId="formControlsTextarea">
@@ -78,12 +85,12 @@ class CreateComment extends Component{
                   </FormGroup>
 
                   {/* Need to figure out how to allow them to add a photo and where this photo's contents is stored */}
-                  <FieldGroup
+                  {/*<FieldGroup
                         id="formControlsFile"
                         type="file"
                         label="Add Picture: "
                         help="Add a picture a picture to your comment."
-                      />
+                  />*/}
                   </form>
               </Modal.Body>
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Navbar, Panel, PanelGroup } from 'react-bootstrap';
+import { Navbar, Panel, PanelGroup, Alert } from 'react-bootstrap';
 import { app } from '../base';
 import CreateResource from './CreateResource';
 import ResourceComponent from './ResourceComponent';
@@ -14,6 +14,7 @@ export default class Resources extends Component{
     this.handleSelect = this.handleSelect.bind(this);
     this.checkAdmin = this.checkAdmin.bind(this);
     this.toggleResourceModal = this.toggleResourceModal.bind(this);
+    this.resourceAlert = this.resourceAlert.bind(this);
     this.databaseJ = app.database().ref().child('resources').child('job');
     this.databaseA = app.database().ref().child('resources').child('affordablehousing');
     this.databaseS = app.database().ref().child('resources').child('shorttermhousing');
@@ -29,6 +30,7 @@ export default class Resources extends Component{
       stHouseArr: [],
       foodArr: [],
       educationArr: [],
+      alertState: null
     }
   }
 
@@ -62,6 +64,14 @@ export default class Resources extends Component{
 
   toggleResourceModal(activeKey) {
       this.setState({createResource: !this.state.createResource});
+  }
+
+  resourceAlert(message, status) {
+    this.setState({ alertState: <Alert bsStyle={status}>{message}</Alert>});
+
+   window.setTimeout(() => {
+        this.setState({ alertState: null });
+    }, 5000);
   }
 
   componentWillMount() {
@@ -284,6 +294,8 @@ this.databaseS.on('child_removed', snap => {
             </Navbar.Header>
         </Navbar>
 
+        {this.state.alertState}
+
         <PanelGroup
           accordion
           id="resources-list"
@@ -302,7 +314,7 @@ this.databaseS.on('child_removed', snap => {
            this.state.jobArr.map((job , index) => {
                return(
                 <div key={job.id}>
-                 <ResourceComponent index={index} resource_id={job.id} author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp} resIdentifier = {1}/>
+                 <ResourceComponent showAlert={this.resourceAlert} index={index} resource_id={job.id} author_name={job.author_name} message={job.message} subject={job.subject} timestamp = {job.timestamp} resIdentifier = {1}/>
                </div>
                )
            })
@@ -322,7 +334,7 @@ this.databaseS.on('child_removed', snap => {
            this.state.affHouseArr.map((aff , index) => {
                return(
                  <div key={aff.id}>
-                 <ResourceComponent index={index} resource_id={aff.id} author_name={aff.author_name} message={aff.message} subject={aff.subject} timestamp = {aff.timestamp} resIdentifier = {2}/>
+                 <ResourceComponent showAlert={this.resourceAlert} index={index} resource_id={aff.id} author_name={aff.author_name} message={aff.message} subject={aff.subject} timestamp = {aff.timestamp} resIdentifier = {2}/>
                  </div>
                )
            })
@@ -340,7 +352,7 @@ this.databaseS.on('child_removed', snap => {
            this.state.stHouseArr.map((sth , index) => {
                return(
                  <div key={sth.id}>
-                 <ResourceComponent index={index} resource_id={sth.id} author_name={sth.author_name} message={sth.message} subject={sth.subject} timestamp = {sth.timestamp} resIdentifier = {3}/>
+                 <ResourceComponent showAlert={this.resourceAlert} index={index} resource_id={sth.id} author_name={sth.author_name} message={sth.message} subject={sth.subject} timestamp = {sth.timestamp} resIdentifier = {3}/>
                  </div>
                )
            })
@@ -358,7 +370,7 @@ this.databaseS.on('child_removed', snap => {
            this.state.foodArr.map((food , index) => {
                return(
                  <div key={food.id}>
-                 <ResourceComponent index={index} resource_id={food.id} author_name={food.author_name} message={food.message} subject={food.subject} timestamp = {food.timestamp} resIdentifier = {4}/>
+                 <ResourceComponent index={index} showAlert={this.resourceAlert} resource_id={food.id} author_name={food.author_name} message={food.message} subject={food.subject} timestamp = {food.timestamp} resIdentifier = {4}/>
                  </div>
                )
            })
@@ -376,7 +388,7 @@ this.databaseS.on('child_removed', snap => {
            this.state.educationArr.map((edu , index) => {
                return(
                  <div key={edu.id}>
-                 <ResourceComponent index={index} resource_id={edu.id} author_name={edu.author_name} message={edu.message} subject={edu.subject} timestamp = {edu.timestamp} resIdentifier = {5}/>
+                 <ResourceComponent index={index} showAlert={this.resourceAlert} resource_id={edu.id} author_name={edu.author_name} message={edu.message} subject={edu.subject} timestamp = {edu.timestamp} resIdentifier = {5}/>
                  </div>
                )
            })
@@ -384,7 +396,7 @@ this.databaseS.on('child_removed', snap => {
           </Panel.Body>
         </Panel>
       </PanelGroup>
-      {this.state.createResource && <CreateResource myProp={this.state.resType} closeThreadModal={this.toggleResourceModal}/>}
+      {this.state.createResource && <CreateResource myProp={this.state.resType} showAlert={this.resourceAlert} closeThreadModal={this.toggleResourceModal}/>}
       </div>
 
 

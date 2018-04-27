@@ -217,13 +217,22 @@ export default class EditProfile extends Component {
                 let oldUrl = user.photoURL;
                 console.log("old url: " + oldUrl);
                 if (oldUrl) {
-                    let oldRef = oldUrl.substr(oldUrl.indexOf(user.email), oldUrl.indexOf("?"));
-                    console.log("oldRef: " + oldRef)
+                    let transEmail = user.email.replace("@", '%40');
+                    let index1 = oldUrl.indexOf(transEmail);
+                    //let index1 = oldUrl.indexOf(user.email);
+                    let index2 = oldUrl.indexOf("?");
+                    let oldRef = oldUrl.substring(index1, index2);
+                    oldRef = oldRef.replace('%40', '@');
+                    console.log("index1: " + index1 + "; index2: " + index2 + "; oldRef: " + oldRef)
                     this.state.storageRef.child(oldRef).delete()
                     .then(() => {
                         console.log("deleted the old avatar")
                         if(this.state.avatar !== defaultProfilePic) {
                             this.state.storageRef.child(this.state.filename).putString(this.state.avatar, 'data_url')
+                            .then((snapshot) => {
+                                console.log("we're done!")
+                                //console.log("finished uploading with url..." + snapshot.downloadURL)
+                            })
                             .catch((err) => {
                                 console.log("error uploading new file!")
                                 console.log(err);
@@ -272,6 +281,7 @@ export default class EditProfile extends Component {
             }
         })
         .then(() => {
+            console.log(updateError)
             if (updateError.length === 0) {
                 this.setState({ isLoading: false });
                 this.props.showAlert("Profile Edited Successfully!", "success");

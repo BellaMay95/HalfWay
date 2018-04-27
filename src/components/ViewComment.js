@@ -31,8 +31,8 @@ class ViewComment extends Component{
       // Next Comments that will be displayed if the nextButton is clicked
       nextCommentsToDisplay: [],
       // If on the first page or last Page
-      firstPage: false,
-      lastPage: false,
+      firstPage: true, //originally we'll be on the first page
+      lastPage: false, //may or may not be on the last page
     }
   }
 
@@ -94,6 +94,7 @@ componentWillMount(){
     if(count < 6){
       this.setState({
         moreCommentsToPull: false,
+        lastPage: true
       })
     }
     else{
@@ -116,7 +117,7 @@ componentWillMount(){
         totalPage: 1,
       })
     }else{
-      // Incriment the page
+      // Increment the page
       this.setState({
         currentPage: this.state.currentPage+1,
         totalPage: this.state.totalPage+1,
@@ -138,6 +139,13 @@ componentWillMount(){
       lastPage: false,
     })
 
+    //check to see if we're on the first page
+    if (this.state.currentPage === 0) {
+      //disable previous button if we're on the first page
+      this.setState({
+        firstPage: true
+      });
+    }
     // Check if we are in the middle of the array
     if(this.state.currentPage !== this.state.totalPage){
 
@@ -160,6 +168,7 @@ componentWillMount(){
         // Check if the next page is the last page
         if((this.state.currentPage+2) !== this.state.totalPage){
             location1 = (location+5);
+            this.setState({lastPage: true});
         }else{
           location1 = this.state.currentComments.length;
         }
@@ -172,7 +181,8 @@ componentWillMount(){
         nextCommentsToDisplay: tempNext,
       })
 
-    }else{
+    } 
+    else{ //otherwise we're on the last page
       // Sees if the next button should be activated
       if(this.state.moreCommentsToPull){ // true
 
@@ -224,6 +234,10 @@ componentWillMount(){
         tempPrev = this.state.currentComments.slice(location, (location1));
       }
 
+      //Whether we'll be on the first page after loading previous comments
+      let disableFirstPage = (this.state.currentPage-1) > 1 ? false : true
+      console.log(disableFirstPage);
+
       // Change the page and location in the array we are on
       // Set up the next comments to be displayed when the next button is clicked
       // Set the commentToDisplay (Current comment needing to be displayed) to the previous Comments
@@ -232,6 +246,7 @@ componentWillMount(){
         currentPage: this.state.currentPage-1,
         nextCommentsToDisplay: this.state.commentToDisplay,
         commentToDisplay: this.state.prevCommentsToDisplay,
+        firstPage: disableFirstPage
       });
     }
 }
@@ -262,9 +277,9 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                   }
                   {
                     // display on last page alertState
-                    this.state.firstPage === true ?
+                    /*this.state.firstPage === true ?
                           <Alert bsStyle="success">You are on the first page.</Alert>
-                      : null
+                      : null*/
                   }
                                     {
                     this.state.commentToDisplay.map((comment, index) => {
@@ -289,9 +304,9 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                 }
                 {
                   // display on last page alertState
-                  this.state.lastPage === true ?
+                  /*this.state.lastPage === true ?
                         <Alert bsStyle="success">You are on the last page.</Alert>
-                    : null
+                    : null*/
                 }
                 </div>
               </ListGroup>
@@ -299,9 +314,9 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
 
             <Modal.Footer>
                 <Button id="closeModal" onClick={this.closeModal}>Close</Button>
-                <Button id="prevComments" bsStyle="primary" onClick={this.prevButtonOnClickHandler}>Previous Page</Button>
-                <Button id="nextComments" bsStyle="primary" onClick={this.nextButtonOnClickHandler}>Next Page</Button>
-            </Modal.Footer>
+                { this.state.commentToDisplay.length > 0 ? <Button id="prevComments" bsStyle="primary" disabled={this.state.firstPage} onClick={this.prevButtonOnClickHandler}>Previous Page</Button> : null }
+                { this.state.commentToDisplay.length > 0 ? <Button id="nextComments" bsStyle="primary" disabled={this.state.lastPage} onClick={this.nextButtonOnClickHandler}>Next Page</Button> : null }
+                </Modal.Footer>
         </Modal.Dialog>
       </div>
     )}
