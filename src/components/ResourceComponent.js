@@ -99,6 +99,30 @@ class ForumComponent extends Component{
           this.props.showAlert("Error removing resource!", "danger");
       });
     }
+    if(this.props.resIdentifier === 6)
+    {
+      this.database.child('fundraiser').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
+    }
+    if(this.props.resIdentifier === 7)
+    {
+      this.database.child('volunteer').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
+    }
     //alert("Resource removed succesfully! Refresh to see changes.")
   }
 

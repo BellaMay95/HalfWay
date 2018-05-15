@@ -20,6 +20,8 @@ export default class Resources extends Component{
     this.databaseS = app.database().ref().child('resources').child('shorttermhousing');
     this.databaseF = app.database().ref().child('resources').child('food');
     this.databaseE = app.database().ref().child('resources').child('education');
+    this.databaseFund = app.database().ref().child('resources').child('fundraiser');
+    this.databaseV = app.database().ref().child('resources').child('volunteer');
 
     this.state = {
       activeKey: 'null',
@@ -30,6 +32,8 @@ export default class Resources extends Component{
       stHouseArr: [],
       foodArr: [],
       educationArr: [],
+      fundArr: [],
+      volunteerArr: [],
       alertState: null
     }
   }
@@ -57,6 +61,14 @@ export default class Resources extends Component{
     if (activeKey === "5")
     {
       this.setState({ resType: 'education' });
+    }
+    if (activeKey === "6")
+    {
+      this.setState({ resType: 'fundraiser' });
+    }
+    if (activeKey === "7")
+    {
+      this.setState({ resType: 'volunteer' });
     }
     this.setState({ activeKey: activeKey });
 
@@ -239,6 +251,70 @@ this.databaseS.on('child_removed', snap => {
               })
             })
 
+            /*this section outlines for fundraising section of resources*/
+              var prevFund = this.state.fundArr;
+                  // Set previousForum to current state
+
+                  // Get DataSnapshot every time a child is added to the array
+                  this.databaseFund.on('child_added', snap => {
+                    prevFund.unshift({
+                      id: snap.key,
+                      author_id: snap.val().author_id,
+                      //author_name: snap.val().author_name,
+                      message: snap.val().message,
+                      subject: snap.val().subject,
+                      timestamp: this.getDateTime(snap.val().timestamp),
+                      })
+
+                      // Push the array that we have just updated (previousForum) to the state
+                      this.setState({
+                        fundArr: prevFund
+                        })
+                      })
+            //this is the remove section of the fundraising
+            this.databaseFund.on('child_removed', snap => {
+              for(var i=0; i < prevFund.length; i++){
+                if (prevFund[i].id === snap.key){
+                  prevFund.splice(i,1);
+                }
+              }
+                this.setState({
+                  fundArr: prevFund
+                  })
+                })
+                /*this section outlines for volunteering section of resources*/
+                  var prevVol = this.state.volunteerArr;
+                      // Set previousForum to current state
+
+                      // Get DataSnapshot every time a child is added to the array
+                      this.databaseV.on('child_added', snap => {
+                        prevVol.unshift({
+                          id: snap.key,
+                          author_id: snap.val().author_id,
+                          //author_name: snap.val().author_name,
+                          message: snap.val().message,
+                          subject: snap.val().subject,
+                          timestamp: this.getDateTime(snap.val().timestamp),
+                          })
+
+                          // Push the array that we have just updated (previousForum) to the state
+                          this.setState({
+                            volunteerArr: prevVol
+                            })
+                          })
+                //this is the remove section of the fundraising
+                this.databaseV.on('child_removed', snap => {
+                  for(var i=0; i < prevVol.length; i++){
+                    if (prevVol[i].id === snap.key){
+                      prevVol.splice(i,1);
+                    }
+                  }
+                    this.setState({
+                      volunteerArr: prevVol
+                      })
+                    })
+
+
 
 
 	//checks for admin privileges before rendering component
@@ -389,6 +465,40 @@ this.databaseS.on('child_removed', snap => {
                return(
                  <div key={edu.id}>
                  <ResourceComponent index={index} showAlert={this.resourceAlert} resource_id={edu.id} author_name={edu.author_name} message={edu.message} subject={edu.subject} timestamp = {edu.timestamp} resIdentifier = {5}/>
+                 </div>
+               )
+           })
+          }
+          </Panel.Body>
+        </Panel>
+        <Panel eventKey="6">
+          <Panel.Heading>
+            <Panel.Title toggle><h4>Fundraising</h4></Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" id="addFundraisingResource" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
+          {
+            /*Going through the array and displaying all of the forums in a panel view*/
+           this.state.fundArr.map((fund , index) => {
+               return(
+                 <div key={fund.id}>
+                 <ResourceComponent index={index} showAlert={this.resourceAlert} resource_id={fund.id} author_name={fund.author_name} message={fund.message} subject={fund.subject} timestamp = {fund.timestamp} resIdentifier = {6}/>
+                 </div>
+               )
+           })
+          }
+          </Panel.Body>
+        </Panel>
+        <Panel eventKey="7">
+          <Panel.Heading>
+            <Panel.Title toggle><h4>Volunteering</h4></Panel.Title>
+          </Panel.Heading>
+          <Panel.Body collapsible>{this.state.admin ? <button type="button" id="addVolunteeringResource" className="btn btn-info" onClick={this.toggleResourceModal}>add info</button> : null}
+          {
+            /*Going through the array and displaying all of the forums in a panel view*/
+           this.state.volunteerArr.map((vol , index) => {
+               return(
+                 <div key={vol.id}>
+                 <ResourceComponent index={index} showAlert={this.resourceAlert} resource_id={vol.id} author_name={vol.author_name} message={vol.message} subject={vol.subject} timestamp = {vol.timestamp} resIdentifier = {7}/>
                  </div>
                )
            })
