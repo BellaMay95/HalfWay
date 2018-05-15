@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { app } from '../base';
 
 import { Modal, Table, Button, Image } from 'react-bootstrap';
-import defaultProfilePic from '../images/defaultProfile.jpg';
+//import defaultProfilePic from '../images/defaultProfile.jpg';
 
 export default class PendingChanges extends Component {
     constructor(props) {
@@ -10,9 +10,7 @@ export default class PendingChanges extends Component {
 
         this.state = {
             changes: null,
-            user: null,
-            avatar: this.props.avatar,
-            email: this.props.email
+            user: null
         }
     }
 
@@ -48,15 +46,9 @@ export default class PendingChanges extends Component {
                     <tbody>
                         { this.state.changes && this.state.changes.username ?
                         <tr>
-                            <td>Username</td>
-                            <td>{this.state.user.email.substr(0, this.state.user.email.indexOf('@'))}</td>
-                            <td>{this.state.changes.username}</td>
-                        </tr> : null }
-                        { this.state.changes && this.state.changes.email ?
-                        <tr>
                             <td>Email</td>
-                            <td>{this.state.email}</td>
-                            <td>{this.state.changes.email}</td>
+                            <td>{this.state.user.email}</td>
+                            <td>{this.state.changes.username}</td>
                         </tr> : null }
                         { this.state.changes && this.state.changes.profileName ?
                         <tr>
@@ -67,7 +59,7 @@ export default class PendingChanges extends Component {
                         { this.state.changes && this.state.changes.avatar ?
                         <tr>
                             <td>Avatar</td>
-                            <td><Image src={this.state.avatar} responsive rounded /></td>
+                            <td><Image src={this.state.user.photoURL} responsive rounded /></td>
                             <td>{ this.state.changes.avatar === "removed" ? "Avatar Removed" : <Image src={this.state.changes.avatar} responsive rounded />}</td>
                         </tr> : null }
                         <tr>
@@ -82,7 +74,7 @@ export default class PendingChanges extends Component {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button bsStyle="primary" onClick={this.props.closeModal} >Close</Button>
+                    <Button id="closeModal" bsStyle="primary" onClick={this.props.closeModal} >Close</Button>
                 </Modal.Footer>
             </Modal.Dialog>
         );

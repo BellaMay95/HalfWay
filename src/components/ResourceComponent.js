@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Navbar, Nav, NavItem, Glyphicon, Panel, PanelGroup, Well, Button, Alert } from 'react-bootstrap';
+import {Glyphicon, Panel, PanelGroup,Button, Modal} from 'react-bootstrap';
 import { app } from '../base';
 import './ForumComponent.css';
+import './ResourceComponent.css';
 
 class ForumComponent extends Component{
   constructor(props){
@@ -18,6 +19,8 @@ class ForumComponent extends Component{
         timestamp: props.timestamp,
         message: props.message,
         resIdentifier: props.resIdentifier,
+        confirmModal: false,
+        alertState: null
       }
   }
 
@@ -35,67 +38,148 @@ class ForumComponent extends Component{
 		})
   }
 
-
   removeResource(resource_id,resIdentifier){
     if(this.props.resIdentifier === 1)
     {
-      this.database.child('job').child(this.props.resource_id).remove();
+      this.database.child('job').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
     }
     if(this.props.resIdentifier === 2)
     {
-      this.database.child('affordablehousing').child(this.props.resource_id).remove();
+      this.database.child('affordablehousing').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
     }
     if(this.props.resIdentifier === 3)
     {
-      this.database.child('shorttermhousing').child(this.props.resource_id).remove();
+      this.database.child('shorttermhousing').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
     }
     if(this.props.resIdentifier === 4)
     {
-      this.database.child('food').child(this.props.resource_id).remove();
+      this.database.child('food').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
     }
     if(this.props.resIdentifier === 5)
     {
-      this.database.child('education').child(this.props.resource_id).remove();
+      this.database.child('education').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
     }
-    alert("Resource removed succesfully! Refresh to see changes.")
-
+    if(this.props.resIdentifier === 6)
+    {
+      this.database.child('fundraiser').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
+    }
+    if(this.props.resIdentifier === 7)
+    {
+      this.database.child('volunteer').child(this.props.resource_id).remove()
+      .then(() => {
+        this.props.showAlert("Resource removed successfully!", "success");
+      })
+      .catch((err) => {
+          console.log("error deleting resource!")
+          console.log(err);
+          this.props.showAlert("Error removing resource!", "danger");
+      });
+    }
+    //alert("Resource removed succesfully! Refresh to see changes.")
   }
 
-
   checkAdmin() {
-    //get user ID for lookup in database table
-    let uid = app.auth().currentUser.uid;
-    return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-      //return whether the user has admin privileges
-      if (snapshot.val().type === "admin") {
-        return true;
-      }
-      else {
-        return false;
-      }
-    });
-    }
+		//check user token for account type
+		return app.auth().currentUser.getIdToken()
+        .then((idToken) => {
+            // Parse the ID token.
+            idToken = idToken.replace(/-/g, "+").replace(/_/g, "/");
+			const payload = JSON.parse(atob(idToken.split('.')[1]));
+			if (payload['type'] === "admin") {
+				return true;
+			} else {
+				return false;
+			}
+		})
+		.catch((err) => {
+			console.log("couldn't get token!");
+			console.log(err);
+			return false; //if we can't determine, say they aren't an admin
+		})
+  }
 
   render(){
+    let resourceId = "delResource" + this.props.resIdentifier + "-" + this.props.index;
     return(
+      <div>
       <PanelGroup key={this.state.thread_id} id={this.state.thread_id}>
-          <Panel>
+          <Panel bsStyle="info">
               <Panel.Heading>
-                  <Panel.Title componentClass='h3'>{this.state.subject} : {this.state.timestamp} : {this.state.resource_id} </Panel.Title>
+                  <Panel.Title componentClass='h3'><div className = "h"><strong>{this.state.subject}</strong></div> <div className = "timestamp"> <strong>Date Posted: </strong>{this.state.timestamp}</div> <div className="clearfix"></div></Panel.Title>
               </Panel.Heading>
-              <Panel.Body>{this.state.message}</Panel.Body>
-              <Panel.Footer>
+              <Panel.Body className = "body">{this.state.message}</Panel.Body>
+              <Panel.Footer className = "footer">
                 <div>
                 { this.state.admin ?
-                <Button className="deleteResource" bsStyle="link" onClick={this.removeResource}>
-                  <Glyphicon glyph="minus-sign" style={{padding: '5px'}}/>
+                <Button className="deleteResource" id={resourceId} bsStyle="link" onClick={() => {this.setState({confirmModal: true})}}>
+                  <Glyphicon glyph="minus-sign"/>
                   Remove Resource
                 </Button> : null}
                 </div>
-                <div class="clearfix"></div>
+                <div className="clearfix"></div>
               </Panel.Footer>
           </Panel>
       </PanelGroup>
+      {this.state.confirmModal ? <div className="static-modal">
+    <Modal.Dialog style={{ overflow: 'auto' }}>
+        <Modal.Body>Are you sure you wish to delete this resource?
+        </Modal.Body>
+
+        <Modal.Footer>
+            <Button id="confirmClose" onClick={() => {this.setState({confirmModal: false})}}>Close</Button>
+            <Button id="confirmDelete" bsStyle="danger" onClick={this.removeResource}>Delete Resource</Button>
+        </Modal.Footer>
+    </Modal.Dialog>
+    </div> : null }
+      </div>
     )
   }
 }

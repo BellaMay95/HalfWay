@@ -5,6 +5,7 @@ import { Nav, Navbar, NavDropdown, MenuItem, Tabs, Tab } from 'react-bootstrap';
 import ViewFlags from './ViewFlags';
 import { CreateAccount, ChangeAccount, DeleteAccount } from './ManageAccount';
 import ProfileChanges from './AdminProfileChanges';
+import './AdminPanel.css';
 
 export default class AdminPanel extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ export default class AdminPanel extends Component {
         //console.log(option);
         if (option === 1) {
             this.setState({
-                panelContent: <Tabs defaultActiveKey={3} id="manage-account-tabs">
+                panelContent: <Tabs defaultActiveKey={1} id="manage-account-tabs">
                     <Tab eventKey={1} title="Create New Account">
                         <CreateAccount />
                     </Tab>
@@ -42,16 +43,11 @@ export default class AdminPanel extends Component {
     }
 
     render() {
-        let headerStyle = {
-            fontFamily: "'Courier New', 'Courier', 'monospace'", 
-            fontSize: 36, 
-            fontWeight: "bold"
-        }
-
         return ((<div className="container">
-            <Navbar collapseOnSelect style={{marginTop: '5px'}}>
+            <Navbar className="navbarAdmin" collapseOnSelect style={{marginTop: '5px'}}>
                 <Navbar.Header>
-                    <Navbar.Brand id="adminHeader" style={headerStyle}>Admin Panel</Navbar.Brand>
+                    <span><h3 className="brandAdmin">Admin Panel</h3></span>
+                    {/*<Navbar.Brand id="adminHeader" style={headerStyle}>Admin Panel</Navbar.Brand>*/}
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>

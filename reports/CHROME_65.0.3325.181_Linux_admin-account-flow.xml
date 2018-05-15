@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="1"
+            tests="12">
+
+  <testsuite name="admin-account-flow"
+    errors="0" failures="1" hostname="" id="" package="admin-account-flow" skipped="11"
+    tests="12" time="5.781" timestamp="Thu, 19 Apr 2018 02:07:52 GMT">
+  
+    <testcase name="log on to site" classname="admin-account-flow" time="5.781" assertions="1">  <failure message="Testing if the URL equals &#34;http://localhost:3000/login&#34;.">    at Object.log on to site (/home/gabrielle/Dropbox/School/Spring 2018/CSCE 4901/HalfWay/tests/admin-account-flow.js:3:47)
+    at _combinedTickCallback (internal/process/next_tick.js:73:7)</failure>
+
+    
+    </testcase>
+  
+
+  
+
+  
+    
+    <testcase
+      name="navigate to admin panel / manage accounts" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="create new account with empty fields" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="create new account with invalid email" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="create new account success" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="change account type with empty username" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="change account type success" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="delete account with empty field" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="delete account with invalid email format" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="delete account with invalid username" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="delete account with invalid email" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+    <testcase
+      name="delete account success" classname="admin-account-flow">
+      <skipped />
+    </testcase>
+    
+  
+  </testsuite>
+</testsuites>

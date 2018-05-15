@@ -119,7 +119,7 @@ export default class ChangePassword extends Component {
             console.log("error authenticating!");
             console.log(err);
             this.setState({ 
-                alertState: <Alert bsStyle="warning">Invalid Current Password!</Alert>,
+                alertState: <Alert bsStyle="danger">Invalid Current Password!</Alert>,
                 isLoading: false
             });
 
@@ -171,8 +171,8 @@ export default class ChangePassword extends Component {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button onClick={this.closeModal}>Close</Button>
-                    <Button bsStyle="primary" onClick={this.changePassword} disabled={this.state.isLoading}>Change Password!</Button>
+                    <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                    <Button id="submitPwChange" bsStyle="primary" onClick={this.changePassword} disabled={this.state.isLoading}>Change Password!</Button>
                 </Modal.Footer>
             </Modal.Dialog>
         );

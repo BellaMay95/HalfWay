@@ -1,0 +1,11 @@
+.brandAdmin{
+    color: #c24a46;
+}
+
+.navbarAdmin{
+  border-bottom: 3px solid #c24a46;
+  border-top: 2px solid white;
+  border-right: 2px solid white;
+  border-left: 2px solid white;
+  background-color: white;
+}

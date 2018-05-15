@@ -8,24 +8,25 @@ import defaultProfilePic from '../images/defaultProfile.jpg';
 import EditProfile from './EditProfile';
 import PendingChanges from './YouthProfileChanges';
 import ChangePassword from './ChangePassword';
+import './ViewProfile.css';
 
 const KEYS_TO_FILTERS = ['username', 'displayName'];
 
 export default class ViewProfile extends Component {
     constructor() {
         super();
-        this.getData = this.getData.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
         this.togglePendingChangesModal = this.togglePendingChangesModal.bind(this);
         this.togglePasswordModal = this.togglePasswordModal.bind(this);
         this.saveChangesAlert = this.saveChangesAlert.bind(this);
         this.setSearch = this.setSearch.bind(this);
+        this.initialLoad = this.initialLoad.bind(this);
 
         this.state = {
             profileName: null,
-            userName: null,
             avatar: defaultProfilePic,
             email: null,
+            created: "",
             editProfile: false,
             pendingChanges: false,
             showChanges: false,
@@ -33,29 +34,45 @@ export default class ViewProfile extends Component {
             accType: "",
             alertState: null,
             searchTerm: "",
-            userList: []
+            disableSearch: true,
+            userList: [],
         }
     }
 
     componentWillMount() {
+        return this.initialLoad();
+    }
+
+    initialLoad() {
         let user = app.auth().currentUser;
-        //console.log(user);
-        this.getData(user.uid)
-        .then((data) => {
+
+        user.getIdToken()
+        .then((idToken) => {
+            // Parse the ID token.
+            idToken = idToken.replace(/-/g, "+").replace(/_/g, "/");
+            const payload = JSON.parse(atob(idToken.split('.')[1]));
+            console.log(user.displayName);
             this.setState({
                 profileName: user.displayName,
-                userName: user.email.substr(0, user.email.indexOf('@')),
-                avatar: data.avatar ? data.avatar : defaultProfilePic,
-                email: data.email,
-                accType: data.type
-            });
+                email: user.email,
+                avatar: user.photoURL ? user.photoURL : defaultProfilePic,
+                accType: payload['type'] ? payload['type'] : "youth", //default to youth access if credentials can't be determined
+                created: user.metadata.creationTime
+            })
+        })
+        .catch((error) => {
+            console.log(error);
         });
+
 
         var getUsers = app.functions().httpsCallable('userList');
         getUsers()
         .then((list) => {
             console.log(list);
-            this.setState({ userList: list.data });
+            this.setState({ 
+                userList: list.data, 
+                disableSearch: false
+            });
         })
         .catch((err) => {
             console.log("error getting user list!");
@@ -71,16 +88,6 @@ export default class ViewProfile extends Component {
                 console.log("no pending changes!");
             }
         });
-    }
-
-    getData(uid) {
-        return app.database().ref('/users/' + uid).once('value').then(function(snapshot) {
-            return {
-                email: snapshot.val().email,
-                type: snapshot.val().type,
-                avatar: snapshot.val().avatar
-            };
-		});
     }
 
     toggleEditModal() {
@@ -102,11 +109,13 @@ export default class ViewProfile extends Component {
     }
 
     saveChangesAlert(message) {
+        this.initialLoad();
         this.setState({ alertState: <Alert bsStyle="success">{message}</Alert>});
 
         window.setTimeout(() => {
             this.setState({ alertState: null });
         }, 5000);
+        
     }
 
     setSearch(input) {
@@ -114,55 +123,43 @@ export default class ViewProfile extends Component {
     }
 
     setUserProfile(user) {
-        app.database().ref('users/' + user.uid).once('value')
-        .then((snapshot) => {
-            this.setState({
-                userName: user.username,
-                profileName: user.displayName,
-                avatar: snapshot.val().avatar
-            })
-        })
-        .catch((err) => {
-            console.log("failed to extract avatar!");
-            console.log(err);
-            this.setState({
-                userName: user.username,
-                profileName: user.displayName,
-                avatar: defaultProfilePic   //will make this the right thing later
-            });
-        })
+        console.log(user);
+
+        this.setState({
+            email: user.displayName === app.auth().currentUser.displayName ? app.auth().currentUser.email : user.email,
+            profileName: user.displayName,
+            avatar: user.avatar ? user.avatar : defaultProfilePic,
+            created: user.creationTime,
+            accType: user.type.type,
+            searchTerm: ""
+        });
     }
-    
+
     render() {
-        let headerStyle = {
-            fontFamily: "'Courier New', 'Courier', 'monospace'",
-            fontSize: 36,
-            fontWeight: "bold"
-        }
         let myProfile = (this.state.profileName === app.auth().currentUser.displayName);
 
         const filteredUsers = this.state.userList.length > 0 ? this.state.userList.filter(createFilter(this.state.searchTerm, KEYS_TO_FILTERS)) : [];
 
         return (
-            <div className="container">              
-                <Navbar collapseOnSelect style={{marginTop: '5px', paddingRight: '0px'}}>
+            <div className="container">
+                <Navbar className="navbarProfile" collapseOnSelect style={{marginTop: '5px', paddingRight: '0px'}}>
                     <Navbar.Header>
-                        <Navbar.Brand id="profileHeader" style={headerStyle}>User Profiles</Navbar.Brand>
+                      <span><h3 className="brandProfile">User Profiles</h3></span>
                     </Navbar.Header>
                 </Navbar>
 
                 {this.state.alertState}
 
-                <Grid style={{padding: '15px'}} fluid={true}>
+                <Grid className="gridProfile" style={{padding: '15px'}} fluid={true}>
                     <Row>
                         <Col xs={4}>
                             <label>Search For User!</label>
                         </Col>
                         <Col xs={8}>
-                            <SearchInput className="search-input" style={{width: "90%"}} onChange={this.setSearch} />
+                            <SearchInput id="searchUsers" className="search-input" style={{width: "90%"}} onChange={this.setSearch} disabled={this.state.disableSearch} />
                             { this.state.searchTerm !== "" ? <ListGroup> {filteredUsers.map((record) => {
                                 return (
-                                    <ListGroupItem key={record.uid} header={record.displayName} onClick={() => {this.setUserProfile(record)}}>{record.username}</ListGroupItem>
+                                    <ListGroupItem key={record.uid} onClick={() => {this.setUserProfile(record)}}>{record.displayName}</ListGroupItem>
                                 )
                             })} </ListGroup> : null }
                         </Col>
@@ -180,26 +177,27 @@ export default class ViewProfile extends Component {
                             title="View/Edit Profile"
                             id="editProfileDropdown"
                             >
-                            <MenuItem eventKey="1" onClick={this.toggleEditModal}>Edit Profile</MenuItem>
-                            <MenuItem eventKey="2" onClick={this.togglePasswordModal}>Change Password</MenuItem>
-                            { this.state.accType === "youth" ? <MenuItem eventKey="3" onClick={this.togglePendingChangesModal}>Pending Changes</MenuItem> : null }
+                            <MenuItem id="editProfile" eventKey="1" onClick={this.toggleEditModal}>Edit Profile</MenuItem>
+                            <MenuItem id="changePassword" eventKey="2" onClick={this.togglePasswordModal}>Change Password</MenuItem>
+                            { this.state.accType === "youth" ? <MenuItem id="viewPending" eventKey="3" onClick={this.togglePendingChangesModal}>Pending Changes</MenuItem> : null }
                         </DropdownButton>
-                            
+
                             {/*<Button bsStyle="default" onClick={this.togglePendingChangesModal}>Pending Changes <Glyphicon glyph="edit" style={{padding: '5px'}}/></Button>
                             <Button bsStyle="default" onClick={this.toggleEditModal}>Edit Profile <Glyphicon glyph="edit" style={{padding: '5px'}}/></Button>                   */}
                         </Col></div> : <h1>Profile Information</h1> }
                     </Row>
                     <Row>
-                        
+
                     </Row>
                     <Row>
                         <Col xs={4}>
                             <Image src={this.state.avatar} rounded responsive />
                         </Col>
                         <Col xs={8}>
-                            <p>Display Name: {this.state.profileName}</p>
-                            <p>Username: {this.state.userName}</p>
-                            { this.state.email ? <p>Email: {this.state.email}</p> : null}
+                            <p id="userDisplay">Display Name: {this.state.profileName}</p>
+                            <p id="userCreated">Member Since: {this.state.created}</p>
+                            <p id="userType">User Role: {this.state.accType}</p>
+                            { this.state.email ? <p id="userEmail">Email: {this.state.email}</p> : null}
                         </Col>
                     </Row>
                     {/*<hr />
@@ -208,9 +206,9 @@ export default class ViewProfile extends Component {
                     </Row>*/}
                 </Grid>
 
-                {this.state.editProfile && <EditProfile showAlert={this.saveChangesAlert} email={this.state.email} closeModal={this.toggleEditModal} />}
+                {this.state.editProfile && <EditProfile showAlert={this.saveChangesAlert} type={this.state.accType} closeModal={this.toggleEditModal} />}
                 {this.state.changePassword && <ChangePassword showAlert={this.saveChangesAlert} closeModal={this.togglePasswordModal} />}
-                {this.state.accType === "youth" && this.state.showChanges && <PendingChanges email={this.state.email} avatar={this.state.avatar} closeModal={this.togglePendingChangesModal} />}
+                {this.state.accType === "youth" && this.state.showChanges && <PendingChanges closeModal={this.togglePendingChangesModal} />}
             </div>
         );
     }

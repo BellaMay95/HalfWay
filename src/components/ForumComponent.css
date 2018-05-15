@@ -1,9 +1,26 @@
 
 .newComment{
   color: black;
-  float: left;
+  float: right;
 }
 
 .viewComments{
   float: right;
+}
+
+.PanelTitle{
+  float: left;
+  color: black;
+  margin: 10px;
+  font-weight: bold;
+}
+
+.warningSign{
+    float: left;
+    margin: 10px;
+}
+
+.cite{
+  float: right;
+  color: #c24a46;
 }

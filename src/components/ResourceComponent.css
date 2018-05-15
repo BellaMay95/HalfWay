@@ -1,0 +1,19 @@
+.h{
+  float: left;
+  display: inline;
+  }
+
+.timestamp{
+  float: right;
+  display: inline;
+
+
+}
+
+.body{
+  text-align: left;
+}
+
+.footer{
+  text-align: right;
+}

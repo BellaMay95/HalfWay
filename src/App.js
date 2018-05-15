@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect, BrowserRouter, Route } from 'react-router-dom';
+import { Redirect, BrowserRouter, Route, Switch } from 'react-router-dom';
 import { app } from './base';
 //import { Spinner } from 'react-spinner';
 
@@ -7,8 +7,9 @@ import './App.css';
 
 import Login from './components/Login';
 import Logout from './components/Logout';
-import Sidebar from './components/Sidebar';
+//import Sidebar from './components/Sidebar';
 import TopNavbar from './components/Navbar';
+import ResetPassword from './components/ResetPassword';
 
 function AuthenticatedRoute({component: Component, authenticated, ...rest}) {
 	/*if authenticated, load requested component/route, otherwise redirect to login route*/
@@ -91,24 +92,26 @@ class App extends Component {
 				<BrowserRouter>
 					<div>
 						{/* '/login' path returns login component */}
-						<Route exact path="/login" render={(props) => {
-							return <Login setCurrentUser={this.setCurrentUser} {...props} />
-						}} />
-						{/* 'logout' path returns logout component */}
-						<Route exact path="/logout" component={Logout} />
-						{/*the rest of the routes are protected. If the user is not logged in, it redirects to the login page */}
-						<AuthenticatedRoute
-							exact
-							path="/"
-							authenticated={this.state.authenticated}
-							component={TopNavbar}
-						/>
-						<AuthenticatedRoute
+						<Switch>
+							<Route exact path="/login" render={(props) => {
+								return <Login setCurrentUser={this.setCurrentUser} {...props} />
+							}} />
+							{/* 'reset' path lets the user reset their password */}
+							<Route exact path="/reset" component={ResetPassword} />
+							{/* 'logout' path returns logout component */}
+							<Route exact path="/logout" component={Logout} />
+							{/*the rest of the routes are protected. If the user is not logged in, it redirects to the login page */}
+							<AuthenticatedRoute
+								authenticated={this.state.authenticated}
+								component={TopNavbar}
+							/>
+						</Switch>
+						{/*<AuthenticatedRoute
 							exact
 							path="/sidebar"
 							authenticated={this.state.authenticated}
 							component={Sidebar}
-						/>
+						/>*/}
 
 					</div>
 				</BrowserRouter>

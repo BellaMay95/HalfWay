@@ -29,9 +29,8 @@ export default class EditProfile extends Component {
         
         this.state = {
             uid: "",
-            username: "",
-            oldname: "",
-            email: this.props.email ? this.props.email : "",
+            oldemail: "",
+            email: "",
             avatar: "",
             profileName: "",
             confirmPassword: "",
@@ -39,39 +38,74 @@ export default class EditProfile extends Component {
             isUploading: false,
             alertState: null,
             progress: 0,
-            type: "",
-            storageRef: app.storage().ref()
+            type: this.props.type ? this.props.type : "youth", //if no type sent, assume it's a youth account
+            storageRef: app.storage().ref('userAvatars'), //only for the uploader element,
+            filename: ""
         }
     }
 
     componentWillMount() {
         let user = app.auth().currentUser;
-        app.database().ref('users/' + user.uid).once('value')
-        .then((snapshot) => {
-            this.setState({
-                uid: user.uid,
-                avatar: snapshot.val().avatar ? snapshot.val().avatar : defaultProfilePic,
-                username: user.email.substr(0, user.email.indexOf('@')) ? user.email.substr(0, user.email.indexOf('@')) : "", 
-                oldname: user.email.substr(0, user.email.indexOf('@')) ? user.email.substr(0, user.email.indexOf('@')) : "",
-                profileName: user.displayName ? user.displayName : "",
-                type: snapshot.val().type
-            });
 
-            console.log(this.state);
-        })
-        .catch((err) => {
-            console.log("failed to set initial data!");
-            console.log(err);
+        this.setState({
+            uid: user.uid,
+            avatar: user.photoURL ? user.photoURL : defaultProfilePic,
+            email: user.email ? user.email : "",
+            oldemail: user.email ? user.email : "",
+            profileName: user.displayName ? user.displayName : ""
         })
     }
 
     editProfile() {
         this.setState({isLoading: true});
 
-        let avatarChange = () => {
-            return this.avatarChanged
-        };
+        let user = app.auth().currentUser;
 
+        //see if the avatar changed
+        let avatarChange = false;
+        if (!user.photoURL && this.state.avatar === defaultProfilePic) {
+            console.log("no avatar before & no avatar now");
+            avatarChange = false;
+        }
+        else if (user.photoURL === this.state.avatar) {
+            console.log("there is an avatar and it hasn't changed");
+            avatarChange = false;
+        }
+        else if (user.photoURL !== this.state.avatar) {
+            console.log("avatar's changed");
+            avatarChange = true;
+        }
+        else {
+            console.log("this shouldn't ever be reached...but if so just pretend avatar hasn't changed");
+            avatarChange = false;
+        }
+
+
+        //set back to old values if any fields are empty
+        if (this.state.email === "") {
+            this.setState({ email: this.props.email });
+        } if (this.state.profileName === "") {
+            this.setState({ profileName: user.displayName });
+        }
+
+        //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+        // eslint-disable-next-line
+        let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        //email has to be in email format
+        if (!emailRegex.test(this.state.email)) {
+            this.setState({ 
+                alertState: <Alert bsStyle="warning">Invalid email address!</Alert>,
+                isLoading: false
+            });
+
+            window.setTimeout(() => {
+                this.setState({ alertState: null });
+            }, 5000);
+            return;
+        }
+
+        //user must enter password to approve changes
         if (this.state.confirmPassword === "") {
             this.setState({ 
                 alertState: <Alert bsStyle="warning">Enter your current password!</Alert>,
@@ -85,9 +119,7 @@ export default class EditProfile extends Component {
         }
 
         //check to see if there were any changes in the profile
-        let userEmail = this.state.username + "@halfway.com";
-        let user = app.auth().currentUser;
-        if (userEmail === user.email && this.state.email === this.props.email && !avatarChange && this.state.profileName === user.displayName) {
+        if (this.state.email === this.props.email && !avatarChange && this.state.profileName === user.displayName) {
             //console.log("no changes!");
             this.setState({ 
                 alertState: <Alert bsStyle="warning">No changes detected!</Alert>,
@@ -124,107 +156,146 @@ export default class EditProfile extends Component {
         })
     }
 
-    avatarChanged() {
-        app.database().ref('users/' + this.state.uid).once('value')
-        .then((snapshot) => {
-            //let change = true;
-            if (!snapshot.val().avatar && (this.state.avatar === defaultProfilePic)) {
-                console.log("no avatar exists");
-                return false;
-            }
-            else if (this.state.avatar === snapshot.val().avatar) {
-                console.log("avatar hasn't changed");
-                return false;
-            } else if (this.state.avatar !== snapshot.val().avatar) {
-                console.log("avatar changed!");
-                return true;
-            }
-        })
-        .catch((err) => {
-            console.log("error checking for avatar change! Assume it didn't change.");
-            return false;
-        });
-    }
-
     savePermProfile(avatarChange) {
         let user = app.auth().currentUser;
-        let self = this;
 
-        //update profile name
-        user.updateProfile({
-            displayName: this.state.profileName,
-        })
-        .then(() => { //update profile pic
-            if (avatarChange) {
-                app.database().ref('users/' + this.state.uid).update({
-                    avatar: this.state.avatar !== defaultProfilePic ? this.state.avatar : null
-                })
-                .catch((err) => {
-                    console.log("error updating avatar!");
-                    console.log(err);
-                    this.setState({ alertState: <Alert bsStyle="danger">Error Updating Avatar!</Alert>});
+        let updateError = [];
+        console.log("ready to update profile");
 
-                    window.setTimeout(() => {
-                        this.setState({ alertState: null });
-                    }, 5000);
-                })
-            }
+        //empty promise exists to start the promise chain since I'm not sure which fields are changed yet
+        return new Promise(function(resolve, reject) {
+            resolve("dummy promise");
         })
-        .then(() => { //update username
-            let email = this.state.username + "@halfway.com";
-            if (email !== user.email && this.state.username !== "") {
-                console.log("updating username!");
-                user.updateEmail(email)
-                .catch((err) => {
-                    console.log("error updating username!");
-                    console.log(err);
-                    this.setState({ alertState: <Alert bsStyle="danger">Error Updating Username!</Alert>});
-
-                    window.setTimeout(() => {
-                        this.setState({ alertState: null });
-                    }, 5000);
-                })
-            }
-        })
-        .then(() => { //update email in database
-            if(this.state.email !== this.props.email && this.state.email !== "") {
-                app.database().ref('users/' + this.state.uid).update({
-                    email: this.state.email
-                })
+        .then(() => {
+            //update email if it's been changed
+            if (this.state.email !== user.email) {
+                user.updateEmail(this.state.email)
                 .catch((err) => {
                     console.log("error updating email!");
                     console.log(err);
-
-                    this.setState({ alertState: <Alert bsStyle="danger">Error Updating Email!</Alert>});
-
-                    window.setTimeout(() => {
-                        this.setState({ alertState: null });
-                    }, 5000);
+                    updateError.push("email");
                 })
             }
         })
         .then(() => {
-            this.setState({ isLoading: false });
-            self.props.showAlert("Saved Profile Changes Successfully!");
-            this.closeModal();
+            //update display name if it's been changed
+            if (this.state.profileName !== user.displayName) {
+                user.updateProfile({
+                    displayName: this.state.profileName
+                })
+                .catch((err) => {
+                    console.log("error updating profile name!");
+                    console.log(err);
+                    updateError.push("profile name");
+                })
+            }
         })
-        .catch((error) => {
-            console.log("error updating profile name or avatar!");
-            console.log(error);
-
-            this.setState({ 
-                alertState: <Alert bsStyle="danger">Error Updating Account Details!</Alert>,
-                isLoading: false
-            });
-
-            window.setTimeout(() => {
-                this.setState({ alertState: null });
-            }, 5000);
-        });
+        .then(() => {
+            //update avatar if it's been changed
+            if(avatarChange) {
+                let oldUrl = user.photoURL;
+                console.log("old url: " + oldUrl);
+                if (oldUrl) {
+                    let transEmail = user.email.replace("@", '%40');
+                    let index1 = oldUrl.indexOf(transEmail);
+                    //let index1 = oldUrl.indexOf(user.email);
+                    let index2 = oldUrl.indexOf("?");
+                    let oldRef = oldUrl.substring(index1, index2);
+                    oldRef = oldRef.replace('%40', '@');
+                    console.log("index1: " + index1 + "; index2: " + index2 + "; oldRef: " + oldRef)
+                    this.state.storageRef.child(oldRef).delete()
+                    .then(() => {
+                        console.log("deleted the old avatar")
+                        if(this.state.avatar !== defaultProfilePic) {
+                            this.state.storageRef.child(this.state.filename).putString(this.state.avatar, 'data_url')
+                            .then((snapshot) => {
+                                console.log("we're done!")
+                                //console.log("finished uploading with url..." + snapshot.downloadURL)
+                            })
+                            .catch((err) => {
+                                console.log("error uploading new file!")
+                                console.log(err);
+                                updateError.push("avatar");
+                            })
+                        }
+                    })
+                    .then((snapshot) => {
+                        console.log("got new url")
+                        user.updateProfile({
+                            photoURL: snapshot && snapshot.downloadURL ? snapshot.downloadURL : null
+                        })
+                        .catch((err) => {
+                            console.log("error updating avatar!");
+                            console.log(err);
+                            updateError.push("avatar");
+                        })
+                    })
+                    .catch((err) => {
+                        console.log("error deleting previous file!");
+                        console.log(err);
+                        updateError.push("avatar");
+                    })
+                } else {
+                    console.log("no old url!");
+                    console.log(this.state.filename);
+                    console.log(this.state.avatar);
+                    this.state.storageRef.child(this.state.filename).putString(this.state.avatar, 'data_url')
+                    .then((snapshot) => {
+                        console.log("uploaded file with url: " + snapshot.downloadURL);
+                        user.updateProfile({
+                            photoURL: snapshot.downloadURL
+                        })
+                        .catch((err) => {
+                            console.log("error updating avatar!");
+                            console.log(err);
+                            updateError.push("avatar");
+                        })
+                    })
+                    .catch((err) => {
+                        console.log("error uploading new file!")
+                        console.log(err);
+                        updateError.push("avatar");
+                    })
+                }
+            }
+        })
+        .then(() => {
+            console.log("end of promise chain, then");
+            console.log(updateError)
+            if (updateError.length === 0) {
+                console.log("no errors here!");
+                this.setState({ isLoading: false });
+                window.setTimeout(() => {
+                    this.props.showAlert("Profile Edited Successfully!", "success");
+                    this.props.closeModal();
+                }, 500)
+            } else {
+                let message = "Error updating ";
+                for (let i=0; i < updateError.length; i++) {
+                    message += ", ";
+                    if (i === (updateError.length - 2)) {
+                        message += "and ";
+                    }
+                    message += updateError[i];
+                }
+                message += "!";
+                this.setState({ 
+                    alertState: <Alert bsStyle="danger">{message}</Alert>,
+                    isLoading: false 
+                });
+            }
+        })
+        .catch((err) => {
+            console.log("an empty promise can't possibly cause problems!");
+            console.log(err);
+        })
     }
 
     savePendingProfile(avatarChange) {
         let self = this;
+        console.log(this.state.avatar)
+        console.log(this.state.avatar === defaultProfilePic);
+        console.log(avatarChange);
 
         app.database().ref('pendingProfiles/' + this.state.uid).once('value')
         .then((snapshot) => {
@@ -238,27 +309,24 @@ export default class EditProfile extends Component {
             }
             else {
                 userdata.comments = [];
-                //userdata.comments.push(date + ": Changes Awaiting Approval. Check back soon!");
             }
             userdata.status = "pending";
-            userdata.currname = this.state.oldname;
+            userdata.currname = this.state.oldemail;
             let user = app.auth().currentUser;
-            if ((this.state.username + "@halfway.com") !== user.email) {
-                userdata['username'] = this.state.username;
-                newComment += "username : "
-            } if (this.state.email !== this.props.email) {
-                userdata['email'] = this.state.email;
-                newComment += "email : "
-            } if (this.state.profileName !== user.displayName) {
+            if (this.state.profileName !== user.displayName) {
                 userdata['profileName'] = this.state.profileName;
                 newComment += "profile name : ";
-            } if (avatarChange && this.state.avatar === defaultProfilePic) {
+            } if (avatarChange && (this.state.avatar === defaultProfilePic)) {
                 //avatar was removed
+                userdata['oldavatar'] = user.photoURL;
                 userdata['avatar'] = "removed";
+                userdata['filename'] = this.state.filename;
                 newComment += "avatar : "
-            } if (avatarChange && this.state.avatar !== defaultProfilePic) {
+            } if (avatarChange && (this.state.avatar !== defaultProfilePic)) {
                 //avatar actually changed
+                userdata['oldavatar'] = user.photoURL;
                 userdata['avatar'] = this.state.avatar;
+                userdata['filename'] = this.state.filename;
                 newComment += "avatar : ";
             }
 
@@ -268,8 +336,26 @@ export default class EditProfile extends Component {
     
             app.database().ref('pendingProfiles/' + this.state.uid).update(userdata)
             .then(() => {
+                if (this.state.email !== user.email) {
+                    user.updateEmail(this.state.email)
+                    .catch((err) => {
+                        console.log("Error updating email!");
+                        console.log(err);
+
+                        this.setState({ 
+                            alertState: <Alert bsStyle="danger">Error Updating Email!</Alert>,
+                            isLoading: false
+                        });
+            
+                        window.setTimeout(() => {
+                            this.setState({ alertState: null });
+                        }, 5000);
+                    })
+                }
+            })
+            .then(() => {
                 this.setState({ isLoading: false });
-                self.props.showAlert("Saved Profile Changes Successfully!");
+                self.props.showAlert("Profile Changes Successfully Submitted for Review!");
                 this.closeModal();
             })
             .catch((err) => {
@@ -306,8 +392,9 @@ export default class EditProfile extends Component {
         let self = this;
 
         reader.onloadend = () => {
+            console.log(image);
             self.setState({
-                //avatarImg: image,
+                filename: this.state.email + "." + image.name.split('.')[1],
                 avatar: reader.result
             });
         }
@@ -329,15 +416,15 @@ export default class EditProfile extends Component {
     render() {
         return (
             <div className="static-modal">
-                <Modal.Dialog style={{ overflow: 'auto' }}g>
+                <Modal.Dialog style={{ overflow: 'auto' }}>
                     <Modal.Header>
                         <Modal.Title>Edit Profile Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         {this.state.alertState}
-                        <Grid fluid={true}>
+                        <Grid fluid={true} style={{backgroundColor: 'white'}} >
                             <Row>
-                                <Col xs={12} sm={4}>
+                                <Col xs={12} sm={4} style={{margin: 0}}>
                                     <ControlLabel>User Avatar</ControlLabel>
                                     <Image src={this.state.avatar} responsive rounded />
                                     <label style={{backgroundColor: 'steelblue', color: 'white', padding: 10, borderRadius: 4, pointer: 'cursor'}}>
@@ -355,15 +442,8 @@ export default class EditProfile extends Component {
                                 <Col xs={12} sm={8}>
                                     <form>
                                         <FieldGroup
-                                        id="formControlsUsername"
-                                        type="text"
-                                        label="Username"
-                                        value={this.state.username}
-                                        onChange={(evt) => {this.setState({username: evt.target.value})}}
-                                        />
-                                        <FieldGroup
                                         id="formControlsEmail"
-                                        type="text"
+                                        type="email"
                                         label="Email"
                                         value={this.state.email}
                                         onChange={(evt) => {this.setState({email: evt.target.value})}}
@@ -390,8 +470,8 @@ export default class EditProfile extends Component {
                     </Modal.Body>
 
                     <Modal.Footer>
-                        <Button onClick={this.closeModal}>Close</Button>
-                        <Button bsStyle="primary" onClick={this.editProfile} disabled={this.state.isLoading}>Edit Profile!</Button>
+                        <Button id="closeModal" onClick={this.closeModal}>Close</Button>
+                        <Button id="submitProfile" bsStyle="primary" onClick={this.editProfile} disabled={this.state.isLoading}>Edit Profile!</Button>
                     </Modal.Footer>
                 </Modal.Dialog>
             </div>

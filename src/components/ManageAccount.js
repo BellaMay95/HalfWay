@@ -22,9 +22,8 @@ export class CreateAccount extends Component {
 
         this.state = {
             displayName: "",
-            userName: "",
             email: "",
-            type: "Youth",
+            type: "youth",
             adminPassword: "",
             formStatus: null,
             isLoading: false
@@ -48,7 +47,7 @@ export class CreateAccount extends Component {
         let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         
 
-        if (this.state.email === "" || this.state.userName === "" || this.state.displayName === "" || this.state.adminPassword === "" || this.state.type === "") {
+        if (this.state.email === "" || this.state.displayName === "" || this.state.adminPassword === "" || this.state.type === "") {
             this.setState({
                 formStatus: <Alert bsStyle = "warning"><strong>One or more fields are empty. Please try again.</strong></Alert>, 
                 isLoading: false 
@@ -76,36 +75,19 @@ export class CreateAccount extends Component {
             .then(() => {
                 let info = {
                     "email": this.state.email,
-                    "username": this.state.userName,
                     "display": this.state.displayName,
                     "type": this.state.type
                 }
-                let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/createAccount";
-                //let url = "http://localhost:5000/halfway-a067e/us-central1/app/createAccount";
-                let fetchData = {
-                    'method': 'POST',
-                    'Content-Type': 'application/json',
-                    'body': JSON.stringify(info),
-                    'headers': new Headers()
-                }
-    
-                fetch(url, fetchData)
-                .then((resp) => resp.json())
+
+                var addAccount = app.functions().httpsCallable('createAccount');
+                addAccount(info)
                 .then((data) => {
                     console.log(data);
-                    if (data.success) {
-                        this.setState({
-                            formStatus: <Alert bsStyle = "success"><strong>{data.message}</strong></Alert>,
-                            isLoading: false
-                        })
-                        this.createAccountForm.reset();
-                    } else {
-                        this.setState({
-                            formStatus: <Alert bsStyle = "danger"><strong>{data.message}</strong></Alert>,
-                            isLoading: false
-                        })
-                    }
-                            
+                    this.setState({
+                        formStatus: <Alert bsStyle = "success"><strong>{data.data}</strong></Alert>,
+                        isLoading: false
+                    })
+                    this.createAccountForm.reset();
                     window.setTimeout(() => {
                         this.setState({formStatus: null});
                     }, 5000);
@@ -137,14 +119,6 @@ export class CreateAccount extends Component {
                 {this.state.formStatus}
                 <h2>Create New Account</h2>
                 <form onSubmit={this.submitAccount} ref={(form) => { this.createAccountForm = form }}>
-                    <FieldGroup
-                    id="createAccountUserName"
-                    type="text"
-                    label="Username"
-                    placeholder="Enter Userame"
-                    name="userName"
-                    onChange={this.onChange}
-                    />
                     <FieldGroup
                     id="createAccountDisplayName"
                     type="text"
@@ -191,7 +165,7 @@ export class ChangeAccount extends Component {
         this.submitChange = this.submitChange.bind(this);
 
         this.state = {
-            userName: "",
+            email: "",
             accType: "mentor",
             adminPassword: "",
             isLoading: false,
@@ -210,7 +184,13 @@ export class ChangeAccount extends Component {
     submitChange(event) {
         event.preventDefault();
         this.setState({ isLoading: true });
-        if (this.state.userName === "" || this.state.adminPassword === "" || this.state.accType === "") {
+
+        //regex from http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+        //eslint-disable-next-line
+        let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+
+        if (this.state.email === "" || this.state.adminPassword === "" || this.state.accType === "") {
             this.setState({
                 formStatus: <Alert bsStyle = "warning"><strong>One or more fields are empty. Please try again.</strong></Alert>, 
                 isLoading: false 
@@ -221,17 +201,29 @@ export class ChangeAccount extends Component {
             }, 5000);
             console.log("You have one or more empty fields!");
             return;
+        } else if (!emailRegex.test(this.state.email)) {
+            console.log(this.state.email);
+            this.setState({
+                formStatus: <Alert bsStyle = "warning"><strong>You must enter a valid email address.</strong></Alert>, 
+                isLoading: false 
+            });
+            //show alert for 5 seconds
+            window.setTimeout(() => {
+        		this.setState({formStatus: null});
+            }, 5000);
+            console.log("You must enter a valid email address!");
+            return;
         }
 
         let data = {
-            username: this.state.userName,
+            email: this.state.email,
             type: this.state.accType
         }
 
         var user = app.auth().currentUser;
-        let username = user.email;
-        let checkEmail = data.username + "@halfway.com";
-        if (username === checkEmail) {
+        let ownEmail = user.email; //logged in user
+        let email = data.email; //email of account to be changed
+        if (ownEmail === email) {
             console.log("You can't change your own account type, silly!");
             this.setState({
                 formStatus: <Alert bsStyle = "danger"><strong>You can't change your own account type!</strong></Alert>,
@@ -246,33 +238,15 @@ export class ChangeAccount extends Component {
 
         firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.adminPassword))
         .then(() => {
-
-            let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/changeAccount";
-            //let url = "http://localhost:5000/halfway-a067e/us-central1/app/changeAccount";
-            let fetchData = {
-                'method': 'POST',
-                'Content-Type': 'application/json',
-                'body': JSON.stringify(data),
-                'headers': new Headers()
-            }
-
-            fetch(url, fetchData)
-            .then((resp) => resp.json())
+            var changeAccount = app.functions().httpsCallable('changeAccount');
+            changeAccount(data)
             .then((data) => {
                 console.log(data);
-                if (data.success) {
-                    this.setState({
-                        formStatus: <Alert bsStyle = "success"><strong>{data.message}</strong></Alert>,
-                        isLoading: false
-                    });
-                    this.changeAccountForm.reset();
-                }
-                else {
-                    this.setState({
-                        formStatus: <Alert bsStyle = "danger"><strong>{data.message}</strong></Alert>,
-                        isLoading: false
-                    });
-                }          
+                this.setState({
+                    formStatus: <Alert bsStyle = "success"><strong>{data.data}</strong></Alert>,
+                    isLoading: false
+                });
+                this.changeAccountForm.reset();    
                 window.setTimeout(() => {
                     this.setState({formStatus: null});
                 }, 5000);
@@ -282,11 +256,11 @@ export class ChangeAccount extends Component {
                 this.setState({
                     formStatus: <Alert bsStyle = "danger"><strong>{err.message}</strong></Alert>,
                     isLoading: false
-                })
+                });
                 window.setTimeout(() => {
                     this.setState({formStatus: null});
                 }, 5000);
-            });
+            })
         })
         .catch((err) => {
             console.log("Invalid authentication!");
@@ -294,7 +268,7 @@ export class ChangeAccount extends Component {
             this.setState({
                 formStatus: <Alert bsStyle="danger"><strong>Invalid Administrator Password.</strong></Alert>,
                 isLoading: false
-            })
+            });
         });
     }
 
@@ -304,11 +278,11 @@ export class ChangeAccount extends Component {
         <h2>Change Account Type</h2>
         <form onSubmit={this.submitChange} ref={(form) => { this.changeAccountForm = form }}>
             <FieldGroup
-                id="changeAccountUserName"
+                id="changeAccountEmail"
                 type="text"
-                label="Username"
-                placeholder="Enter Userame"
-                name="userName"
+                label="Email"
+                placeholder="Enter Email"
+                name="email"
                 onChange={this.onChange}
             />
             <FormGroup controlId="changeAccountSelect">
@@ -343,7 +317,6 @@ export class DeleteAccount extends Component {
         this.deleteAccount = this.deleteAccount.bind(this);
 
         this.state = {
-            userName: "",
             email: "",
             adminPassword: "",
             formStatus: null,
@@ -371,7 +344,7 @@ export class DeleteAccount extends Component {
         let emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         
 
-        if (this.state.email === "" || this.state.userName === "" || this.state.adminPassword === "") {
+        if (this.state.email === "" || this.state.adminPassword === "") {
             this.setState({
                 formStatus: <Alert bsStyle = "warning"><strong>One or more fields are empty. Please try again.</strong></Alert>, 
                 isLoading: false 
@@ -406,36 +379,19 @@ export class DeleteAccount extends Component {
         firebase.auth().currentUser.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, this.state.adminPassword))
         .then(() => {
             let info = {
-                "email": this.state.email,
-                "username": this.state.userName
-            }
-            let url = "https://us-central1-halfway-a067e.cloudfunctions.net/app/deleteAccount";
-            //let url = "http://localhost:5000/halfway-a067e/us-central1/app/deleteAccount";
-            let fetchData = {
-                'method': 'POST',
-                'Content-Type': 'application/json',
-                'body': JSON.stringify(info),
-                'headers': new Headers()
+                "email": this.state.email
             }
 
-            fetch(url, fetchData)
-            .then((resp) => resp.json())
+            var deleteAccount = app.functions().httpsCallable('deleteAccount');
+            deleteAccount(info)
             .then((data) => {
                 console.log(data);
-                if (data.success) {
-                    this.setState({
-                        formStatus: <Alert bsStyle = "success"><strong>{data.message}</strong></Alert>,
-                        isLoading: false
-                    })
-                    this.deleteAccountForm.reset();
-                } else {
-                    this.setState({
-                        formStatus: <Alert bsStyle = "danger"><strong>{data.message}</strong></Alert>,
-                        isLoading: false
-                    })
-                }
-                
-                        
+                this.setState({
+                    formStatus: <Alert bsStyle = "success"><strong>{data.data}</strong></Alert>,
+                    isLoading: false
+                })
+                this.deleteAccountForm.reset();
+                      
                 window.setTimeout(() => {
                     this.setState({formStatus: null});
                 }, 5000);
@@ -449,7 +405,7 @@ export class DeleteAccount extends Component {
                 window.setTimeout(() => {
                     this.setState({formStatus: null});
                 }, 5000);
-            });
+            })
         })
         .catch((err) => {
             console.log("Invalid authentication!");
@@ -466,14 +422,6 @@ export class DeleteAccount extends Component {
         {this.state.formStatus}
         <h2>Delete Account</h2>
         <form onSubmit={this.validateDelete} ref={(form) => { this.deleteAccountForm = form }}>
-            <FieldGroup
-                id="deleteAccountUserName"
-                type="text"
-                label="Username"
-                placeholder="Enter Userame"
-                name="userName"
-                onChange={this.onChange}
-            />
             <FieldGroup
                 id="deleteAccountEmail"
                 type="text"
@@ -502,7 +450,7 @@ export class DeleteAccount extends Component {
     
                         <Modal.Footer>
                             <Button id="confirmClose" onClick={() => {this.setState({confirmModal: false, isLoading: false})}}>Close</Button>
-                            <Button bsStyle="danger" onClick={this.deleteAccount}>Delete Account</Button>
+                            <Button id="confirmDelete" bsStyle="danger" onClick={this.deleteAccount}>Delete Account</Button>
                         </Modal.Footer>
                     </Modal.Dialog>
                 </div> : null }

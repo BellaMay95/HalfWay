@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites errors="0"
+            failures="0"
+            tests="12">
+
+  <testsuite name="auth-flow"
+    errors="0" failures="0" hostname="" id="" package="auth-flow" skipped="0"
+    tests="12" time="74.95" timestamp="Sat, 21 Apr 2018 23:15:40 GMT">
+  
+    <testcase name="get to login page" classname="auth-flow" time="5.741" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="logging in with empty email" classname="auth-flow" time="16.92" assertions="3">
+
+    
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging in with invalid email format" classname="auth-flow" time="1.505" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging in with invalid username and invalid password" classname="auth-flow" time="2.146" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging in with valid credentials as admin" classname="auth-flow" time="4.446" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="checking for admin panel (as admin)" classname="auth-flow" time="0.5910" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="checking for resources add/edit (as admin)" classname="auth-flow" time="1.485" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging out (admin)" classname="auth-flow" time="2.673" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging in with valid credentials as youth" classname="auth-flow" time="4.740" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="checking for admin panel (as youth)" classname="auth-flow" time="10.35" assertions="1">
+
+    
+    </testcase>
+  
+    <testcase name="checking for resources add/edit (as youth)" classname="auth-flow" time="21.98" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+    <testcase name="logging out (youth)" classname="auth-flow" time="2.367" assertions="2">
+
+    
+
+    
+    </testcase>
+  
+
+  
+
+  
+  </testsuite>
+</testsuites>

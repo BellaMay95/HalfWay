@@ -1,0 +1,11 @@
+.brandForum{
+  color: #c24a46;
+}
+
+.navbarForum{
+  border-bottom: 3px solid #c24a46;
+  border-top: 2px solid white;
+  border-right: 2px solid white;
+  border-left: 2px solid white;
+  background-color: white;
+}
