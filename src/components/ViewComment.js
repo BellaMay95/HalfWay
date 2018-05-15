@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { app } from '../base';
-import { Modal, Button, ListGroup, ListGroupItem, Image, Alert } from 'react-bootstrap';
+import { Modal, Button, ListGroup, ListGroupItem, Image, Alert, Popover, OverlayTrigger, Glyphicon} from 'react-bootstrap';
 import './ViewComment.css';
 import warning from '../images/warning.png';
 import warningGrey from '../images/warning-grey.png';
@@ -77,7 +77,10 @@ componentWillMount(){
         author_name: snap.val().author_name,
         message: snap.val().message,
         timestamp: snap.val().timestamp,
-        flagged: snap.val().flagged
+        flagged: snap.val().flagged,
+        attachmentRefs: snap.val().attachmentRefs,
+        attachmentUrls: snap.val().attachmentUrls,
+        attachmentTitles: snap.val().attachmentTitles
       })
 
       // Getting the comments that will be displayed to the screen
@@ -88,8 +91,30 @@ componentWillMount(){
           author_name: snap.val().username,
           message: snap.val().message,
           timestamp: snap.val().timestamp,
-          flagged: snap.val().flagged
+          flagged: snap.val().flagged,
+          attachmentRefs: snap.val().attachmentRefs,
+          attachmentUrls: snap.val().attachmentUrls,
+          attachmentTitles: snap.val().attachmentTitles
         })
+      }
+    })
+
+    this.database.on('child_changed', snap => {
+      for (var i=0; i < newComments.length; i++){
+        if(newComments[i].id === snap.key) {
+          newComments[i] = {
+            id: snap.key,
+            author_id: snap.val().author_id,
+            author_name: snap.val().username,
+            message: snap.val().message,
+            timestamp: snap.val().timestamp,
+            flagged: snap.val().flagged,
+            attachmentRefs: snap.val().attachmentRefs,
+            attachmentUrls: snap.val().attachmentUrls,
+            attachmentTitles: snap.val().attachmentTitles
+          }
+          break;
+        }
       }
     })
 
@@ -261,6 +286,12 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
 }
 
   render(){
+    const popoverRight = (
+      <Popover id="popover-positioned-right">
+        This comment has already been flagged.
+      </Popover>
+    );
+
     return(
       <div className="static-modal">
         <Modal.Dialog style={{overflow: 'auto'}}>
@@ -284,22 +315,40 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                           <Alert bsStyle="success">You are on the first page.</Alert>
                       : null*/
                   }
-                                    {
+                  {
                     this.state.commentToDisplay.map((comment, index) => {
                       let commentId = "comment" + index;
                       let flagId = "flagComment" + index;
+                      let attachments = [];
+                      if (comment.attachmentRefs) {
+                        for (let i=0; i < comment.attachmentRefs.length; i++) {
+                          let key = "file_" + i;
+                          attachments.push(
+                            <Button bsStyle="link" href={comment.attachmentUrls[i]} target="_blank" key={key}>
+                              {comment.attachmentTitles[i]}
+                            </Button>)
+                        }
+                      }
                       return(
-                        <div key={comment.message}>
+                        <div key={commentId + "-" + comment.timestamp}>
                           <ListGroupItem className="commentItem" key={index} id={commentId}>
                             <div>
                               <p>{comment.message}</p>
                               <p className="cite"><cite>{comment.author_name}</cite></p>
+                              
                               <div className="keywordbullshit">
                                 {/*<a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>*/
-                                  comment.flagged ? <Image className="warningSign" src={warningGrey} responsive />
+                                  comment.flagged ? <OverlayTrigger trigger="click" placement="right" overlay={popoverRight}><Image className="warningSign" src={warningGrey} responsive /></OverlayTrigger>
                                 : <Image className="warningSign" src={warning} id={flagId} responsive onClick={() => this.handleOpenFlagCommentModal(comment.id, comment.message, comment.author_name)}/>
                                 }
                               </div>
+                              {attachments ? 
+                                <div>
+                                  <Glyphicon glyph="paperclip"></Glyphicon>
+                                  {attachments}
+                                </div>
+                                : null
+                              }
                               <div className="clearfix"></div>
                             </div>
                           </ListGroupItem>

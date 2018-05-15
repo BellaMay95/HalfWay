@@ -64,7 +64,10 @@ class Forum extends Component {
           timestamp: this.getDateTime(snap.val().timestamp),
           alertState: null,
           isLoading: false,
-          flagged: snap.val().flagged
+          flagged: snap.val().flagged,
+          attachmentRefs: snap.val().attachmentRefs,
+          attachmentUrls: snap.val().attachmentUrls,
+          attachmentTitles: snap.val().attachmentTitles
         })
 
         // Push the array that we have just updated (previousForum) to the state
@@ -82,7 +85,32 @@ class Forum extends Component {
         }
         // Push the array that we have just updated (previousNotes) to the state
         this.setState({
-          notes: prevForum
+          forumList: prevForum
+        })
+      })
+
+      this.database.on('child_changed', snap => {
+        for (var i=0; i < prevForum.length; i++){
+          if(prevForum[i].id === snap.key) {
+            prevForum[i] = {
+              id: snap.key,
+              author_id: snap.val().author_id,
+              author_name: snap.val().author_name,
+              message: snap.val().message,
+              subject: snap.val().subject,
+              timestamp: this.getDateTime(snap.val().timestamp),
+              alertState: null,
+              isLoading: false,
+              flagged: snap.val().flagged,
+              attachmentRefs: snap.val().attachmentRefs,
+              attachmentUrls: snap.val().attachmentUrls,
+              attachmentTitles: snap.val().attachmentTitles
+            }
+            break;
+          }
+        }
+        this.setState({
+          forumList: prevForum
         })
       })
     }
@@ -194,7 +222,7 @@ class Forum extends Component {
                             let forum_id = "thread_" + index;
                             return(
                                 <div key={forum.id} id={forum_id}>
-                                <ForumComponent thread_id={forum.id} array_id={index} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} flagStatus={forum.flagged} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
+                                <ForumComponent thread_id={forum.id} attachmentTitles={forum.attachmentTitles} attachmentUrls={forum.attachmentUrls} attachmentRefs={forum.attachmentRefs} array_id={index} author_name={forum.author_name} subject={forum.subject} timestamp={forum.timestamp} message={forum.message} flagStatus={forum.flagged} toggleCreateCommentModal={this.toggleCreateCommentModal} toggleViewCommentModal={this.toggleViewCommentModal} toggleFlagForumPost={this.toggleFlagForumPost} />
                                 </div>
                             )
                         })
