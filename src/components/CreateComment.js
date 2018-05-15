@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Modal, Button, FormGroup, ControlLabel, FormControl, HelpBlock, Alert } from 'react-bootstrap';
+import { Modal, Button, FormGroup, ControlLabel, FormControl, Alert } from 'react-bootstrap';
 import { app } from '../base';
 
 // FieldGroup set-up pull directly from react boostrap

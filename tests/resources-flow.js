@@ -68,26 +68,32 @@ module.exports = {
         browser.setValue('#formControlsSubject', "Good Coupons");
         browser.clearValue('#formControlsMessage', "");
         browser.click('#addFoodResource');
-        browser.wait(5000);
+        browser.waitForElementPresent('.alert', 10000);
+        browser.expect.element('.alert').text.to.equal("One or more required fields are blank.");
+        browser.waitForElementNotPresent('.alert', 5000);
+        /*browser.wait(5000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
             //browser.expect.message.to.equal("One or more required fields are blank.")
             browser.acceptAlert();
-        });
+        });*/
     },
 
     'add resource success': (browser) => {
         browser.setValue('#formControlsSubject', "at Aldi's!");
         browser.setValue('#formControlsMessage', "Check your local newspaper for details!");
         browser.click('#addFoodResource');
-        browser.wait(5000);
+        browser.waitForElementPresent('.alert', 10000);
+        browser.expect.element('.alert').text.to.equal("Resource Posted Successfully!");
+        browser.waitForElementNotPresent('.alert', 5000);
+        /*browser.wait(5000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
             //browser.expect.message.to.equal("Resource Posted Successfully!")
             browser.acceptAlert();
-        });
+        });*/
     },
 
     'verify added resource': (browser) => {
@@ -97,12 +103,16 @@ module.exports = {
     'remove resource': (browser) => {
         browser.waitForElementPresent('#delResource4-0');
         browser.click('#delResource4-0');
-        browser.wait(5000);
+        browser.click('#confirmDelete');
+        browser.waitForElementPresent('.alert', 10000);
+        browser.expect.element('.alert').text.to.equal("Resource removed successfully!");
+        browser.waitForElementNotPresent('.alert');
+        /*browser.wait(5000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
             //browser.expect.message.to.equal("Resource removed succesfully! Refresh to see changes.")
             browser.acceptAlert();
-        });
+        });*/
     }
 }

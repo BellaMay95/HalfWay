@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Glyphicon, Panel, PanelGroup, Button, Image, Alert } from 'react-bootstrap';
+import {Glyphicon, Panel, PanelGroup, Button, Image} from 'react-bootstrap';
 import './ForumComponent.css';
 import warning from '../images/warning.png';
 import warningGrey from '../images/warning-grey.png';
@@ -66,7 +66,6 @@ class ForumComponent extends Component{
               </Panel.Heading>
               <Panel.Body>
                 <div>
-                  { this.props.flagStatus ? <Alert bsStyle="warning"><strong>THIS POST IS CURRENTLY FLAGGED FOR REVIEW!</strong></Alert> : null }
                   <p>{this.state.message}</p>
                   <p className="cite"><cite>Author: {this.state.author_name}</cite></p>
                 </div>

@@ -28,8 +28,12 @@ module.exports = {
         browser.click('#newCommentThread0');
         browser.setValue('#formControlsTextarea', "This is an inappropriate comment!!");
         browser.click('#createComment');
+
+        browser.waitForElementPresent('.alert', 10000);
+        browser.expect.element('.alert').text.to.equal("Comment Posted Successfully!");
+        browser.waitForElementNotPresent('.alert', 5000);
         //change when bootstrap implementation changes
-        browser.pause(3000); //make sure alert has time to show
+        /*browser.pause(3000); //make sure alert has time to show
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
@@ -37,7 +41,7 @@ module.exports = {
             browser.acceptAlert();
             console.log("accepted alert");
             return;
-        });
+        });*/
     },
 
     beforeEach : function(browser) {
@@ -120,7 +124,7 @@ module.exports = {
         browser.click('#flagCommentNow');
         console.log("submitted flagged comment");
 
-        browser.pause(3000);
+        /*browser.pause(3000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
@@ -128,12 +132,10 @@ module.exports = {
             browser.acceptAlert();
             console.log("accepted alert");
             return;
-        });
-        /*
+        });*/
         browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("Comment Flagged Successfully!");
         browser.waitForElementNotPresent('.alert', 5000);
-        */
     },
 
     'verify post is marked as flagged on forum': (browser) => {
@@ -153,7 +155,7 @@ module.exports = {
         browser.click('#admin');
         browser.waitForElementPresent('.brandAdmin', 2000);
         browser.click('#acceptComment0');
-        browser.pause(3000);
+        /*browser.pause(3000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
@@ -161,10 +163,10 @@ module.exports = {
             browser.acceptAlert();
             console.log("accepted alert");
             return;
-        });
-        /*browser.waitForElementPresent('.alert', 5000);
+        });*/
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("Removed Flag from Comment!");
-        browser.waitForElementNotPresent('.alert', 5000);*/
+        browser.waitForElementNotPresent('.alert', 5000);
     },
 
     'verify comment is no longer flagged': (browser) => {
@@ -176,7 +178,10 @@ module.exports = {
         browser.click('#flagComment0');
         browser.setValue('#formControlsTextarea', "inappopriate comment!");
         browser.click('#flagCommentNow');
-        browser.pause(3000);
+        browser.waitForElementPresent('.alert', 5000);
+        browser.expect.element('.alert').text.to.equal("Comment Flagged Successfully!");
+        browser.waitForElementNotPresent('.alert', 5000);
+        /*browser.pause(3000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
@@ -184,7 +189,7 @@ module.exports = {
             browser.acceptAlert();
             console.log("accepted alert");
             return;
-        });
+        });*/
     },
 
     'reject comment on flagged post': (browser) => {
@@ -192,7 +197,7 @@ module.exports = {
         browser.waitForElementPresent('.brandAdmin', 2000);
 
         browser.click('#rejectComment0');
-        browser.pause(3000);
+        /*browser.pause(3000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
@@ -200,10 +205,10 @@ module.exports = {
             browser.acceptAlert();
             console.log("accepted alert");
             return;
-        });
-        /*browser.waitForElementPresent('.alert', 5000);
+        });*/
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("Comment Removed Successfully!");
-        brower.waitForElementNotPresent('.alert', 5000);*/
+        brower.waitForElementNotPresent('.alert', 5000);
     },
 
     'verify comment is removed from post': (browser) => {
@@ -222,10 +227,10 @@ module.exports = {
         browser.waitForElementPresent('.brandAdmin', 2000);
 
         browser.click('#acceptPost0');
-        /*browser.waitForElementPresent('.alert', 5000);
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("Removed Flag from Post!");
-        browser.waitForElementNotPresent('.alert');*/
-        browser.pause(3000);
+        browser.waitForElementNotPresent('.alert');
+        /*browser.pause(3000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
@@ -233,7 +238,7 @@ module.exports = {
             browser.acceptAlert();
             console.log("accepted alert");
             return;
-        });
+        });*/
     },
 
     'verify post is no longer flagged': (browser) => {
@@ -253,10 +258,10 @@ module.exports = {
         browser.waitForElementPresent('.brandAdmin', 2000);
 
         browser.click('#rejectPost0');
-        /*browser.waitForElementPresent('.alert', 5000);
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("Removed Post Successfully!");
-        browser.waitForElementNotPresent('.alert');*/
-        browser.pause(3000);
+        browser.waitForElementNotPresent('.alert');
+        /*browser.pause(3000);
         browser.getAlertText((text) => {
             console.log(text);
             let message = text.value;
@@ -264,7 +269,7 @@ module.exports = {
             browser.acceptAlert();
             console.log("accepted alert");
             return;
-        });
+        });*/
     },
 
     'verify post is removed from forum': (browser) => {

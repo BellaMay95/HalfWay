@@ -363,8 +363,10 @@ exports.saveProfile = functions.https.onCall((data) => {
     })
 });
 
-exports.userList = functions.https.onCall(() => {
-    return listAllUsers([])
+exports.userList = functions.https.onCall((data, context) => {
+    console.log(context.auth.token.type);
+    let isAdmin = context.auth.token.type;
+    return listAllUsers(isAdmin, [])
     .then((userList) => {
         //console.log(userList);
         return userList;
@@ -376,7 +378,7 @@ exports.userList = functions.https.onCall(() => {
     })
 });
 
-function listAllUsers(userList, nextPageToken) {
+function listAllUsers(isAdmin, userList, nextPageToken) {
     // List batch of users, 1000 at a time.
     return admin.auth().listUsers(1000, nextPageToken)
     .then(function(listUsersResult) {
@@ -388,12 +390,13 @@ function listAllUsers(userList, nextPageToken) {
                 displayName: userRecord.displayName,
                 creationTime: userRecord.metadata.creationTime,
                 type: userRecord.customClaims,
-                avatar: userRecord.photoURL
+                avatar: userRecord.photoURL,
+                email: isAdmin === "admin" ? userRecord.email : null
             });
         });
         if (listUsersResult.pageToken) {
             // List next batch of users.
-            return listAllUsers(userList, listUsersResult.pageToken)
+            return listAllUsers(isAdmin, userList, listUsersResult.pageToken)
         } else {
             //console.log(userList);
             return userList;

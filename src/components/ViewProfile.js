@@ -20,6 +20,7 @@ export default class ViewProfile extends Component {
         this.togglePasswordModal = this.togglePasswordModal.bind(this);
         this.saveChangesAlert = this.saveChangesAlert.bind(this);
         this.setSearch = this.setSearch.bind(this);
+        this.initialLoad = this.initialLoad.bind(this);
 
         this.state = {
             profileName: null,
@@ -39,6 +40,10 @@ export default class ViewProfile extends Component {
     }
 
     componentWillMount() {
+        return this.initialLoad();
+    }
+
+    initialLoad() {
         let user = app.auth().currentUser;
 
         user.getIdToken()
@@ -46,8 +51,7 @@ export default class ViewProfile extends Component {
             // Parse the ID token.
             idToken = idToken.replace(/-/g, "+").replace(/_/g, "/");
             const payload = JSON.parse(atob(idToken.split('.')[1]));
-            //const payload = JSON.parse(b64DecodeUnicode(idToken.split('.')[1]));
-            //console.log(payload);
+            console.log(user.displayName);
             this.setState({
                 profileName: user.displayName,
                 email: user.email,
@@ -105,11 +109,13 @@ export default class ViewProfile extends Component {
     }
 
     saveChangesAlert(message) {
+        this.initialLoad();
         this.setState({ alertState: <Alert bsStyle="success">{message}</Alert>});
 
         window.setTimeout(() => {
             this.setState({ alertState: null });
         }, 5000);
+        
     }
 
     setSearch(input) {
@@ -118,10 +124,11 @@ export default class ViewProfile extends Component {
 
     setUserProfile(user) {
         console.log(user);
+
         this.setState({
-            email: user.email,
+            email: user.displayName === app.auth().currentUser.displayName ? app.auth().currentUser.email : user.email,
             profileName: user.displayName,
-            avatar: user.photoURL ? user.photoURL : defaultProfilePic,
+            avatar: user.avatar ? user.avatar : defaultProfilePic,
             created: user.creationTime,
             accType: user.type.type,
             searchTerm: ""

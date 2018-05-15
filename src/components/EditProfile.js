@@ -156,35 +156,14 @@ export default class EditProfile extends Component {
         })
     }
 
-    /*avatarChanged(user) {
-        console.log("photoURL: " + user.photoURL);
-        console.log("this.state.avatar: " + this.state.avatar);
-        if (!user.photoURL && this.state.avatar === defaultProfilePic) {
-            console.log("no avatar before & no avatar now");
-            return false;
-        }
-        else if (user.photoURL === this.state.avatar) {
-            console.log("there is an avatar and it hasn't changed");
-            return false;
-        }
-        else if (user.photoURL !== this.state.avatar) {
-            console.log("avatar's changed");
-            return true;
-        }
-        else {
-            console.log("this shouldn't ever be reached...but if so just pretend avatar hasn't changed");
-            return false;
-        }
-        
-    }*/
-
     savePermProfile(avatarChange) {
         let user = app.auth().currentUser;
 
         let updateError = [];
+        console.log("ready to update profile");
 
         //empty promise exists to start the promise chain since I'm not sure which fields are changed yet
-        new Promise(function(resolve, reject) {
+        return new Promise(function(resolve, reject) {
             resolve("dummy promise");
         })
         .then(() => {
@@ -281,11 +260,15 @@ export default class EditProfile extends Component {
             }
         })
         .then(() => {
+            console.log("end of promise chain, then");
             console.log(updateError)
             if (updateError.length === 0) {
+                console.log("no errors here!");
                 this.setState({ isLoading: false });
-                this.props.showAlert("Profile Edited Successfully!", "success");
-                this.props.closeModal();
+                window.setTimeout(() => {
+                    this.props.showAlert("Profile Edited Successfully!", "success");
+                    this.props.closeModal();
+                }, 500)
             } else {
                 let message = "Error updating ";
                 for (let i=0; i < updateError.length; i++) {
