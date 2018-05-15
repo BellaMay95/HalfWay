@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect, BrowserRouter, Route } from 'react-router-dom';
+import { Redirect, BrowserRouter, Route, Switch } from 'react-router-dom';
 import { app } from './base';
 //import { Spinner } from 'react-spinner';
 
@@ -92,20 +92,20 @@ class App extends Component {
 				<BrowserRouter>
 					<div>
 						{/* '/login' path returns login component */}
-						<Route exact path="/login" render={(props) => {
-							return <Login setCurrentUser={this.setCurrentUser} {...props} />
-						}} />
-						{/* 'reset' path lets the user reset their password */}
-						<Route exact path="/reset" component={ResetPassword} />
-						{/* 'logout' path returns logout component */}
-						<Route exact path="/logout" component={Logout} />
-						{/*the rest of the routes are protected. If the user is not logged in, it redirects to the login page */}
-						<AuthenticatedRoute
-							exact
-							path="/"
-							authenticated={this.state.authenticated}
-							component={TopNavbar}
-						/>
+						<Switch>
+							<Route exact path="/login" render={(props) => {
+								return <Login setCurrentUser={this.setCurrentUser} {...props} />
+							}} />
+							{/* 'reset' path lets the user reset their password */}
+							<Route exact path="/reset" component={ResetPassword} />
+							{/* 'logout' path returns logout component */}
+							<Route exact path="/logout" component={Logout} />
+							{/*the rest of the routes are protected. If the user is not logged in, it redirects to the login page */}
+							<AuthenticatedRoute
+								authenticated={this.state.authenticated}
+								component={TopNavbar}
+							/>
+						</Switch>
 						{/*<AuthenticatedRoute
 							exact
 							path="/sidebar"

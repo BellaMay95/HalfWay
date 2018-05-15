@@ -292,7 +292,6 @@ handleOpenFlagCommentModal(commentID, CommentMessage, CommentAuthor){
                         <div key={comment.message}>
                           <ListGroupItem className="commentItem" key={index} id={commentId}>
                             <div>
-                              {comment.flagged ? <Alert bsStyle="warning"><strong>THIS COMMENT IS CURRENTLY FLAGGED FOR REVIEW!</strong></Alert> : null}
                               <p>{comment.message}</p>
                               <p className="cite"><cite>{comment.author_name}</cite></p>
                               <div className="keywordbullshit">

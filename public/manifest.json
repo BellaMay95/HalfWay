@@ -1,15 +1,20 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "The HalfWay Project",
+  "short_name": "HalfWay",
   "icons": [
-    {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    }
+      {
+          "src": "/icons/android-chrome-192x192.png?v=OmyePX6wEg",
+          "sizes": "192x192",
+          "type": "image/png"
+      },
+      {
+          "src": "/icons/android-chrome-256x256.png?v=OmyePX6wEg",
+          "sizes": "256x256",
+          "type": "image/png"
+      }
   ],
-  "start_url": "./index.html",
+  "theme_color": "#0e88b5",
+  "background_color": "#0e88b5",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "start_url": "index.html?launcher=true"
 }

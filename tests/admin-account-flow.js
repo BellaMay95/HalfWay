@@ -15,7 +15,14 @@ module.exports = {
     beforeEach : (browser) => {
 		//refresh browser and wait 10 seconds for everything to load
 		browser.refresh();
-		browser.timeoutsImplicitWait(10000);
+        browser.timeoutsImplicitWait(10000);
+        browser.waitForElementPresent('#admin', 20000);
+        browser.click('#admin');
+        browser.waitForElementPresent("#select-func", 5000);
+
+        //get to the "manage accounts" from the dropdown
+        browser.click('#select-func');
+        browser.click('#accounts');
     },
 
     after: (browser) => {
@@ -29,20 +36,21 @@ module.exports = {
 
     'navigate to admin panel / manage accounts': (browser) => {
         //click on the admin button on the navbar
-        browser.waitForElementPresent('#admin', 2000);
+        browser.waitForElementPresent('#admin', 5000);
         browser.click('#admin');
-        browser.waitForElementPresent("#select-func", 2000);
+        browser.waitForElementPresent("#select-func", 5000);
 
         //get to the "manage accounts" from the dropdown
         browser.click('#select-func');
         browser.click('#accounts');
-        browser.waitForElementPresent('#manage-account-tabs-tab-3', 2000);
+        browser.waitForElementPresent('#manage-account-tabs-tab-3', 5000);
     },
 
     'create new account with empty fields': (browser) => {
+        
         //make sure the create account tab is selected
         browser.click('#manage-account-tabs-tab-1');
-        browser.waitForElementPresent('#manage-account-tabs-pane-1', 2000);
+        browser.waitForElementPresent('#manage-account-tabs-pane-1', 5000);
 
         //fill in the form and submit
         browser.setValue('#createAccountDisplayName', "");
@@ -50,7 +58,7 @@ module.exports = {
         browser.setValue('#createAccountSelect', "mentor");
         browser.click('#crAccSubmit');
         //wait for alert to display with status
-        browser.waitForElementPresent('.alert', 2000);
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("One or more fields are empty. Please try again.");
         browser.waitForElementNotPresent('.alert', 5000);
 
@@ -67,7 +75,7 @@ module.exports = {
         browser.setValue('#createAccountPassword', "Password1!");
         browser.click('#crAccSubmit');
         //wait for alert to display with status
-        browser.waitForElementPresent('.alert', 2000);
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("You must enter a valid email address.");
         browser.waitForElementNotPresent('.alert', 5000);
 
@@ -93,7 +101,7 @@ module.exports = {
     'change account type with empty email': (browser) => {
         //navigate to the change account tab
         browser.click('#manage-account-tabs-tab-3');
-        browser.waitForElementPresent('#manage-account-tabs-pane-3', 2000);
+        browser.waitForElementPresent('#manage-account-tabs-pane-3', 5000);
 
         //fill in the form and submit
         browser.setValue('#changeAccountEmail', "");
@@ -101,7 +109,7 @@ module.exports = {
         browser.setValue('#changeAccountPassword', "Password1!");
         browser.click('#chAccSubmit');
         //wait for alert to display with status
-        browser.waitForElementPresent('.alert', 2000);
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("One or more fields are empty. Please try again.");
         browser.waitForElementNotPresent('.alert', 5000);
 
@@ -116,7 +124,7 @@ module.exports = {
         browser.setValue('#changeAccountPassword', "Password1!");
         browser.click('#chAccSubmit');
         //wait for alert to display with status
-        browser.waitForElementPresent('.alert', 2000);
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("You must enter a valid email address.");
         browser.waitForElementNotPresent('.alert', 5000);
 
@@ -172,14 +180,14 @@ module.exports = {
     'delete account with empty field': (browser) => {
         //navigate to tab for delete account
         browser.click('#manage-account-tabs-tab-2');
-        browser.waitForElementPresent('#manage-account-tabs-pane-2', 2000);
+        browser.waitForElementPresent('#manage-account-tabs-pane-2', 5000);
 
         //fill in the form and submit
         browser.setValue('#deleteAccountEmail', "");
         browser.setValue('#deleteAccountPassword', "Password1!");
         browser.click('#delAccSubmit');
         //wait for alert to display with status
-        browser.waitForElementPresent('.alert', 2000);
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("One or more fields are empty. Please try again.");
         browser.waitForElementNotPresent('.alert', 5000);
 
@@ -194,7 +202,7 @@ module.exports = {
         browser.setValue('#deleteAccountPassword', "Password1!");
         browser.click('#delAccSubmit');
         //wait for alert to display with status
-        browser.waitForElementPresent('.alert', 2000);
+        browser.waitForElementPresent('.alert', 5000);
         browser.expect.element('.alert').text.to.equal("You must enter a valid email address.");
         browser.waitForElementNotPresent('.alert', 5000);
 
@@ -209,7 +217,7 @@ module.exports = {
         browser.setValue('#deleteAccountPassword', "Password1!");
         browser.click('#delAccSubmit');
         //confirm delete on modal
-        browser.waitForElementPresent("#confirmDelete", 2000);
+        browser.waitForElementPresent("#confirmDelete", 5000);
         browser.click('#confirmDelete');
 
         //wait for alert to display with status
@@ -228,7 +236,7 @@ module.exports = {
         browser.setValue('#deleteAccountPassword', "Password1!");
         browser.click('#delAccSubmit');
         //confirm delete on modal
-        browser.waitForElementPresent("#confirmDelete", 2000);
+        browser.waitForElementPresent("#confirmDelete", 5000);
         browser.click('#confirmDelete');
         //wait for alert to display with status
         browser.waitForElementPresent('.alert', 10000);
